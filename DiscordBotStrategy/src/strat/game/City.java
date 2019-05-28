@@ -147,24 +147,25 @@ public class City extends MapObject {
 	}
 	
 	private Army getHiredArmy() {
-		Hexagon h = getNextSpawnPosition();
+		Army out = null;
 		
-		if (h == null) {
-			return null;
+		for (Army a : getMap().getArmies()) {
+			if (a.getOwnerID() == getOwnerID() && a.getQ() == getQ() && a.getR() == getR()) {
+				out = a;
+				break;
+			}
 		}
 		
-		Army a = getMap().getArmyAt(h.getQ(), h.getR());
-		
-		if (a == null) {
+		if (out == null) {
 			Nation owner = getOwner();
 			owner.setSpawnedArmies(owner.getSpawnedArmies() + 1);
-			a = new Army(getMap(), getOwnerID(),
-					owner.getSpawnedArmies(), h.getQ(), h.getR());
+			out = new Army(getMap(), getOwnerID(),
+					owner.getSpawnedArmies(), getQ(), getR());
 			
-			getMap().addArmy(a);
+			getMap().addArmy(out);
 		}
 		
-		return a;
+		return out;
 	}
 	
 	public void setFortLevel(int fortLevel) {
@@ -243,18 +244,5 @@ public class City extends MapObject {
 	public String serialize() {
 		return String.format("City,%d,%d,%d,%s,%d,%d,%d,%d,%d", regionID, getQ(), getR(), name,
 				foundryLevel, barracksLevel, stablesLevel, fortLevel, marketLevel);
-	}
-	
-	private Hexagon getNextSpawnPosition() {
-		for (int i = 0; i < Hexagon.DIRECTIONS.length; ++i) {
-			Hexagon h = getMap().get(getQ() + Hexagon.DIRECTIONS[i].getQ(),
-					getR() + Hexagon.DIRECTIONS[i].getR());
-			
-			if (h != null) {
-				return h;
-			}
-		}
-		
-		return null;
 	}
 }

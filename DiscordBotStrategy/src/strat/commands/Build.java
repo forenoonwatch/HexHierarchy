@@ -3,6 +3,7 @@ package strat.commands;
 import strat.game.City;
 import strat.game.Map;
 import strat.game.Nation;
+import strat.game.TurnLog;
 
 public class Build implements Command {
 	public static final String RAW_FORMAT = "build [fort|market|barracks|stables|foundry] city";
@@ -85,7 +86,11 @@ public class Build implements Command {
 		
 		sender.setMoney(sender.getMoney() - cost);
 		
-		return "Constructed " + tokens[1] + " in " + targetCity.getName();
+		String desc = String.format("Constructed %s in %s%n", tokens[1], targetCity.getName());
+		map.getTurnLog().addEntry(new TurnLog.LogEntry(sender, "**CONSTRUCTION - " + sender.getName().toUpperCase() + "**",
+				desc, TurnLog.Type.CONSTRUCTION));
+		
+		return desc;
 	}
 	
 	@Override

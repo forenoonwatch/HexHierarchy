@@ -32,6 +32,8 @@ public class Map {
 	private GregorianCalendar currentDate;
 	private int daysPerTurn;
 	
+	private TurnLog turnLog;
+	
 	public Map(double offsetX, double offsetY, double radius, int currentTurn, GregorianCalendar currentDate, int daysPerTurn) {
 		map = new HashMap<>();
 		regions = new HashMap<>();
@@ -53,6 +55,8 @@ public class Map {
 		
 		this.currentDate = currentDate;
 		this.daysPerTurn = daysPerTurn;
+		
+		turnLog = new TurnLog();
 	}
 	
 	public void renderCities(Graphics g) {
@@ -62,10 +66,6 @@ public class Map {
 				h.render(g, r.getColor(), offsetX, offsetY, radius, false);
 			}
 		}
-		
-		/*for (Army a : armies) {
-			a.render(g);
-		}*/
 		
 		for (City c : cities) {
 			c.render(g);
@@ -126,16 +126,16 @@ public class Map {
 			}
 		}
 		
+		for (City c : cities) {
+			c.render(g, false);
+		}
+		
 		for (Army a : armies) {
 			if (a.getOwnerID() == n.getNationID()) {
 				a.getHexagon().render(g, new Color(0, 120, 0), offsetX, offsetY, radius, false);
 			}
 			
 			a.render(g);
-		}
-		
-		for (City c : cities) {
-			c.render(g, false);
 		}
 	}
 	
@@ -165,10 +165,6 @@ public class Map {
 		for (City c : cities) {
 			c.render(g, false);
 		}
-		
-		/*for (Army a : armies) {
-			a.render(g);
-		}*/
 		
 		g.setColor(Color.BLACK);
 		
@@ -298,17 +294,8 @@ public class Map {
 				Hexagon sec = ai.findIntersection(aj);
 				
 				if (sec != null) {
-					if (ai.getOwnerID() == aj.getOwnerID()) {
-						if (ai.getQ() == sec.getQ() && ai.getR() == sec.getR()) {
-							armiesToRemove.add(aj);
-							ai.add(aj);
-						}
-						else {
-							armiesToRemove.add(ai);
-							aj.add(ai);
-						}
-					}
-					else {
+					if (ai.getOwnerID() != aj.getOwnerID() // if two enemy armies intersect where there is no city
+							&& getCityAt(sec.getQ(), sec.getR()) == null) {
 						if (ai.getPendingMoves().size() == 0) {
 							battles.add(new Battle(aj, ai, sec));
 						}
@@ -341,7 +328,7 @@ public class Map {
 				Hexagon h = a.getLastMove();
 				City c = getCityAt(h.getQ(), h.getR());
 				
-				if (c != null) {
+				if (c != null && c.getOwnerID() != a.getOwnerID()) {
 					sieges.add(new Siege(a, c));
 				}
 				else {
@@ -352,13 +339,36 @@ public class Map {
 		}
 	}
 	
-	public void resolveCombat(ArrayList<String> battleLog) {
+	public void resolveArmyMerging() {
+		ArrayList<Army> armiesToRemove = new ArrayList<>();
+		
+		for (int i = 0; i < armies.size(); ++i) {
+			Army ai = armies.get(i);
+			
+			for (int j = i + 1; j < armies.size(); ++j) {
+				Army aj = armies.get(j);
+				
+				if (ai.getOwnerID() == aj.getOwnerID() && !ai.isFighting()
+						&& !aj.isFighting() && ai.getQ() == aj.getQ() && ai.getR() == aj.getR()) {
+					// add ai to aj
+					aj.add(ai);
+					armiesToRemove.add(ai);
+				}
+			}
+		}
+		
+		for (Army a : armiesToRemove) {
+			armies.remove(a);
+		}
+	}
+	
+	public void resolveCombat() {
 		for (Battle b : battles) {
-			battleLog.add(b.resolve());
+			b.resolve();
 		}
 		
 		for (Siege s : sieges) {
-			battleLog.add(s.resolve());
+			s.resolve();
 		}
 	}
 	
@@ -369,13 +379,14 @@ public class Map {
 		}
 	}
 	
-	public void endTurn(ArrayList<String> battleLog) {
+	public void endTurn() {
 		++currentTurn;
 		currentDate.add(GregorianCalendar.DATE, daysPerTurn);
 		
 		resolveArmyIntersections();
 		resolveArmyMovement();
-		resolveCombat(battleLog);
+		resolveArmyMerging();
+		resolveCombat();
 		
 		battles.clear();
 		sieges.clear();
@@ -391,8 +402,8 @@ public class Map {
 		updateMoney();
 	}
 	
-	public void endTurn() {
-		endTurn(new ArrayList<>());
+	public void clearLog() {
+		turnLog.clear();
 	}
 	
 	public Hexagon select(int pixelX, int pixelY) {
@@ -572,6 +583,10 @@ public class Map {
 	
 	public String getCurrentDate() {
 		return Timer.formatDate(currentDate);
+	}
+	
+	public TurnLog getTurnLog() {
+		return turnLog;
 	}
 	
 	private void loadSerialized(String serializedData) {

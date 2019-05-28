@@ -20,6 +20,7 @@ import strat.game.City;
 import strat.game.Hexagon;
 import strat.game.Map;
 import strat.game.Nation;
+import strat.game.TurnLog;
 
 @SuppressWarnings("serial")
 public class Editor extends Canvas implements MouseListener, KeyListener {
@@ -217,6 +218,15 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 			}
 			
 			System.out.println("Region: " + map.getRegion(regionID).getName());
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_M) {
+			map.endTurn();
+			
+			for (TurnLog.LogEntry le : map.getTurnLog().getCommonEntries()) {
+				System.out.println(le.title);
+				System.out.println(le.description);
+				System.out.println();
+			}
 		}
 	}
 	

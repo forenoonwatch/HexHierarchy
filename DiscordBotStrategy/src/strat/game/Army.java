@@ -109,32 +109,6 @@ public class Army extends MapObject {
 				return i;
 			}
 			
-			City c = getMap().getCityAt(q, r);
-			
-			if (c != null) {
-				if (c.getOwnerID() == ownerID) {
-					additionalInfo[0] = String.format("Army %d has stopped outside the allied city of %s.", armyID, c.getName());
-					return i;
-				}
-				else {
-					additionalInfo[0] = String.format("Army %d has besieged the city of %s.", armyID, c.getName());
-					remainingMoves = 0;
-					pendingMoves.add(h);
-					return i + 1;
-				}
-			}
-			
-			Army a = getMap().getArmyAt(q, r);
-			
-			if (a != null && a.getOwnerID() == ownerID) {
-				remainingMoves = 0;
-				a.remainingMoves = 0;
-				pendingMoves.add(h);
-				
-				additionalInfo[0] = String.format("Army %d will merge into army %d.", armyID, a.armyID);
-				return i + 1;
-			}
-			
 			--remainingMoves;
 			pendingMoves.add(h);
 		}
@@ -230,10 +204,6 @@ public class Army extends MapObject {
 	
 	public int getArmyID() {
 		return armyID;
-	}
-	
-	public Nation getNation() {
-		return getMap().getNation(ownerID);
 	}
 	
 	public int getUnits(int unitID) {

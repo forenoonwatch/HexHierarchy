@@ -13,10 +13,8 @@ public class Siege {
 		attacker.setFighting(true);
 	}
 	
-	public String resolve() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(String.format("**SIEGE OF %s**%n%n", defender.getName().toUpperCase()));
+	public void resolve() {
+		String title = String.format("**SIEGE OF %s**%n%n", defender.getName().toUpperCase());
 		
 		Army def = new Army(defender.getMap(), defender.getOwnerID());
 		int numInfantry = defender.getFortLevel() * ARMIES_PER_FORT_LEVEL * Battle.INFANTRY_WEIGHT;
@@ -29,17 +27,15 @@ public class Siege {
 		
 		int numArmies = 1;
 		
-		for (int i = 0; i < Hexagon.DIRECTIONS.length; ++i) {
-			Army a = defender.getMap().getArmyAt(Hexagon.DIRECTIONS[i].getQ(),
-					Hexagon.DIRECTIONS[i].getR());
-			
-			if (a != null && a.getOwnerID() == defender.getOwnerID()) {
+		for (Army a : defender.getMap().getArmies()) {
+			if (a.getOwnerID() == defender.getOwnerID() && a.getQ() == defender.getQ()
+					&& a.getR() == defender.getR()) {
 				def.add(a);
 				++numArmies;
 			}
 		}
 		
-		Army winner = new Battle(attacker, def, defender.getHexagon()).calcWinner(sb);
+		Army winner = new Battle(attacker, def, defender.getHexagon()).calcWinner();
 		
 		int infLosses = numInfantry - def.getInfantry();
 		int cavLosses = numCavalry - def.getCavalry();
@@ -81,10 +77,11 @@ public class Siege {
 			attacker.getMap().removeArmy(attacker);
 		}
 		
-		sb.append(String.format("%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
-				winner.getNation().getName(), winner.getInfantry(), winner.getCavalry(), winner.getArtillery()));
+		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
+				attacker.getOwner().getName(), defender.getOwner().getName(),
+				winner.getOwner().getName(), winner.getInfantry(), winner.getCavalry(), winner.getArtillery());
 		
-		return sb.toString();
+		defender.getMap().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
 	}
 	
 	public Army getAttacker() {

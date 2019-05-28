@@ -1,5 +1,7 @@
 package strat.commands;
 
+import strat.bot.BotUtils;
+import strat.bot.DiscordBot;
 import strat.game.Army;
 import strat.game.Map;
 import strat.game.Nation;
@@ -29,14 +31,18 @@ public class Troops implements Command {
 			}
 			
 			if (found != null) {
-				return getArmyInfo(map, found);
+				String info = getArmyInfo(map, found, false);
+				BotUtils.sendLongMessage(DiscordBot.getDMFromNation(sender), info);
+				return null;
 			}
 			else {
 				return "Troops: Could not find given nation.";
 			}
 		}
 		else {
-			return getArmyInfo(map, sender);
+			String info = getArmyInfo(map, sender, true);
+			BotUtils.sendLongMessage(DiscordBot.getDMFromNation(sender), info);
+			return null;
 		}
 	}
 	
@@ -50,18 +56,23 @@ public class Troops implements Command {
 		return "show troop info for yourself or a selected nation";
 	}
 	
-	private static String getArmyInfo(Map map, Nation n) {
+	private static String getArmyInfo(Map map, Nation n, boolean showDetailedInfo) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(String.format("**ARMIES - %s**\n\n", n.getName()));
 		
 		for (Army a : map.getArmies()) {
 			if (a.getOwnerID() == n.getNationID()) {
-				sb.append(String.format("**%s Army %d**%nCurrent Region: %s%nMovement Remaining: %d%n",
-						n.getName(), a.getArmyID(), map.getRegion(a.getHexagon().getRegionID()).getName(),
-						a.getRemainingMoves()));
-				sb.append(String.format("Infantry: %d%nCavalry: %d%nArtillery: %d%n",
-						a.getInfantry(), a.getCavalry(), a.getArtillery()));
+				if (showDetailedInfo) {
+					sb.append(String.format("**%s Army %d**%nCurrent Region: %s%nMovement Remaining: %d%n",
+							n.getName(), a.getArmyID(), map.getRegion(a.getHexagon().getRegionID()).getName(),
+							a.getRemainingMoves()));
+					sb.append(String.format("Infantry: %d%nCavalry: %d%nArtillery: %d%n",
+							a.getInfantry(), a.getCavalry(), a.getArtillery()));
+				}
+				else {
+					sb.append(String.format("%s Army %d%n", n.getName(), a.getArmyID()));
+				}
 			}
 		}
 		

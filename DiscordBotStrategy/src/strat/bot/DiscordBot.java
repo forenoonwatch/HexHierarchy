@@ -10,6 +10,7 @@ import strat.game.Map;
 import strat.game.Nation;
 import strat.game.Region;
 import strat.game.Timer;
+import strat.game.TurnLog;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -24,7 +25,7 @@ import sx.blah.discord.handle.obj.StatusType;
 //ID: 437030179001597962
 public class DiscordBot {
 	public static final String TOKEN = "NDM3MDMwMTc5MDAxNTk3OTYy.DbwJOw.CHs1YJ_qPZDYtnmpgFkX1ozjc7A";
-	public static final String VERSION = "0.2.1";
+	public static final String VERSION = "0.3.0";
 	
 	public static final String DEFAULT_FILE_NAME = "hre.game";
 	public static final String NATION_REGISTRY_FILE = "natreg.dat";
@@ -181,8 +182,7 @@ public class DiscordBot {
 	public void advanceTurn() {
 		String lastDate = map.getCurrentDate();
 		
-		ArrayList<String> battleLog = new ArrayList<>();
-		map.endTurn(battleLog);
+		map.endTurn();
 		
 		ArrayList<java.util.Map.Entry<Nation, Integer>> holdings = new ArrayList<>();
 		sortHoldings(holdings);
@@ -216,14 +216,30 @@ public class DiscordBot {
 		
 		eo.thumbnail = null;
 		
-		for (String s : battleLog) {
-			eo.title = s.startsWith("BATTLE") ? "Battle!" : "Siege!";
-			eo.description = s;
+		for (TurnLog.LogEntry le : map.getTurnLog().getBattleEntries()) {
+			eo.title = le.title;
+			eo.description = le.description;
+			eo.color = le.nation.getRGB();
 			
 			BotUtils.sendEmbed(battleChannel, eo);
 			
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		for (TurnLog.LogEntry le : map.getTurnLog().getCommonEntries()) {
+			eo.title = le.title;
+			eo.description = le.description;
+			eo.color = le.nation.getRGB();
+			
+			BotUtils.sendEmbed(actionChannel, eo);
+			
+			try {
+				Thread.sleep(1000);
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
@@ -233,6 +249,7 @@ public class DiscordBot {
 		ImageManager.update();
 		
 		nationRegistry.resetTurnsCompleted();
+		map.clearLog();
 	}
 	
 	public void save(String mapFile) {

@@ -3,6 +3,7 @@ package strat.commands;
 import strat.bot.DiscordBot;
 import strat.game.Map;
 import strat.game.Nation;
+import strat.game.TurnLog;
 
 public class Pay implements Command {
 
@@ -59,6 +60,10 @@ public class Pay implements Command {
 		
 		sender.setMoney(sender.getMoney() - cost);
 		n.setMoney(n.getMoney() + cost);
+		
+		String desc = String.format("Transferred %d to %s%n", cost, n.getName());
+		map.getTurnLog().addEntry(new TurnLog.LogEntry(sender, "**PAYMENT - " + sender.getName().toUpperCase() + "**",
+				desc, TurnLog.Type.PAYMENT));
 		
 		return String.format("Pay: Successfully transferred %d to %s", cost, n.getName());
 	}

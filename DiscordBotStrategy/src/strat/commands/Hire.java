@@ -3,6 +3,7 @@ package strat.commands;
 import strat.game.City;
 import strat.game.Map;
 import strat.game.Nation;
+import strat.game.TurnLog;
 
 public class Hire implements Command {
 	public static final String RAW_FORMAT = "hire [infantry|cavalry|artillery] city amount";
@@ -90,7 +91,11 @@ public class Hire implements Command {
 		
 		sender.setMoney(sender.getMoney() - cost);
 		
-		return String.format("Successfully hired %d %s at %s", amount, tokens[1], targetCity.getName());
+		String desc = String.format("Recruited %d %s in %s%n", amount, tokens[1], targetCity.getName()); 
+		map.getTurnLog().addEntry(new TurnLog.LogEntry(sender, "**RECRUITMENT - " + sender.getName().toUpperCase() + "**",
+				desc, TurnLog.Type.RECRUITMENT));
+		
+		return desc;
 	}
 	
 	@Override

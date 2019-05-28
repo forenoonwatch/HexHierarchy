@@ -22,42 +22,37 @@ public class Battle {
 		defender.setFighting(true);
 	}
 	
-	public String resolve() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(String.format("**BATTLE OF %s, %s**%n%n",
+	public void resolve() {
+		String title = String.format("**BATTLE OF %s, %s**%n%n",
 				attacker.getMap().getRegion(location.getRegionID()).getName().toUpperCase(),
-				attacker.getMap().getCurrentDate().toUpperCase()));
+				attacker.getMap().getCurrentDate().toUpperCase());
 		
-		Army winner = calcWinner(sb);
+		Army winner = calcWinner();
 		Army loser = attacker == winner ? defender : attacker;
 		
 		loser.getMap().removeArmy(loser);
 		winner.setQ(location.getQ());
 		winner.setR(location.getR());
 		
-		sb.append(String.format("%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
-				winner.getNation().getName(), winner.getInfantry(), winner.getCavalry(), winner.getArtillery()));
+		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
+				attacker.getOwner().getName(), defender.getOwner().getName(),
+				winner.getOwner().getName(), winner.getInfantry(), winner.getCavalry(), winner.getArtillery());
 		
-		return sb.toString();
+		winner.getMap().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
 	}
 	
-	public Army calcWinner(StringBuilder sb) {
+	public Army calcWinner() {
 		while (attacker.isAlive() && defender.isAlive()) {
-			calcAttack(attacker, defender, sb);
+			calcAttack(attacker, defender);
 			
 			if (!attacker.isAlive() || !defender.isAlive()) {
 				break;
 			}
 			
-			calcAttack(defender, attacker, sb);
+			calcAttack(defender, attacker);
 		}
 		
 		return attacker.isAlive() ? attacker : defender;
-	}
-	
-	public Army calcWinner() {
-		return calcWinner(null);
 	}
 	
 	public Army getAttacker() {
@@ -68,7 +63,7 @@ public class Battle {
 		return defender;
 	}
 	
-	private void calcAttack(Army a, Army b, StringBuilder sb) {
+	private void calcAttack(Army a, Army b) {
 		int atk;
 		
 		do {
@@ -119,11 +114,11 @@ public class Battle {
 		a.setUnits(atk, Math.max(a.getUnits(atk) - dmgToA, 0));
 		b.setUnits(targ, Math.max(b.getUnits(targ) - dmgToB, 0));
 		
-		if (sb != null) {
+		//if (sb != null) {
 			//sb.append(String.format("%s launches %s.%n%s takes %d %s losses. %s takes %d %s losses.%n",
 			//		a.getNation().getName(), getUnitAttackName(atk), a.getNation().getName(), dmgToA,
 			//		getUnitName(atk), b.getNation().getName(), dmgToB, getUnitName(targ)));
-		}
+		//}
 	}
 	
 	private static boolean hasUnit(Army a, int unitID) {
