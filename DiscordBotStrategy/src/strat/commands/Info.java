@@ -33,7 +33,7 @@ public class Info implements Command {
 			
 			IUser user = DiscordBot.getUserFromNation(found);
 			
-			if (found != null && user != null) {
+			if (found != null) {
 				return getInfoForNation(map, found, user, false);
 			}
 			else {
@@ -78,6 +78,6 @@ public class Info implements Command {
 		}
 		
 		return String.format("**%s**%nLeader:\t%s%nRegions held:\t%d%n", n.getName(),
-				DiscordBot.getFormattedName(user), numLands);
+				user == null ? "No Ruler" : DiscordBot.getFormattedName(user), numLands);
 	}
 }

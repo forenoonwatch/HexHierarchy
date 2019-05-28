@@ -16,7 +16,7 @@ public class ViewCities implements Command {
 	
 	@Override
 	public String getFormat() {
-		return "vviewcities";
+		return "viewcities";
 	}
 	
 	@Override

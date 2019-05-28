@@ -27,7 +27,7 @@ public class Regions implements Command {
 	
 	@Override
 	public String getSynopsis() { 
-		return "privately messages region information about yourself";
+		return "privately messages region information about your regions and the cities within";
 	}
 	
 	private static String getInfoForNation(Map map, Nation n) {

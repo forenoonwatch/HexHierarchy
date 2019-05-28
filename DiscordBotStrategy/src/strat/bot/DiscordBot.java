@@ -189,7 +189,8 @@ public class DiscordBot {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("Turn ").append(map.getCurrentTurn() - 1).append(" has ended. The current standings are as follows:\n\n");
+		sb.append("<@582267448661639176>! Turn ").append(map.getCurrentTurn() - 1)
+				.append(" has ended. The current standings are as follows:\n\n");
 		
 		for (java.util.Map.Entry<Nation, Integer> e : holdings) {
 			sb.append(e.getKey().getName()).append(": ").append(e.getValue()).append(" regions.\n");
