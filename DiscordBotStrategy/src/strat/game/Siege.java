@@ -17,6 +17,7 @@ public class Siege {
 	
 	public void resolve() {
 		String title = String.format("**SIEGE OF %s**%n%n", defender.getName().toUpperCase());
+		String oldDefender = defender.getOwner().getName();
 		
 		Army def = new Army(defender.getMap(), defender.getOwnerID());
 		HashMap<String, Integer> numUnits = new HashMap<>();
@@ -75,7 +76,7 @@ public class Siege {
 		}
 		
 		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
-				attacker.getOwner().getName(), defender.getOwner().getName(),
+				attacker.getOwner().getName(), oldDefender,
 				winner.getOwner().getName(), winner.getUnits("infantry"), winner.getUnits("cavalry"),
 				winner.getUnits("artillery"));
 		

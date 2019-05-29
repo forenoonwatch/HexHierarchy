@@ -14,6 +14,8 @@ public class Nation implements ISerializable {
 	private int money;
 	private int spawnedArmies;
 	
+	private long owner;
+	
 	public Nation(int nationID, String name, Color color) {
 		this.nationID = nationID;
 		this.name = name;
@@ -33,6 +35,8 @@ public class Nation implements ISerializable {
 		
 		money = Integer.parseInt(data[4]);
 		spawnedArmies = Integer.parseInt(data[5]);
+		
+		owner = Long.parseLong(data[6]);
 	}
 	
 	public void setMoney(int money) {
@@ -50,6 +54,10 @@ public class Nation implements ISerializable {
 	public void setRGB(int rgb) {
 		this.color = new Color(rgb);
 		this.rgb = rgb & 0xFFFFFF;
+	}
+	
+	public void setOwner(long owner) {
+		this.owner = owner;
 	}
 	
 	public int getNationID() {
@@ -75,9 +83,14 @@ public class Nation implements ISerializable {
 	public int getSpawnedArmies() {
 		return spawnedArmies;
 	}
+	
+	public long getOwner() {
+		return owner;
+	}
 
 	@Override
 	public String serialize() {
-		return String.format("Nation,%d,%s,%X,%d,%d", nationID, name, rgb & 0xFFFFFF, money, spawnedArmies);
+		return String.format("Nation,%d,%s,%X,%d,%d,%d", nationID, name,
+				rgb & 0xFFFFFF, money, spawnedArmies, owner);
 	}
 }
