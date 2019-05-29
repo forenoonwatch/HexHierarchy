@@ -3,6 +3,7 @@ package strat.game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Army extends MapObject {
 	public static final int MOVES_PER_TURN = 3;
@@ -10,9 +11,7 @@ public class Army extends MapObject {
 	private int ownerID;
 	private int armyID;
 	
-	private int numInfantry;
-	private int numCavalry;
-	private int numArtillery;
+	private HashMap<String, Integer> numUnits;
 	
 	private ArrayList<Hexagon> pendingMoves;
 	private int remainingMoves;
@@ -29,9 +28,11 @@ public class Army extends MapObject {
 		this.ownerID = ownerID;
 		this.armyID = armyID;
 		
-		numInfantry = 0;
-		numCavalry = 0;
-		numArtillery = 0;
+		numUnits = new HashMap<>();
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			numUnits.put(unit, 0);
+		}
 		
 		pendingMoves = new ArrayList<>();
 		remainingMoves = MOVES_PER_TURN;
@@ -50,9 +51,11 @@ public class Army extends MapObject {
 		setQ(Integer.parseInt(data[3]));
 		setR(Integer.parseInt(data[4]));
 		
-		numInfantry = Integer.parseInt(data[5]);
-		numCavalry = Integer.parseInt(data[6]);
-		numArtillery = Integer.parseInt(data[7]);
+		numUnits = new HashMap<>();
+		
+		numUnits.put("infantry", Integer.parseInt(data[5]));
+		numUnits.put("cavalry", Integer.parseInt(data[6]));
+		numUnits.put("artillery", Integer.parseInt(data[7]));
 		
 		pendingMoves = new ArrayList<>();
 		remainingMoves = MOVES_PER_TURN;
@@ -88,9 +91,9 @@ public class Army extends MapObject {
 	}
 	
 	public void add(Army a) {
-		numInfantry += a.numInfantry;
-		numCavalry += a.numCavalry;
-		numArtillery += a.numArtillery;
+		for (java.util.Map.Entry<String, Integer> unit : a.numUnits.entrySet()) {
+			numUnits.put(unit.getKey(), numUnits.get(unit.getKey()) + unit.getValue());
+		}
 	}
 	
 	public int move(int direction, int distance, String[] additionalInfo) {
@@ -160,42 +163,16 @@ public class Army extends MapObject {
 		this.fighting = fighting;
 	}
 	
+	public void setUnits(String unit, int value) {
+		numUnits.put(unit, value);
+	}
+	
 	public void setUnits(int unitID, int value) {
-		switch (unitID) {
-			case 0:
-				numInfantry = value;
-				break;
-			case 1:
-				numCavalry = value;
-				break;
-			case 2:
-				numArtillery = value;
-				break;
-		}
+		setUnits(GameRules.getUnitTypes().get(unitID), value);
 	}
 	
-	public void setInfantry(int numInfantry) {
-		this.numInfantry = numInfantry;
-	}
-	
-	public void setCavalry(int numCavalry) {
-		this.numCavalry = numCavalry;
-	}
-	
-	public void setArtillery(int numArtillery) {
-		this.numArtillery = numArtillery;
-	}
-	
-	public int getInfantry() {
-		return numInfantry;
-	}
-	
-	public int getCavalry() {
-		return numCavalry;
-	}
-	
-	public int getArtillery() {
-		return numArtillery;
+	public void setOwnerID(int ownerID) {
+		this.ownerID = ownerID;
 	}
 	
 	public int getOwnerID() {
@@ -206,17 +183,12 @@ public class Army extends MapObject {
 		return armyID;
 	}
 	
+	public int getUnits(String unit) {
+		return numUnits.get(unit);
+	}
+	
 	public int getUnits(int unitID) {
-		switch (unitID) {
-			case 0:
-				return numInfantry;
-			case 1:
-				return numCavalry;
-			case 2:
-				return numArtillery;
-			default:
-				return 0;
-		}
+		return getUnits(GameRules.getUnitTypes().get(unitID));
 	}
 	
 	public int getRemainingMoves() {
@@ -228,7 +200,13 @@ public class Army extends MapObject {
 	}
 	
 	public boolean isAlive() {
-		return numInfantry > 0 || numCavalry > 0 || numArtillery > 0;
+		for (Integer i : numUnits.values()) {
+			if (i > 0) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public ArrayList<Hexagon> getPendingMoves() {
@@ -250,6 +228,6 @@ public class Army extends MapObject {
 	@Override
 	public String serialize() {
 		return String.format("Army,%d,%d,%d,%d,%d,%d,%d", ownerID, armyID,
-				getQ(), getR(), numInfantry, numCavalry, numArtillery);
+				getQ(), getR(), numUnits.get("infantry"), numUnits.get("cavalry"), numUnits.get("artillery"));
 	}
 }

@@ -2,11 +2,12 @@ package strat.game;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashMap;
 
 public class City extends MapObject {
 	public static final Color CITY_COLOR = new Color(0xA77D59);
 	
-	public static final int MARKET_PROFIT = 100;
+	/*public static final int MARKET_PROFIT = 100;
 	public static final int RECRUITMENT_CAP = 3;
 	public static final int BUILDING_CAP = 5;
 	
@@ -18,38 +19,42 @@ public class City extends MapObject {
 	public static final int MARKET_COST = 150;
 	public static final int FOUNDRY_COST = 300;
 	public static final int STABLES_COST = 300;
-	public static final int BARRACKS_COST = 300;
+	public static final int BARRACKS_COST = 300;*/
 	
 	private int regionID;
 	private String name;
 	
-	private int foundryLevel;
-	private int barracksLevel;
-	private int stablesLevel;
-	private int fortLevel;
-	private int marketLevel;
+	private HashMap<String, Integer> buildings;
+	private HashMap<String, Integer> recruitCapacity;
 	
-	private int infantryCapacity;
-	private int cavalryCapacity;
-	private int artilleryCapacity;
+	private Army garrison;
+	
+	private City(Map map) {
+		super(map);
+		
+		buildings = new HashMap<>();
+		recruitCapacity = new HashMap<>();
+		
+		garrison = new Army(map, getOwnerID());
+	}
 	
 	public City(Map map, int regionID, String name, int q, int r) {
-		super(map, q, r);
+		this(map);
+		setQ(q);
+		setR(r);
 		
 		this.regionID = regionID;
 		this.name = name;
 		
-		foundryLevel = 1;
-		barracksLevel = 1;
-		stablesLevel = 1;
-		fortLevel = 1;
-		marketLevel = 1;
+		for (String building : GameRules.getBuildingTypes()) {
+			buildings.put(building, 1);
+		}
 		
 		resetCapacity();
 	}
 	
 	public City(Map map, String serializedData) {
-		super(map);
+		this(map);
 		
 		String[] data = serializedData.split(",");
 		
@@ -60,11 +65,11 @@ public class City extends MapObject {
 		
 		name = data[4];
 		
-		foundryLevel = Integer.parseInt(data[5]);
-		barracksLevel = Integer.parseInt(data[6]);
-		stablesLevel = Integer.parseInt(data[7]);
-		fortLevel = Integer.parseInt(data[8]);
-		marketLevel = Integer.parseInt(data[9]);
+		buildings.put("foundry", Integer.parseInt(data[5]));
+		buildings.put("barracks", Integer.parseInt(data[6]));
+		buildings.put("stables", Integer.parseInt(data[7]));
+		buildings.put("fort", Integer.parseInt(data[8]));
+		buildings.put("market", Integer.parseInt(data[9]));
 		
 		resetCapacity();
 	}
@@ -102,46 +107,21 @@ public class City extends MapObject {
 	}
 	
 	public void resetCapacity() {
-		infantryCapacity = Battle.INFANTRY_WEIGHT * City.RECRUITMENT_CAP * barracksLevel;
-		cavalryCapacity = Battle.CAVALRY_WEIGHT * City.RECRUITMENT_CAP * stablesLevel;
-		artilleryCapacity = Battle.ARTILLERY_WEIGHT * City.RECRUITMENT_CAP * foundryLevel;
+		for (String unit : GameRules.getUnitTypes()) {
+			recruitCapacity.put(unit, GameRules.getRulei(unit + "Weight")
+					* GameRules.getRulei("recruitmentCap") * buildings.get(GameRules.getBuildingByUnit(unit)));
+		}
 	}
 	
-	public boolean hireInfantry(int numInfantry) {
+	public boolean hireUnits(String unitType, int numUnits) {
 		Army a = getHiredArmy();
 		
 		if (a == null) {
 			return false;
 		}
 		
-		infantryCapacity -= numInfantry;
-		a.setInfantry(a.getInfantry() + numInfantry);
-		
-		return true;
-	}
-	
-	public boolean hireCavalry(int numCavalry) {
-		Army a = getHiredArmy();
-		
-		if (a == null) {
-			return false;
-		}
-		
-		cavalryCapacity -= numCavalry;
-		a.setCavalry(a.getCavalry() + numCavalry);
-		
-		return true;
-	}
-	
-	public boolean hireArtillery(int numArtillery) {
-		Army a = getHiredArmy();
-		
-		if (a == null) {
-			return false;
-		}
-		
-		artilleryCapacity -= numArtillery;
-		a.setArtillery(a.getArtillery() + numArtillery);
+		recruitCapacity.put(unitType, recruitCapacity.get(unitType) - numUnits);
+		a.setUnits(unitType, a.getUnits(unitType) + numUnits);
 		
 		return true;
 	}
@@ -168,24 +148,8 @@ public class City extends MapObject {
 		return out;
 	}
 	
-	public void setFortLevel(int fortLevel) {
-		this.fortLevel = fortLevel;
-	}
-	
-	public void setMarketLevel(int marketLevel) {
-		this.marketLevel = marketLevel;
-	}
-	
-	public void setBarracksLevel(int barracksLevel) {
-		this.barracksLevel = barracksLevel;
-	}
-	
-	public void setStablesLevel(int stablesLevel) {
-		this.stablesLevel = stablesLevel;
-	}
-	
-	public void setFoundryLevel(int foundryLevel) {
-		this.foundryLevel = foundryLevel;
+	public void setBuildingLevel(String building, int level) {
+		buildings.put(building, level);
 	}
 	
 	public int getRegionID() {
@@ -208,41 +172,48 @@ public class City extends MapObject {
 		return name;
 	}
 	
-	public int getFortLevel() {
-		return fortLevel;
+	public int getBuildingLevel(String building) {
+		return buildings.get(building);
 	}
 	
-	public int getMarketLevel() {
-		return marketLevel;
+	public int getUnitCapacity(String unit) {
+		return recruitCapacity.get(unit);
 	}
 	
-	public int getBarracksLevel() {
-		return barracksLevel;
+	public Army getGarrison() {
+		garrison.setOwnerID(getOwnerID());
+		return garrison;
 	}
 	
-	public int getStablesLevel() {
-		return stablesLevel;
+	public int getGarrisonUnits() {
+		int sum = 0;
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			sum += garrison.getUnits(unit);
+		}
+		
+		return sum;
 	}
 	
-	public int getFoundryLevel() {
-		return foundryLevel;
+	public int getGarrisonCapacity(String unit) {
+		return getBuildingLevel("fort")
+				* GameRules.getRulei("armiesPerFortLevel") * GameRules.getRulei(unit + "Weight");
 	}
 	
-	public int getInfantryCapacity() {
-		return infantryCapacity;
-	}
-	
-	public int getCavalryCapacity() {
-		return cavalryCapacity;
-	}
-	
-	public int getArtilleryCapacity() {
-		return artilleryCapacity;
+	public int getGarrisonCapacity() {
+		int sum = 0;
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			sum += getGarrisonCapacity(unit);
+		}
+		
+		return sum;
 	}
 
 	@Override
 	public String serialize() {
 		return String.format("City,%d,%d,%d,%s,%d,%d,%d,%d,%d", regionID, getQ(), getR(), name,
-				foundryLevel, barracksLevel, stablesLevel, fortLevel, marketLevel);
+				buildings.get("foundry"), buildings.get("barracks"), buildings.get("stables"),
+				buildings.get("fort"), buildings.get("market"));
 	}
 }

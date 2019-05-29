@@ -2,11 +2,10 @@ package strat.commands;
 
 import strat.bot.BotUtils;
 import strat.bot.DiscordBot;
-import strat.game.Battle;
 import strat.game.City;
+import strat.game.GameRules;
 import strat.game.Map;
 import strat.game.Nation;
-import strat.game.Siege;
 import sx.blah.discord.handle.obj.IUser;
 
 public class Regions implements Command {
@@ -35,18 +34,17 @@ public class Regions implements Command {
 		
 		for (City c : map.getCities()) {
 			if (c.getOwnerID() == n.getNationID()) {
-				int numInfantry = c.getFortLevel() * Siege.ARMIES_PER_FORT_LEVEL * Battle.INFANTRY_WEIGHT;
-				int numCavalry = c.getFortLevel() * Siege.ARMIES_PER_FORT_LEVEL * Battle.CAVALRY_WEIGHT;
-				int numArtillery = c.getFortLevel() * Siege.ARMIES_PER_FORT_LEVEL * Battle.ARTILLERY_WEIGHT;
-				int profit = c.getMarketLevel() * City.MARKET_PROFIT;
+				int profit = c.getBuildingLevel("market") * GameRules.getRulei("marketProfit");
 				
 				sb.append(String.format("%nRegion:\t\t%s%nCapital:\t%s%n", c.getRegion().getName(), c.getName()));
-				sb.append(String.format("Fort Level:\t%d (%d infantry, %d cavalry, %d artillery)%n", 
-						c.getFortLevel(), numInfantry, numCavalry, numArtillery));
-				sb.append(String.format("Market Level:\t%d (+%d/turn)%n", c.getMarketLevel(),
+				sb.append(String.format("Fort Level:\t%d (%d/%d infantry, %d/%d cavalry, %d/%d artillery)%n", 
+						c.getBuildingLevel("fort"), c.getGarrison().getUnits("infantry"), c.getGarrisonCapacity("infantry"),
+						c.getGarrison().getUnits("cavalry"), c.getGarrisonCapacity("cavalry"),
+						c.getGarrison().getUnits("artillery"), c.getGarrisonCapacity("artillery")));
+				sb.append(String.format("Market Level:\t%d (+%d/turn)%n", c.getBuildingLevel("market"),
 						profit));
 				sb.append(String.format("Barracks Level:\t%d%nStables Level:\t%d%nFoundry Level:\t%d%n",
-						c.getBarracksLevel(), c.getStablesLevel(), c.getFoundryLevel()));
+						c.getBuildingLevel("barracks"), c.getBuildingLevel("stables"), c.getBuildingLevel("foundry")));
 			}
 		}
 		

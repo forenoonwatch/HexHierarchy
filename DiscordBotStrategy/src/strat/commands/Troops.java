@@ -68,7 +68,7 @@ public class Troops implements Command {
 							n.getName(), a.getArmyID(), map.getRegion(a.getHexagon().getRegionID()).getName(),
 							a.getRemainingMoves()));
 					sb.append(String.format("Infantry: %d%nCavalry: %d%nArtillery: %d%n",
-							a.getInfantry(), a.getCavalry(), a.getArtillery()));
+							a.getUnits("infantry"), a.getUnits("cavalry"), a.getUnits("artillery")));
 				}
 				else {
 					sb.append(String.format("%s Army %d%n", n.getName(), a.getArmyID()));

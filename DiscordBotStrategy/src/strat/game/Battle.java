@@ -1,13 +1,13 @@
 package strat.game;
 
 public class Battle {
-	public static final int INFANTRY_WEIGHT = 10;
+	/*public static final int INFANTRY_WEIGHT = 10;
 	public static final int CAVALRY_WEIGHT = 4;
 	public static final int ARTILLERY_WEIGHT = 1;
 	
 	public static final int[] WEIGHTS = {INFANTRY_WEIGHT, CAVALRY_WEIGHT, ARTILLERY_WEIGHT};
 	
-	public static final double ATTACK_SCALE = 3;
+	public static final double ATTACK_SCALE = 3;*/
 	
 	private Army attacker;
 	private Army defender;
@@ -36,7 +36,8 @@ public class Battle {
 		
 		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
 				attacker.getOwner().getName(), defender.getOwner().getName(),
-				winner.getOwner().getName(), winner.getInfantry(), winner.getCavalry(), winner.getArtillery());
+				winner.getOwner().getName(), winner.getUnits("infantry"), winner.getUnits("cavalry"),
+				winner.getUnits("artillery"));
 		
 		winner.getMap().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
 	}
@@ -103,10 +104,16 @@ public class Battle {
 		int[] effectiveness = new int[2];
 		calcEffectiveness(atk, targ, effectiveness);
 		
-		double advAB = ((double)a.getUnits(atk) / (double)WEIGHTS[atk]) / ((double)b.getUnits(targ) / (double)WEIGHTS[targ]);
+		int atkWeight = GameRules.getRulei(GameRules.getUnitTypes().get(atk) + "Weight");
+		int targWeight = GameRules.getRulei(GameRules.getUnitTypes().get(targ) + "Weight");
+		
+		double advAB = ((double)a.getUnits(atk) / (double)atkWeight)
+				/ ((double)b.getUnits(targ) / (double)targWeight);
 		//System.out.printf("Advantage: %.3f%n", advAB * ATTACK_SCALE);
-		int dmgToA = (int)(ATTACK_SCALE / advAB * effectiveness[1] * Math.random()) * WEIGHTS[atk];
-		int dmgToB = (int)(ATTACK_SCALE * advAB * effectiveness[0] * Math.random()) * WEIGHTS[targ];
+		int dmgToA = (int)(GameRules.getRuled("attackScale") / advAB * effectiveness[1] * Math.random())
+				* atkWeight;
+		int dmgToB = (int)(GameRules.getRuled("attackScale") * advAB * effectiveness[0] * Math.random())
+				* targWeight;
 		
 		dmgToA = Math.min(dmgToA, a.getUnits(atk));
 		dmgToB = Math.min(dmgToB, b.getUnits(targ));
@@ -122,16 +129,7 @@ public class Battle {
 	}
 	
 	private static boolean hasUnit(Army a, int unitID) {
-		switch (unitID) {
-			case 0:
-				return a.getInfantry() > 0;
-			case 1:
-				return a.getCavalry() > 0;
-			case 2:
-				return a.getArtillery() > 0;
-			default:
-				return false;
-		}
+		return a.getUnits(unitID) > 0;
 	}
 	
 	private static void calcEffectiveness(int atk, int def, int[] out) {

@@ -375,7 +375,7 @@ public class Map {
 	public void updateMoney() {
 		for (City c : cities) {
 			Nation o = c.getOwner();
-			o.setMoney(o.getMoney() + c.getMarketLevel() * City.MARKET_PROFIT);
+			o.setMoney(o.getMoney() + c.getBuildingLevel("market") * GameRules.getRulei("marketProfit"));
 		}
 	}
 	

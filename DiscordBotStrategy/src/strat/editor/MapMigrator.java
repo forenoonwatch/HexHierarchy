@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import strat.game.Army;
 import strat.game.City;
+import strat.game.GameRules;
 import strat.game.Hexagon;
 import strat.game.Map;
 import strat.game.Nation;
@@ -24,11 +25,9 @@ public class MapMigrator {
 				if (inCity.getName().equals(outCity.getName())) {
 					++numCities;
 					
-					outCity.setBarracksLevel(inCity.getBarracksLevel());
-					outCity.setStablesLevel(inCity.getStablesLevel());
-					outCity.setFoundryLevel(inCity.getFoundryLevel());
-					outCity.setFortLevel(inCity.getFortLevel());
-					outCity.setMarketLevel(inCity.getMarketLevel());
+					for (String building : GameRules.getBuildingTypes()) {
+						outCity.setBuildingLevel(building, inCity.getBuildingLevel(building));
+					}
 				}
 			}
 		}

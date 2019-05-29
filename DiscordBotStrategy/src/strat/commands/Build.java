@@ -1,6 +1,7 @@
 package strat.commands;
 
 import strat.game.City;
+import strat.game.GameRules;
 import strat.game.Map;
 import strat.game.Nation;
 import strat.game.TurnLog;
@@ -34,54 +35,19 @@ public class Build implements Command {
 			return "Build: Can only build at cities you own.";
 		}
 		
-		int cost = getCost(tokens[1]);
+		int cost = GameRules.getRulei(tokens[1] + "Cost");
 		
 		if (cost > sender.getMoney()) {
 			return String.format("Build: The cost of your purchase (%d) is greater than the amount of money in your posession (%d).",
 					cost, sender.getMoney());
 		}
 		
-		boolean exceededCap = false;
-		
-		if (tokens[1].equals("fort")) {
-			exceededCap = targetCity.getFortLevel() >= City.BUILDING_CAP;
-			
-			if (!exceededCap) {
-				targetCity.setFortLevel(targetCity.getFortLevel() + 1);
-			}
-		}
-		else if (tokens[1].equals("market")) {
-			exceededCap = targetCity.getMarketLevel() >= City.BUILDING_CAP;
-			
-			if (!exceededCap) {
-				targetCity.setMarketLevel(targetCity.getMarketLevel() + 1);
-			}
-		}
-		else if (tokens[1].equals("barracks")) {
-			exceededCap = targetCity.getBarracksLevel() >= City.BUILDING_CAP;
-			
-			if (!exceededCap) {
-				targetCity.setBarracksLevel(targetCity.getBarracksLevel() + 1);
-			}
-		}
-		else if (tokens[1].equals("stables")) {
-			exceededCap = targetCity.getStablesLevel() >= City.BUILDING_CAP;
-			
-			if (!exceededCap) {
-				targetCity.setStablesLevel(targetCity.getStablesLevel() + 1);
-			}
+		if (targetCity.getBuildingLevel(tokens[1]) >= GameRules.getRulei("buildingCap")) {
+			return String.format("Cannot construct %s in %s. Building cap (%d) reached.",
+					tokens[1], targetCity.getName(), GameRules.getRulei("buildingCap"));
 		}
 		else {
-			exceededCap = targetCity.getFoundryLevel() >= City.BUILDING_CAP;
-			
-			if (!exceededCap) {
-				targetCity.setFoundryLevel(targetCity.getFoundryLevel() + 1);
-			}
-		}
-		
-		if (exceededCap) {
-			return String.format("Cannot construct %s in %s. Building cap (%d) reached.",
-					tokens[1], targetCity.getName(), City.BUILDING_CAP);
+			targetCity.setBuildingLevel(tokens[1], targetCity.getBuildingLevel(tokens[1]) + 1);
 		}
 		
 		sender.setMoney(sender.getMoney() - cost);
@@ -104,25 +70,12 @@ public class Build implements Command {
 	}
 	
 	private static boolean isValid(String str) {
-		return str.equals("fort") || str.equals("market") || str.equals("barracks")
-				|| str.equals("stables") || str.equals("foundry");
-	}
-	
-	private static int getCost(String str) {
-		if (str.equals("fort")) {
-			return City.FORT_COST;
+		for (String building : GameRules.getBuildingTypes()) {
+			if (str.equals(building)) {
+				return true;
+			}
 		}
-		else if (str.equals("market")) {
-			return City.MARKET_COST;
-		}
-		else if (str.equals("barracks")) {
-			return City.BARRACKS_COST;
-		}
-		else if (str.equals("stables")) {
-			return City.STABLES_COST;
-		}
-		else {
-			return City.FOUNDRY_COST;
-		}
+		
+		return false;
 	}
 }

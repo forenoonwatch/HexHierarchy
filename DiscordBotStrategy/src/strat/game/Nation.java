@@ -3,7 +3,7 @@ package strat.game;
 import java.awt.Color;
 
 public class Nation implements ISerializable {
-	public static final int STARTING_MONEY = 300;
+	//public static final int STARTING_MONEY = 300;
 	
 	public static final Nation NO_NATION = new Nation(0, "Unclaimed", Color.WHITE);
 	
@@ -19,7 +19,7 @@ public class Nation implements ISerializable {
 		this.name = name;
 		this.color = color;
 		rgb = color.getRGB() & 0xFFFFFF;
-		money = STARTING_MONEY;
+		money = GameRules.getRulei("startingMoney");
 		spawnedArmies = 0;
 	}
 	

@@ -3,6 +3,7 @@ package strat.commands;
 import strat.bot.BotUtils;
 import strat.bot.DiscordBot;
 import strat.game.City;
+import strat.game.GameRules;
 import strat.game.Map;
 import strat.game.Nation;
 import sx.blah.discord.handle.obj.IUser;
@@ -66,7 +67,7 @@ public class Info implements Command {
 		for (City c : map.getCities()) {
 			if (c.getOwnerID() == n.getNationID()) {
 				++numLands;
-				int profit = c.getMarketLevel() * City.MARKET_PROFIT;
+				int profit = c.getBuildingLevel("market") * GameRules.getRulei("marketProfit");
 				
 				profitPerTurn += profit;
 			}

@@ -1,6 +1,7 @@
 package strat.commands;
 
 import strat.game.City;
+import strat.game.GameRules;
 import strat.game.Map;
 import strat.game.Nation;
 import strat.game.TurnLog;
@@ -47,21 +48,8 @@ public class Hire implements Command {
 			return "Hire: Invalid amount" + FORMAT;
 		}
 		
-		int cost;
-		int maxAmount;
-		
-		if (tokens[1].equals("infantry")) {
-			cost = amount * City.INFANTRY_COST;
-			maxAmount = targetCity.getInfantryCapacity();
-		}
-		else if (tokens[1].equals("cavalry")) {
-			cost = amount * City.CAVALRY_COST;
-			maxAmount = targetCity.getCavalryCapacity();
-		}
-		else {
-			cost = amount * City.ARTILLERY_COST;
-			maxAmount = targetCity.getArtilleryCapacity();
-		}
+		int cost = amount * GameRules.getRulei(tokens[1] + "Cost");
+		int maxAmount = targetCity.getUnitCapacity(tokens[1]);
 		
 		if (cost > sender.getMoney()) {
 			return String.format("Hire: The cost of your purchase (%d) is greater than the amount of money in your posession (%d).",
@@ -73,19 +61,7 @@ public class Hire implements Command {
 					tokens[1], targetCity.getName(), maxAmount);
 		}
 		
-		boolean res;
-		
-		if (tokens[1].equals("infantry")) {
-			res = targetCity.hireInfantry(amount);
-		}
-		else if (tokens[1].equals("cavalry")) {
-			res = targetCity.hireCavalry(amount);
-		}
-		else {
-			res = targetCity.hireArtillery(amount);
-		}
-		
-		if (!res) {
+		if (!targetCity.hireUnits(tokens[1], amount)) {
 			return "Hire: could not spawn new forces around " + tokens[2];
 		}
 		

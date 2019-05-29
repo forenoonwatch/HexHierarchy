@@ -1,7 +1,9 @@
 package strat.game;
 
+import java.util.HashMap;
+
 public class Siege {
-	public static final int ARMIES_PER_FORT_LEVEL = 2;
+	//public static final int ARMIES_PER_FORT_LEVEL = 2;
 	
 	private Army attacker;
 	private City defender;
@@ -17,13 +19,12 @@ public class Siege {
 		String title = String.format("**SIEGE OF %s**%n%n", defender.getName().toUpperCase());
 		
 		Army def = new Army(defender.getMap(), defender.getOwnerID());
-		int numInfantry = defender.getFortLevel() * ARMIES_PER_FORT_LEVEL * Battle.INFANTRY_WEIGHT;
-		int numCavalry = defender.getFortLevel() * ARMIES_PER_FORT_LEVEL * Battle.CAVALRY_WEIGHT;
-		int numArtillery = defender.getFortLevel() * ARMIES_PER_FORT_LEVEL * Battle.ARTILLERY_WEIGHT;
+		HashMap<String, Integer> numUnits = new HashMap<>();
 		
-		def.setInfantry(numInfantry);
-		def.setCavalry(numCavalry);
-		def.setArtillery(numArtillery);
+		for (String unit : GameRules.getUnitTypes()) {
+			numUnits.put(unit, defender.getGarrison().getUnits(unit));
+			def.setUnits(unit, numUnits.get(unit));
+		}
 		
 		int numArmies = 1;
 		
@@ -37,31 +38,27 @@ public class Siege {
 		
 		Army winner = new Battle(attacker, def, defender.getHexagon()).calcWinner();
 		
-		int infLosses = numInfantry - def.getInfantry();
-		int cavLosses = numCavalry - def.getCavalry();
-		int artyLosses = numArtillery - def.getArtillery();
+		HashMap<String, Integer> losses = new HashMap<>();
+		HashMap<String, Integer> avgLosses = new HashMap<>();
 		
-		int avgInfLoss = infLosses / numArmies;
-		int avgCavLoss = cavLosses / numArmies;
-		int avgArtyLoss = artyLosses / numArmies;
+		for (String unit : GameRules.getUnitTypes()) {
+			losses.put(unit, numUnits.get(unit) - def.getUnits(unit));
+			avgLosses.put(unit, losses.get(unit) / numArmies);
+		}
 		
-		for (int i = 0; i < Hexagon.DIRECTIONS.length; ++i) {
-			Army a = defender.getMap().getArmyAt(Hexagon.DIRECTIONS[i].getQ(),
-					Hexagon.DIRECTIONS[i].getR());
-			
-			if (a != null && a.getOwnerID() == defender.getOwnerID()) {
-				int il = Math.min(avgInfLoss, a.getInfantry());
-				int cl = Math.min(avgCavLoss, a.getCavalry());
-				int al = Math.min(avgArtyLoss, a.getArtillery());
-				
-				a.setInfantry(a.getInfantry() - il);
-				a.setCavalry(a.getCavalry() - cl);
-				a.setArtillery(a.getArtillery() - al);
-				
-				infLosses -= il;
-				cavLosses -= cl;
-				artyLosses -= al;
+		for (Army a : defender.getMap().getArmies()) {
+			if (a.getOwnerID() == defender.getOwnerID() && a.getQ() == defender.getQ()
+					&& a.getR() == defender.getR()) {
+				for (String unit : GameRules.getUnitTypes()) {
+					int loss = Math.min(avgLosses.get(unit), a.getUnits(unit));
+					a.setUnits(unit, a.getUnits(unit) - loss);
+					losses.put(unit, losses.get(unit) - loss);
+				}
 			}
+		}
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			defender.getGarrison().setUnits(unit, losses.get(unit));
 		}
 		
 		if (winner == attacker) {
@@ -79,7 +76,8 @@ public class Siege {
 		
 		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
 				attacker.getOwner().getName(), defender.getOwner().getName(),
-				winner.getOwner().getName(), winner.getInfantry(), winner.getCavalry(), winner.getArtillery());
+				winner.getOwner().getName(), winner.getUnits("infantry"), winner.getUnits("cavalry"),
+				winner.getUnits("artillery"));
 		
 		defender.getMap().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
 	}
