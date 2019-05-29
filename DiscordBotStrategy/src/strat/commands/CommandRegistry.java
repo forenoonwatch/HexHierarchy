@@ -92,6 +92,7 @@ public class CommandRegistry {
 		register("viewarmies", new ViewArmies());
 		register("pay", new Pay());
 		register("complete", new Complete());
+		register("replenish", new Replenish());
 		
 		registerAdmin("setnation", new SetNation());
 		registerAdmin("save", new Save());

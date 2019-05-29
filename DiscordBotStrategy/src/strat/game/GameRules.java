@@ -72,6 +72,7 @@ public final class GameRules {
 		RULES.put("infantryCost", 5.0);
 		RULES.put("cavalryCost", 13.0);
 		RULES.put("artilleryCost", 20.0);
+		RULES.put("replenismentCost", 5.0);
 		
 		RULES.put("fortCost", 100.0);
 		RULES.put("marketCost", 150.0);

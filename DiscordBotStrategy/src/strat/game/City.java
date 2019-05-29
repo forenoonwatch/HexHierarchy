@@ -152,6 +152,43 @@ public class City extends MapObject {
 		buildings.put(building, level);
 	}
 	
+	public void replenishGarrison(int amount) {
+		while (amount > 0) {
+			int minCapacity = Integer.MAX_VALUE;
+			int numToFill = 0;
+			
+			for (String unit : GameRules.getUnitTypes()) {
+				int diff = getGarrisonCapacity(unit) - garrison.getUnits(unit);
+				
+				if (diff > 0) {
+					++numToFill;
+					
+					if (diff < minCapacity) {
+						minCapacity = diff;
+					}
+				}
+			}
+			
+			if (numToFill == 0) {
+				break;
+			}
+			
+			int avg = Math.max(amount / numToFill, 1);
+			int fillAmt = Math.min(avg, minCapacity);
+			
+			for (String unit : GameRules.getUnitTypes()) {
+				if (amount == 0) {
+					break;
+				}
+				
+				if (garrison.getUnits(unit) < getGarrisonCapacity(unit)) {
+					garrison.setUnits(unit, garrison.getUnits(unit) + fillAmt);
+					amount -= fillAmt;
+				}
+			}
+		}
+	}
+	
 	public int getRegionID() {
 		return regionID;
 	}
