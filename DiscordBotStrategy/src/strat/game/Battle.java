@@ -25,12 +25,12 @@ public class Battle {
 	public void resolve() {
 		String title = String.format("**BATTLE OF %s, %s**%n%n",
 				attacker.getMap().getRegion(location.getRegionID()).getName().toUpperCase(),
-				attacker.getMap().getCurrentDate().toUpperCase());
+				attacker.getGame().getCurrentDate().toUpperCase());
 		
 		Army winner = calcWinner();
 		Army loser = attacker == winner ? defender : attacker;
 		
-		loser.getMap().removeArmy(loser);
+		loser.getGame().removeArmy(loser);
 		winner.setQ(location.getQ());
 		winner.setR(location.getR());
 		
@@ -39,7 +39,7 @@ public class Battle {
 				winner.getOwner().getName(), winner.getUnits("infantry"), winner.getUnits("cavalry"),
 				winner.getUnits("artillery"));
 		
-		winner.getMap().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
+		winner.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
 	}
 	
 	public Army calcWinner() {

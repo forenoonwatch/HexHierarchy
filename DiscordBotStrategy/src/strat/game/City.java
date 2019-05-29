@@ -6,21 +6,7 @@ import java.util.HashMap;
 
 public class City extends MapObject {
 	public static final Color CITY_COLOR = new Color(0xA77D59);
-	
-	/*public static final int MARKET_PROFIT = 100;
-	public static final int RECRUITMENT_CAP = 3;
-	public static final int BUILDING_CAP = 5;
-	
-	public static final int INFANTRY_COST = 5;
-	public static final int CAVALRY_COST = 13;
-	public static final int ARTILLERY_COST = 20;
-	
-	public static final int FORT_COST = 100;
-	public static final int MARKET_COST = 150;
-	public static final int FOUNDRY_COST = 300;
-	public static final int STABLES_COST = 300;
-	public static final int BARRACKS_COST = 300;*/
-	
+
 	private int regionID;
 	private String name;
 	
@@ -129,7 +115,7 @@ public class City extends MapObject {
 	private Army getHiredArmy() {
 		Army out = null;
 		
-		for (Army a : getMap().getArmies()) {
+		for (Army a : getGame().getArmies()) {
 			if (a.getOwnerID() == getOwnerID() && a.getQ() == getQ() && a.getR() == getR()) {
 				out = a;
 				break;
@@ -142,7 +128,7 @@ public class City extends MapObject {
 			out = new Army(getMap(), getOwnerID(),
 					owner.getSpawnedArmies(), getQ(), getR());
 			
-			getMap().addArmy(out);
+			getGame().addArmy(out);
 		}
 		
 		return out;
@@ -197,16 +183,13 @@ public class City extends MapObject {
 		return getMap().getRegion(regionID);
 	}
 	
-	public int getOwnerID() {
-		return getRegion().getOwnerID();
-	}
-	
-	public Nation getOwner() {
-		return getMap().getNation(getOwnerID());
-	}
-	
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public int getOwnerID() {
+		return getRegion().getOwnerID();
 	}
 	
 	public int getBuildingLevel(String building) {

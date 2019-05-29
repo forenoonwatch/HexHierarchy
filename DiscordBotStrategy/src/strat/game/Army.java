@@ -8,7 +8,6 @@ import java.util.HashMap;
 public class Army extends MapObject {
 	public static final int MOVES_PER_TURN = 3;
 	
-	private int ownerID;
 	private int armyID;
 	
 	private HashMap<String, Integer> numUnits;
@@ -23,9 +22,8 @@ public class Army extends MapObject {
 	}
 	
 	public Army(Map map, int ownerID, int armyID, int q, int r) {
-		super(map, q, r);
+		super(map, q, r, ownerID);
 		
-		this.ownerID = ownerID;
 		this.armyID = armyID;
 		
 		numUnits = new HashMap<>();
@@ -45,7 +43,7 @@ public class Army extends MapObject {
 		
 		String[] data = serializedData.split(",");
 		
-		ownerID = Integer.parseInt(data[1]);
+		setOwnerID(Integer.parseInt(data[1]));
 		armyID = Integer.parseInt(data[2]);
 		
 		setQ(Integer.parseInt(data[3]));
@@ -171,14 +169,6 @@ public class Army extends MapObject {
 		setUnits(GameRules.getUnitTypes().get(unitID), value);
 	}
 	
-	public void setOwnerID(int ownerID) {
-		this.ownerID = ownerID;
-	}
-	
-	public int getOwnerID() {
-		return ownerID;
-	}
-	
 	public int getArmyID() {
 		return armyID;
 	}
@@ -220,14 +210,10 @@ public class Army extends MapObject {
 		
 		return pendingMoves.get(pendingMoves.size() - 1);
 	}
-	
-	public Nation getOwner() {
-		return getMap().getNation(ownerID);
-	}
 
 	@Override
 	public String serialize() {
-		return String.format("Army,%d,%d,%d,%d,%d,%d,%d", ownerID, armyID,
+		return String.format("Army,%d,%d,%d,%d,%d,%d,%d", getOwnerID(), armyID,
 				getQ(), getR(), numUnits.get("infantry"), numUnits.get("cavalry"), numUnits.get("artillery"));
 	}
 }
