@@ -51,7 +51,7 @@ public class CommandRegistry {
 		if (tokens.length > 0 && tokens[0].startsWith(prefix)) {
 			Command cmd = commands.get(tokens[0].substring(prefix.length()));
 			
-			if (cmd != null && permissionLevel.ordinal() <= cmd.getPermissionLevel().ordinal()) {
+			if (cmd != null && permissionLevel.ordinal() >= cmd.getPermissionLevel().ordinal()) {
 				return cmd.execute(gameManager, senderID, message, lowerMessage, tokens);
 			}
 		}

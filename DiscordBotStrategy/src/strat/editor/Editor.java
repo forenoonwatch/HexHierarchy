@@ -1,7 +1,6 @@
 package strat.editor;
 
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -76,6 +75,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		addKeyListener(this);
 		
 		field.addActionListener(e -> {
+			System.out.println(field.getText());
 			Response r = CommandRegistry.executeCommand(gameManager, field.getText(), Nation.NO_NATION.getOwner());
 			
 			if (r != null) {

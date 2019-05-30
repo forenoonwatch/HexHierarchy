@@ -37,6 +37,7 @@ public class City extends MapObject {
 		}
 		
 		resetCapacity();
+		replenishGarrison();
 	}
 	
 	public City(Map map, String serializedData) {
@@ -58,6 +59,7 @@ public class City extends MapObject {
 		buildings.put("market", Integer.parseInt(data[9]));
 		
 		resetCapacity();
+		replenishGarrison();
 	}
 
 	@Override
@@ -176,6 +178,12 @@ public class City extends MapObject {
 		}
 	}
 	
+	public void replenishGarrison() {
+		for (String unit : GameRules.getUnitTypes()) {
+			garrison.setUnits(unit, getGarrisonCapacity(unit));
+		}
+	}
+	
 	public int getRegionID() {
 		return regionID;
 	}
@@ -197,7 +205,7 @@ public class City extends MapObject {
 		return buildings.get(building);
 	}
 	
-	public int getUnitCapacity(String unit) {
+	public int getRecruitCapacity(String unit) {
 		return recruitCapacity.get(unit);
 	}
 	

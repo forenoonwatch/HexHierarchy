@@ -50,7 +50,7 @@ public class Hire implements Command {
 		}
 		
 		int cost = amount * GameRules.getRulei(tokens[1] + "Cost");
-		int maxAmount = targetCity.getUnitCapacity(tokens[1]);
+		int maxAmount = targetCity.getRecruitCapacity(tokens[1]);
 		
 		if (cost > sender.getMoney()) {
 			return new Response(String.format("Hire: The cost of your purchase (%d) is greater than the amount of money in your posession (%d).",
