@@ -37,6 +37,7 @@ public class CommandRegistry {
 		addCommand(new ChangeName());
 		addCommand(new SetNation());
 		addCommand(new SetOwner());
+		addCommand(new Load());
 	}
 	
 	public static Response executeCommand(GameManager gameManager, String message,

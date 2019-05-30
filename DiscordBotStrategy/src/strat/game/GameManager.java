@@ -27,7 +27,7 @@ public class GameManager {
 		this.game = game;
 		
 		gameRenderer = new GameRenderer(800, 800);
-		timer = new Timer(Duration.ofHours(24));
+		timer = new Timer(Duration.ofHours(12));
 		
 		turnsCompleted = new HashSet<>();
 		
@@ -216,6 +216,8 @@ public class GameManager {
 	
 	public void setGame(Game game) {
 		this.game = game;
+		
+		turnsCompleted.clear();
 		
 		gameRenderer.renderSingleImages(game);
 		gameRenderer.renderPoliticalImage(game);
