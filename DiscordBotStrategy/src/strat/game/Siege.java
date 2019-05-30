@@ -57,7 +57,7 @@ public class Siege {
 		}
 		
 		for (String unit : GameRules.getUnitTypes()) {
-			defender.getGarrison().setUnits(unit, losses.get(unit));
+			defender.getGarrison().setUnits(unit, Math.max(losses.get(unit), 0));
 		}
 		
 		if (winner == attacker) {
