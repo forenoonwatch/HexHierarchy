@@ -223,6 +223,14 @@ public class Game {
 		return defaultRenderRadius;
 	}
 	
+	private boolean canFight(Army a, Army b) {
+		return a.getOwnerID() != b.getOwnerID();
+	}
+	
+	private boolean canBesiege(Army a, City c) {
+		return a.getOwnerID() != c.getOwnerID();
+	}
+	
 	private void resolveArmyIntersections() {
 		ArrayList<Army> armiesToRemove = new ArrayList<>();
 		
@@ -238,7 +246,7 @@ public class Game {
 				Hexagon sec = ai.findIntersection(aj);
 				
 				if (sec != null) {
-					if (ai.getOwnerID() != aj.getOwnerID() // if two enemy armies intersect where there is no city
+					if (canFight(ai, aj) // if two enemy armies intersect where there is no city
 							&& map.getCityAt(sec.getQ(), sec.getR()) == null) {
 						if (ai.getPendingMoves().size() == 0) {
 							battles.add(new Battle(aj, ai, sec));
@@ -272,7 +280,7 @@ public class Game {
 				Hexagon h = a.getLastMove();
 				City c = map.getCityAt(h.getQ(), h.getR());
 				
-				if (c != null && c.getOwnerID() != a.getOwnerID()) {
+				if (c != null && canBesiege(a, c)) {
 					sieges.add(new Siege(a, c));
 				}
 				else {

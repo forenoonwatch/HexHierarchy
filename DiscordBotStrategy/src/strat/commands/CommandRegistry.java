@@ -27,6 +27,8 @@ public class CommandRegistry {
 		addCommand(new ViewPolitical());
 		addCommand(new ViewRegions());
 		addCommand(new UndoMove());
+		addCommand(new Spy());
+		addCommand(new Split());
 		
 		addCommand(new AddNation());
 		addCommand(new AdvanceTurn());
