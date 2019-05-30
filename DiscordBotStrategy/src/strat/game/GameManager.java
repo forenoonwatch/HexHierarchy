@@ -15,6 +15,8 @@ public class GameManager {
 	public static final String DEFAULT_FILE_NAME = "hre.game";
 	public static final String MOVEMENT_LOG_FILE = "movelog.dat";
 	
+	public static final double COMPLETION_PERCENTAGE = 0.75;
+	
 	private Game game;
 	private GameRenderer gameRenderer;
 	private Timer timer;
@@ -208,6 +210,10 @@ public class GameManager {
 		return count;
 	}
 	
+	public int getNumRequiredToComplete() {
+		return (int)(COMPLETION_PERCENTAGE * getNumOwnedNations());
+	}
+	
 	public void setGame(Game game) {
 		this.game = game;
 		
@@ -247,6 +253,6 @@ public class GameManager {
 	}
 	
 	private boolean isTurnComplete() {
-		return turnsCompleted.size() >= getNumOwnedNations() - 1;
+		return turnsCompleted.size() >= getNumRequiredToComplete();
 	}
 }

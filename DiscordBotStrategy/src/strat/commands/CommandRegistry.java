@@ -29,6 +29,7 @@ public class CommandRegistry {
 		addCommand(new UndoMove());
 		addCommand(new Spy());
 		addCommand(new Split());
+		addCommand(new Complete());
 		
 		addCommand(new AddNation());
 		addCommand(new AdvanceTurn());

@@ -18,7 +18,8 @@ public class Complete implements Command {
 		}
 		
 		if (gameManager.setTurnCompleted(sender)) {
-			return new Response(sender.getName() + " has completed their turns.");
+			return new Response(String.format("%s has completed their turn. %d/%d", 
+					sender.getName(), gameManager.getNumRequiredToComplete(), gameManager.getNumOwnedNations()));
 		}
 		
 		return new Response("You have already marked yourself as complete!");
