@@ -33,6 +33,7 @@ public class CommandRegistry {
 		addCommand(new ChangeColor());
 		addCommand(new ChangeName());
 		addCommand(new SetNation());
+		addCommand(new SetOwner());
 	}
 	
 	public static Response executeCommand(GameManager gameManager, String message,
