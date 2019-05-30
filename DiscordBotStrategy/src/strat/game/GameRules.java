@@ -100,6 +100,8 @@ public final class GameRules {
 		RULES.put("stablesCost", 300.0);
 		RULES.put("foundryCost", 300.0);
 		
+		RULES.put("spyScalar", 0.2);
+		
 		UNIT_TYPES.add("infantry");
 		UNIT_TYPES.add("cavalry");
 		UNIT_TYPES.add("artillery");

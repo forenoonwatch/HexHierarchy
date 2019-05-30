@@ -69,8 +69,7 @@ public class GameRenderer {
 		BufferedImage fileBuffer = new BufferedImage(game.getMap().getWidth(), game.getMap().getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D)fileBuffer.getGraphics();
 		
-		File file = new File(String.format("images/army-%d-%d.png",
-				nation.getNationID(), game.getCurrentTurn()));
+		File file = new File(String.format("images/army-%d.png", nation.getNationID()));
 		
 		clear();
 		renderArmyView(game, nation);

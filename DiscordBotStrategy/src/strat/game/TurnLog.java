@@ -44,7 +44,8 @@ public class TurnLog {
 		BATTLE,
 		CONSTRUCTION,
 		RECRUITMENT,
-		PAYMENT
+		PAYMENT,
+		SPY_CAUGHT
 	}
 	
 	public static class LogEntry {
