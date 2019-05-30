@@ -3,6 +3,7 @@ package strat.bot;
 import java.io.IOException;
 
 import strat.commands.CommandRegistry;
+import strat.commands.InputLevel;
 import strat.commands.Response;
 import strat.commands.ResponseType;
 import strat.game.Game;
@@ -68,29 +69,32 @@ public class DiscordBot {
 	
 	@EventSubscriber
     public void onMessageReceived(MessageReceivedEvent event) {
+		Response r = null;
+		
 		if (event.getGuild() == null) {
-			System.out.println(event.getAuthor().getName() + ": " + event.getMessage().getContent());
+			r = CommandRegistry.executeCommand(gameManager, event.getMessage().getContent(),
+					event.getAuthor().getLongID(), InputLevel.DM_CHANNEL);
 		}
 		else if (event.getGuild().getLongID() == SERVER_ID
 				&& event.getChannel().getLongID() == GAME_CHANNEL_ID) {
-			Response r = CommandRegistry.executeCommand(gameManager, event.getMessage().getContent(),
-					event.getAuthor().getLongID());
+			r = CommandRegistry.executeCommand(gameManager, event.getMessage().getContent(),
+					event.getAuthor().getLongID(), InputLevel.GAME_CHANNEL);
+		}
+		
+		if (r != null) {
+			IChannel target = r.type == ResponseType.PRIVATE ? event.getAuthor().getOrCreatePMChannel() : event.getChannel();
 			
-			if (r != null) {
-				IChannel target = r.type == ResponseType.PRIVATE ? event.getAuthor().getOrCreatePMChannel() : event.getChannel();
-				
-				if (target != null) {
-					if (r.title == null) {
-						BotUtils.sendLongMessage(target, r.content);
-					}
-					else {
-						EmbedObject eo = new EmbedObject();
-						eo.title = r.title;
-						eo.description = r.content;
-						eo.color = r.color;
-						
-						BotUtils.sendEmbed(target, eo);
-					}
+			if (target != null) {
+				if (r.title == null) {
+					BotUtils.sendLongMessage(target, r.content);
+				}
+				else {
+					EmbedObject eo = new EmbedObject();
+					eo.title = r.title;
+					eo.description = r.content;
+					eo.color = r.color;
+					
+					BotUtils.sendEmbed(target, eo);
 				}
 			}
 		}

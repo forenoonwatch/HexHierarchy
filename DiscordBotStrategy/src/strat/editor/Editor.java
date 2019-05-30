@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import strat.commands.CommandRegistry;
+import strat.commands.InputLevel;
 import strat.commands.Response;
 import strat.game.City;
 import strat.game.Game;
@@ -76,7 +77,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		
 		field.addActionListener(e -> {
 			System.out.println(field.getText());
-			Response r = CommandRegistry.executeCommand(gameManager, field.getText(), Nation.NO_NATION.getOwner());
+			Response r = CommandRegistry.executeCommand(gameManager, field.getText(), Nation.NO_NATION.getOwner(), InputLevel.GAME_CHANNEL);
 			
 			if (r != null) {
 				System.out.println(r.content);

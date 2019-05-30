@@ -11,4 +11,8 @@ public interface Command {
 	public String getName();
 	public String getUsage();
 	public String getInfo();
+	
+	default public InputLevel getInputLevel() {
+		return InputLevel.GAME_CHANNEL;
+	}
 }
