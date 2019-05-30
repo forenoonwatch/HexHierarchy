@@ -26,6 +26,7 @@ public class CommandRegistry {
 		addCommand(new ViewCities());
 		addCommand(new ViewPolitical());
 		addCommand(new ViewRegions());
+		addCommand(new UndoMove());
 		
 		addCommand(new AddNation());
 		addCommand(new AdvanceTurn());

@@ -110,8 +110,15 @@ public class Army extends MapObject {
 				return i;
 			}
 			
-			--remainingMoves;
-			pendingMoves.add(h);
+			if (distance == 1 && ( pendingMoves.size() == 1 && h.equals(getHexagon()))
+					|| (pendingMoves.size() >= 2 && h.equals(pendingMoves.get(pendingMoves.size() - 2)) ) ) {
+				++remainingMoves;
+				pendingMoves.remove(pendingMoves.size() - 1);
+			}
+			else {
+				--remainingMoves;
+				pendingMoves.add(h);
+			}
 		}
 		
 		additionalInfo[0] = String.format("Army %d has finished moving.", armyID);
