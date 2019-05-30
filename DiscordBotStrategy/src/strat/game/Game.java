@@ -343,7 +343,7 @@ public class Game {
 			map.addCity(new City(map, serializedData));
 		}
 		else if (serializedData.startsWith("Army")) {
-			//armies.add(new Army(this, serializedData));
+			armies.add(new Army(map, serializedData));
 		}
 		else {
 			map.add(new Hexagon(serializedData));

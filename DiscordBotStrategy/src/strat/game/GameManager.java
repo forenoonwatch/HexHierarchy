@@ -38,6 +38,7 @@ public class GameManager {
 	public void startTimer() {
 		for (;;) {
 			if (timer.shouldAdvanceTurn()) {
+				saveGame(DEFAULT_FILE_NAME + ".bak");
 				advanceTurn();
 				save();
 			}
