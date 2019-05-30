@@ -1,6 +1,7 @@
 package strat.editor;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -16,16 +17,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import strat.commands.CommandRegistry;
+import strat.commands.Response;
 import strat.game.City;
+import strat.game.Game;
+import strat.game.GameManager;
 import strat.game.Hexagon;
-import strat.game.Map;
 import strat.game.Nation;
 import strat.game.TurnLog;
 
 @SuppressWarnings("serial")
 public class Editor extends Canvas implements MouseListener, KeyListener {
-	private Map map;
-	private CommandRegistry commands;
+	private GameManager gameManager;
 	private int renderType = 0;
 	private int regionID = 0;
 	private int maxRegionID;
@@ -46,10 +48,11 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		
 		setFocusable(true);
 		
-		map = Map.readFromFile("hre.game");
-		commands = new CommandRegistry(map, "?");
+		Game game = new Game();
+		game.load("hre.game");
+		gameManager = new GameManager(game);
 		
-		maxRegionID = map.getRegions().size() - 1;
+		maxRegionID = game.getMap().getRegions().size() - 1;
 		
 		//background = ImageIO.read(new File("background.png"));
 		
@@ -73,10 +76,10 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		addKeyListener(this);
 		
 		field.addActionListener(e -> {
-			String res = commands.runCommand(Nation.NO_NATION, field.getText().toLowerCase());
+			Response r = CommandRegistry.executeCommand(gameManager, field.getText(), Nation.NO_NATION.getOwner());
 			
-			if (res != null) {
-				System.out.println(res);
+			if (r != null) {
+				System.out.println(r.content);
 			}
 			
 			repaint();
@@ -89,48 +92,35 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 	@Override
 	public void paint(Graphics g) {
 		//g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
-		
-		switch (renderType) {
-			case 0:
-				map.renderCities(g);
-				break;
-			case 1:
-				map.renderRegions(g);
-				break;
-			case 2:
-				map.renderArmyView(g, Nation.NO_NATION);
-				break;
-			case 3:
-				map.renderPoliticalView(g);
-				break;
-			case 4:
-				map.renderEditorView(g);
-				break;
-		}
+		//g.setColor(Color.BLACK);
+		//g.fillRect(0, 0, gameManager.getGame().getMap().getWidth(), gameManager.getGame().getMap().getHeight());
+		gameManager.getRenderer().clear();
+		gameManager.renderView(renderType);
+		g.drawImage(gameManager.getRenderer().getRenderTarget(), 0, 0, null);
 	}
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		int[] pos = new int[2];
-		map.calcHexPosition(e.getX(), e.getY(), pos);
+		gameManager.getGame().getMap().calcHexPosition(e.getX(), e.getY(), pos);
 		
 		switch (renderType) {
 			case 0:
 				{ // cities
-					City c = map.getCityAt(pos[0], pos[1]);
+					City c = gameManager.getGame().getMap().getCityAt(pos[0], pos[1]);
 					
 					if (e.getButton() == MouseEvent.BUTTON1) {
-						Hexagon h = map.get(pos[0], pos[1]);
+						Hexagon h = gameManager.getGame().getMap().get(pos[0], pos[1]);
 						
 						if (c == null && h != null) {
-							c = new City(map, h.getRegionID(), field.getText(), pos[0], pos[1]);
-							map.addCity(c);
+							c = new City(gameManager.getGame().getMap(), h.getRegionID(), field.getText(), pos[0], pos[1]);
+							gameManager.getGame().getMap().addCity(c);
 							repaint();
 						}
 					}
 					else if (e.getButton() == MouseEvent.BUTTON3) {
 						if (c != null) {
-							map.removeCity(c);
+							gameManager.getGame().getMap().removeCity(c);
 							repaint();
 						}
 					}
@@ -138,7 +128,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 				break;
 			case 2:
 				{ // regions
-					Hexagon h = map.get(pos[0], pos[1]);
+					Hexagon h = gameManager.getGame().getMap().get(pos[0], pos[1]);
 					
 					if (h != null) {
 						if (e.getButton() == MouseEvent.BUTTON1) {
@@ -154,16 +144,16 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 				break;
 			case 4:
 				{ // editor
-					Hexagon h = map.get(pos[0], pos[1]);
+					Hexagon h = gameManager.getGame().getMap().get(pos[0], pos[1]);
 					if (e.getButton() == MouseEvent.BUTTON1) {
 						if (h == null) {
-							map.add(new Hexagon(pos[0], pos[1]));
+							gameManager.getGame().getMap().add(new Hexagon(pos[0], pos[1]));
 							repaint();
 						}
 					}
 					else if (e.getButton() == MouseEvent.BUTTON3) {
 						if (h != null) {
-							map.remove(pos[0], pos[1]);
+							gameManager.getGame().getMap().remove(pos[0], pos[1]);
 							repaint();
 						}
 					}
@@ -178,7 +168,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
 			try {
-				map.writeToFile("hre.game");
+				gameManager.saveGame("hre.game");
 			}
 			catch (Exception e2) {
 				e2.printStackTrace();
@@ -203,11 +193,11 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 				regionID = 0;
 			}
 			
-			if (map.getRegion(regionID) == null) {
+			if (gameManager.getGame().getMap().getRegion(regionID) == null) {
 				System.out.println(regionID);
 			}
 			else {
-				System.out.println("Region: " + map.getRegion(regionID).getName());
+				System.out.println("Region: " + gameManager.getGame().getMap().getRegion(regionID).getName());
 			}
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_F) {
@@ -217,12 +207,12 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 				regionID = maxRegionID;
 			}
 			
-			System.out.println("Region: " + map.getRegion(regionID).getName());
+			System.out.println("Region: " + gameManager.getGame().getMap().getRegion(regionID).getName());
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_M) {
-			map.endTurn();
+			gameManager.getGame().endTurn();
 			
-			for (TurnLog.LogEntry le : map.getTurnLog().getCommonEntries()) {
+			for (TurnLog.LogEntry le : gameManager.getGame().getTurnLog().getCommonEntries()) {
 				System.out.println(le.title);
 				System.out.println(le.description);
 				System.out.println();
@@ -231,6 +221,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 	}
 	
 	public static void main(String[] args) throws IOException {
+		CommandRegistry.init();
 		new Editor("Hexmap Game Editor", 700, 700);
 	}
 

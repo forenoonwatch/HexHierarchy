@@ -8,6 +8,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import strat.util.Util;
+
 public class Game {
 	private Map map;
 	
@@ -26,7 +28,7 @@ public class Game {
 	private double defaultRenderRadius;
 	
 	public Game() {
-		// map = new Map(this);
+		map = new Map(this);
 		
 		nations = new HashMap<>();
 		nations.put(0, Nation.NO_NATION);
@@ -56,8 +58,6 @@ public class Game {
 			currentDate = new GregorianCalendar(year, month, date);
 			daysPerTurn = i.nextInt();
 			
-			map.setRadiusAutoOffset(defaultRenderRadius);
-			
 			i.nextLine();
 			
 			while (i.hasNextLine()) {
@@ -69,6 +69,10 @@ public class Game {
 				
 				loadSerialized(line);
 			}
+			
+			map.setRadiusAutoOffset(defaultRenderRadius);
+			
+			MovementLog.load(this, GameManager.MOVEMENT_LOG_FILE);
 		}
 		catch (IOException e) {
 			throw e;
@@ -102,6 +106,8 @@ public class Game {
 			}
 			
 			map.forEach(h -> o.println(h.serialize()));
+			
+			MovementLog.save(this, GameManager.MOVEMENT_LOG_FILE);
 		}
 		catch (IOException e) {
 			throw e;
@@ -147,8 +153,26 @@ public class Game {
 		return armies.remove(a);
 	}
 	
+	public void addNation(Nation n) {
+		nations.put(n.getNationID(), n);
+	}
+	
 	public Nation getNation(int nationID) {
 		return nations.get(nationID);
+	}
+	
+	public Nation getNationByUser(long userID) {
+		for (Nation n : nations.values()) {
+			if (n.getOwner() == userID) {
+				return n;
+			}
+		}
+		
+		return null;
+	}
+	
+	public Nation matchNationByName(String name) {
+		return Util.findBestMatch(nations.values(), name);
 	}
 	
 	public Army getArmy(int nationID, int armyID) {

@@ -3,9 +3,7 @@ package strat.game;
 import java.awt.Color;
 
 public class Nation implements ISerializable {
-	//public static final int STARTING_MONEY = 300;
-	
-	public static final Nation NO_NATION = new Nation(0, "Unclaimed", Color.WHITE);
+	public static final Nation NO_NATION = new Nation(0, "Unclaimed", Color.WHITE, 152888494165983233L);
 	
 	private int nationID;
 	private String name;
@@ -16,10 +14,12 @@ public class Nation implements ISerializable {
 	
 	private long owner;
 	
-	public Nation(int nationID, String name, Color color) {
+	public Nation(int nationID, String name, Color color, long owner) {
 		this.nationID = nationID;
 		this.name = name;
 		this.color = color;
+		this.owner = owner;
+		
 		rgb = color.getRGB() & 0xFFFFFF;
 		money = GameRules.getRulei("startingMoney");
 		spawnedArmies = 0;
@@ -36,7 +36,12 @@ public class Nation implements ISerializable {
 		money = Integer.parseInt(data[4]);
 		spawnedArmies = Integer.parseInt(data[5]);
 		
-		owner = Long.parseLong(data[6]);
+		try {
+			owner = Long.parseLong(data[6]);
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			owner = 0L;
+		}
 	}
 	
 	public void setMoney(int money) {
@@ -92,5 +97,10 @@ public class Nation implements ISerializable {
 	public String serialize() {
 		return String.format("Nation,%d,%s,%X,%d,%d,%d", nationID, name,
 				rgb & 0xFFFFFF, money, spawnedArmies, owner);
+	}
+	
+	@Override
+	public String toString() {
+		return getName().toLowerCase();
 	}
 }

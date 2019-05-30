@@ -1,10 +1,14 @@
 package strat.commands;
 
-import strat.game.Map;
-import strat.game.Nation;
+import strat.game.GameManager;
 
 public interface Command {
-	public String execute(Map map, Nation sender, String[] tokens);
-	public String getFormat();
-	public String getSynopsis();
+	public Response execute(GameManager gameManager, long senderID,
+			String rawMessage, String lowerMessage, String[] tokens);
+	
+	public PermissionLevel getPermissionLevel();
+	
+	public String getName();
+	public String getUsage();
+	public String getInfo();
 }

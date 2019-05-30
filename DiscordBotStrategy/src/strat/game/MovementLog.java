@@ -1,4 +1,4 @@
-package strat.bot;
+package strat.game;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,12 +6,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import strat.game.Army;
-import strat.game.Hexagon;
-import strat.game.Map;
-
 public final class MovementLog {
-	public static void save(Map map, String fileName) throws IOException {
+	public static void save(Game game, String fileName) throws IOException {
 		File file = new File(fileName);
 		
 		if (!file.exists()) {
@@ -19,7 +15,7 @@ public final class MovementLog {
 		}
 		
 		try (PrintWriter pw = new PrintWriter(file)) {
-			for (Army a : map.getArmies()) {
+			for (Army a : game.getArmies()) {
 				if (!a.getPendingMoves().isEmpty()) {
 					pw.printf("Army,%d,%d%n", a.getOwnerID(), a.getArmyID());
 					
@@ -34,7 +30,7 @@ public final class MovementLog {
 		}
 	}
 	
-	public static void load(Map map, String fileName) throws IOException {
+	public static void load(Game game, String fileName) throws IOException {
 		try (Scanner sc = new Scanner(new File(fileName))) {
 			Army currArmy = null;
 			
@@ -43,10 +39,10 @@ public final class MovementLog {
 				String[] tokens = line.split(",");
 				
 				if (line.startsWith("Army")) {
-					currArmy = map.getArmy(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+					currArmy = game.getArmy(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
 				}
 				else if (currArmy != null) {
-					currArmy.getPendingMoves().add(map.get(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1])));
+					currArmy.getPendingMoves().add(game.getMap().get(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1])));
 					currArmy.setRemainingMoves(currArmy.getRemainingMoves() - 1);
 				}
 			}

@@ -75,4 +75,23 @@ public class BotUtils {
             }
         });
     }
+    
+    public static long parseUserID(String token) {
+    	if (token.matches("<@\\d+>")) {
+    		try {
+    			return Long.parseLong(token.substring(2, token.length() - 1));
+    		}
+    		catch (NumberFormatException e) {
+    			return 0L;
+    		}
+    	}
+    	else {
+    		try {
+    			return Long.parseLong(token);
+    		}
+    		catch (NumberFormatException e) {
+    			return 0L;
+    		}
+    	}
+    }
 }

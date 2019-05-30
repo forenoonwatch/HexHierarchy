@@ -84,11 +84,12 @@ public class City extends MapObject {
 			
 			int offs = -g.getFont().getSize() / 2;
 			
-			if (name.equals("Regensburg")) {
+			if (name.equals("Regensburg") || name.equals("Venice")) {
 				offs = -3 * offs;
 			}
 			
 			g.drawString(name, pos[0] - name.length() * g.getFont().getSize() / 4, pos[1] + offs);
+			//GameRenderer.drawOutlinedString(g, name, pos[0] - name.length() * g.getFont().getSize() / 4, pos[1] + offs);
 		}
 	}
 	

@@ -1,23 +1,33 @@
 package strat.game;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import javax.imageio.ImageIO;
 
 public class GameRenderer {
 	public static final Font DEFAULT_FONT = new Font("Arial", Font.PLAIN, 12);
 	
+	// hidden away to mask code for future variability between game files
+	private static final File regionView = new File("images/regions.png");
+	private static final File cityView = new File("images/cities.png");
+	private static final File politicalView = new File("images/political.png");
+	
 	private BufferedImage drawBuffer;
 	private Graphics2D drawG;
-	private FontRenderContext frc;
 	private int[] bufferData;
 	
 	public GameRenderer(int width, int height) {
@@ -26,16 +36,58 @@ public class GameRenderer {
 		bufferData = ((DataBufferInt)drawBuffer.getRaster().getDataBuffer()).getData();
 		
 		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	}
+	
+	public void renderSingleImages(Game game) {
+		BufferedImage fileBuffer = new BufferedImage(game.getMap().getWidth(), game.getMap().getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D)fileBuffer.getGraphics();
+		int[] data = ((DataBufferInt)fileBuffer.getRaster().getDataBuffer()).getData();
 		
-		frc = new FontRenderContext(null, true, true);
+		clear();
+		renderRegions(game);
+		g.drawImage(drawBuffer, 0, 0, null);
+		renderToFile(fileBuffer, regionView);
+		
+		clear();
+		Arrays.fill(data, 0);
+		renderCities(game);
+		g.drawImage(drawBuffer, 0, 0, null);
+		renderToFile(fileBuffer, cityView);
+	}
+	
+	public void renderPoliticalImage(Game game) {
+		BufferedImage fileBuffer = new BufferedImage(game.getMap().getWidth(), game.getMap().getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D)fileBuffer.getGraphics();
+		
+		clear();
+		renderPoliticalView(game);
+		g.drawImage(drawBuffer, 0, 0, null);
+		renderToFile(fileBuffer, politicalView);
+	}
+	
+	public File renderArmyImage(Game game, Nation nation) {
+		BufferedImage fileBuffer = new BufferedImage(game.getMap().getWidth(), game.getMap().getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D)fileBuffer.getGraphics();
+		
+		File file = new File(String.format("images/army-%d-%d.png",
+				nation.getNationID(), game.getCurrentTurn()));
+		
+		clear();
+		renderArmyView(game, nation);
+		g.drawImage(drawBuffer, 0, 0, null);
+		renderToFile(fileBuffer, file);
+		
+		return file;
 	}
 	
 	public BufferedImage renderCities(Game game) {
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		game.getMap().forEach(h -> {
 			Region r = game.getMap().getRegion(h.getRegionID());
 			h.render(drawG, r.getColor(), game.getMap().getOffsetX(),
-					game.getMap().getOffsetY(), game.getMap().getRadius());
+					game.getMap().getOffsetY(), game.getMap().getRadius(), false);
 		});
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		game.getMap().getCities().forEach(c -> c.render(drawG));
 		
@@ -53,6 +105,7 @@ public class GameRenderer {
 			counts.put(r.getRegionID(), 0);
 		}
 		
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		game.getMap().forEach(h -> {
 			h.toPixels(game.getMap().getOffsetX(), game.getMap().getOffsetY(), game.getMap().getRadius(), pos);
 			Region r = game.getMap().getRegion(h.getRegionID());
@@ -63,6 +116,7 @@ public class GameRenderer {
 			sy.put(h.getRegionID(), sy.get(h.getRegionID()) + pos[1]);
 			counts.put(h.getRegionID(), counts.get(h.getRegionID()) + 1);
 		});
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		drawG.setColor(Color.BLACK);
 		
@@ -122,10 +176,12 @@ public class GameRenderer {
 			counts.put(n.getNationID(), 0);
 		}
 		
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		game.getMap().forEach(h -> {
 			h.toPixels(game.getMap().getOffsetX(),
 					game.getMap().getOffsetY(), game.getMap().getRadius(), pos);
 			Nation n = game.getNation(game.getMap().getRegion(h.getRegionID()).getOwnerID());
+			
 			h.render(drawG, n.getColor(), game.getMap().getOffsetX(),
 					game.getMap().getOffsetY(), game.getMap().getRadius(), false);
 			
@@ -133,6 +189,7 @@ public class GameRenderer {
 			sy.put(n.getNationID(), sy.get(n.getNationID()) + pos[1]);
 			counts.put(n.getNationID(), counts.get(n.getNationID()) + 1);
 		});
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		game.getMap().getCities().forEach(c -> c.render(drawG, false));
 		
@@ -163,20 +220,6 @@ public class GameRenderer {
 		Arrays.fill(bufferData, 0);
 	}
 	
-	private void drawString(String text, int x, int y) {
-		drawString(text, x, y, DEFAULT_FONT);
-	}
-	
-	private void drawString(String text, int x, int y, int height) {
-		drawString(text, x, y, new Font(DEFAULT_FONT.getName(), DEFAULT_FONT.getStyle(), height));
-	}
-	
-	private void drawString(String text, int x, int y, Font font) {
-		TextLayout layout = new TextLayout(text, font, frc);
-		Rectangle r = layout.getPixelBounds(frc, 0, 0);
-		layout.draw(drawG, -r.x, -r.y);
-	}
-	
 	public BufferedImage getRenderTarget() {
 		return drawBuffer;
 	}
@@ -187,5 +230,70 @@ public class GameRenderer {
 	
 	public int getHeight() {
 		return drawBuffer.getHeight();
+	}
+	
+	public File getRegionView() {
+		return regionView;
+	}
+	
+	public File getCityView() {
+		return cityView;
+	}
+	
+	public File getPoliticalView() {
+		return politicalView;
+	}
+	
+	public static void drawOutlinedString(Graphics g, String str, int x, int y) {
+	    Color outlineColor = new Color(0xF0F0F0);
+	    Color fillColor = Color.BLACK;
+	    BasicStroke outlineStroke = new BasicStroke(0.8f);
+
+	    if (g instanceof Graphics2D) {
+	    	g.translate(x, y);
+	        Graphics2D g2 = (Graphics2D) g;
+
+	        Color originalColor = g2.getColor();
+	        Stroke originalStroke = g2.getStroke();
+	        RenderingHints originalHints = g2.getRenderingHints();
+
+	        GlyphVector glyphVector = g.getFont().createGlyphVector(g2.getFontRenderContext(), str);
+	        Shape textShape = glyphVector.getOutline();
+
+	        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+	                RenderingHints.VALUE_ANTIALIAS_ON);
+	        g2.setRenderingHint(RenderingHints.KEY_RENDERING,
+	                RenderingHints.VALUE_RENDER_DEFAULT);
+
+	        g2.setColor(outlineColor);
+	        g2.setStroke(outlineStroke);
+	        g2.draw(textShape);
+
+	        g2.setColor(fillColor);
+	        g2.fill(textShape);
+	        g2.setColor(originalColor);
+	        g2.setStroke(originalStroke);
+	        g2.setRenderingHints(originalHints);
+	        
+	        g.translate(-x, -y);
+	    }
+	}
+	
+	private static void renderToFile(BufferedImage image, File file) {
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			}
+			catch (IOException e) {
+				System.out.println("Could not create file " + file.getName());
+			}
+		}
+		
+		try {
+			ImageIO.write(image, "png", file);
+		}
+		catch (IOException e) {
+			System.out.println("Could not write image to file " + file.getName());
+		}
 	}
 }

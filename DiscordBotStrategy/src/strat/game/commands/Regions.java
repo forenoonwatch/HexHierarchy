@@ -1,8 +1,12 @@
-package strat.commands;
+package strat.game.commands;
 
 import strat.bot.BotUtils;
 import strat.bot.DiscordBot;
+import strat.commands.Command;
+import strat.commands.PermissionLevel;
+import strat.commands.Response;
 import strat.game.City;
+import strat.game.GameManager;
 import strat.game.GameRules;
 import strat.game.Map;
 import strat.game.Nation;
@@ -11,22 +15,34 @@ import sx.blah.discord.handle.obj.IUser;
 public class Regions implements Command {
 
 	@Override
-	public String execute(Map map, Nation sender, String[] tokens) {
-		IUser user = DiscordBot.getUserFromNation(sender);
-		String info = getInfoForNation(map, sender);
+	public Response execute(GameManager gameManager, long senderID, String rawMessage, String lowerMessage,
+			String[] tokens) {
+		IUser user = DiscordBot.getUserByID(senderID);
+		Nation sender = gameManager.getNationByUser(senderID);
+		String info = getInfoForNation(gameManager.getGame().getMap(), sender);
 		
 		BotUtils.sendLongMessage(user.getOrCreatePMChannel(), info);
 		return null;
 	}
 	
 	@Override
-	public String getFormat() {
+	public String getName() {
 		return "regions";
 	}
 	
 	@Override
-	public String getSynopsis() { 
+	public String getUsage() {
+		return "";
+	}
+	
+	@Override
+	public String getInfo() { 
 		return "privately messages region information about your regions and the cities within";
+	}
+	
+	@Override
+	public PermissionLevel getPermissionLevel() {
+		return PermissionLevel.NATION;
 	}
 	
 	private static String getInfoForNation(Map map, Nation n) {

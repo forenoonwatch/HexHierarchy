@@ -53,6 +53,26 @@ public final class GameRules {
 		return RULES.get(rule);
 	}
 	
+	public static boolean isValidBuilding(String str) {
+		for (String building : GameRules.getBuildingTypes()) {
+			if (str.equals(building)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isValidUnitType(String str) {
+		for (String unit : GameRules.getUnitTypes()) {
+			if (str.equals(unit)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	private static void init() {
 		initialized = true;
 		
@@ -72,7 +92,7 @@ public final class GameRules {
 		RULES.put("infantryCost", 5.0);
 		RULES.put("cavalryCost", 13.0);
 		RULES.put("artilleryCost", 20.0);
-		RULES.put("replenismentCost", 5.0);
+		RULES.put("replenishmentCost", 5.0);
 		
 		RULES.put("fortCost", 100.0);
 		RULES.put("marketCost", 150.0);

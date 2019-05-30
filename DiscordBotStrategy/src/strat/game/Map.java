@@ -15,6 +15,9 @@ public class Map {
 	private double offsetY;
 	private double radius;
 	
+	private int width;
+	private int height;
+	
 	public Map(Game game) {
 		this.game = game;
 		
@@ -27,6 +30,9 @@ public class Map {
 		offsetX = 0;
 		offsetY = 0;
 		radius = 0;
+		
+		width = 1;
+		height = 1;
 	}
 	
 	public void setRadiusAutoOffset(double radius) {
@@ -52,13 +58,16 @@ public class Map {
 				}
 				
 				if (pos[1] > maxY) {
-					minY = pos[1];
+					maxY = pos[1];
 				}
 			}
 		}
 		
-		offsetX = (double)(maxX - minX) * 0.5;
-		offsetY = (double)(maxY - minY) * 0.5;
+		width = maxX - minX + (int)(2 * radius);
+		height = maxY - minY + (int)(radius * Math.sqrt(3));
+		
+		offsetX = -minX + radius;
+		offsetY = -minY + radius * Math.sqrt(3) * 0.5;
 	}
 	
 	public void forEach(Consumer<Hexagon> consumer) {
@@ -186,6 +195,16 @@ public class Map {
 		return null;
 	}
 	
+	public City findFirstCity(String lowerName) {
+		for (City c : cities) {
+			if (c.getName().toLowerCase().equals(lowerName)) {
+				return c;
+			}
+		}
+		
+		return null;
+	}
+	
 	public ArrayList<City> getCities() {
 		return cities;
 	}
@@ -204,5 +223,13 @@ public class Map {
 	
 	public double getRadius() {
 		return radius;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 }
