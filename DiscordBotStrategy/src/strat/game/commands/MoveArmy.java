@@ -14,7 +14,7 @@ public class MoveArmy implements Command {
 	public Response execute(GameManager gameManager, long senderID, String rawMessage, String lowerMessage,
 			String[] tokens) {
 		if (tokens.length < 4) {
-			return new Response(String.format("Move Army: Invalid number of arguments: %d%nFormat: %s - %s",
+			return new Response(String.format("Move Army: Invalid number of arguments: %d%nFormat: %s %s",
 					tokens.length - 1, getName(), getUsage()));
 		}
 		
@@ -28,7 +28,7 @@ public class MoveArmy implements Command {
 			Army army = gameManager.getGame().getArmy(sender.getNationID(), ai);
 			
 			if (army == null) {
-				return new Response(String.format("Move Army: Invalid army number%nFormat: %s - %s", getName(), getUsage()));
+				return new Response(String.format("Move Army: Invalid army number%nFormat: %s %s", getName(), getUsage()));
 			}
 			
 			if (dir < 1 || dir > 6) {
@@ -36,7 +36,7 @@ public class MoveArmy implements Command {
 			}
 			
 			if (dist > army.getRemainingMoves()) {
-				return new Response(String.format("Move Army: Invalid move distance, army %d has %d moves remaining%nFormat: %s - %s",
+				return new Response(String.format("Move Army: Invalid move distance, army %d has %d moves remaining%nFormat: %s %s",
 						ai, army.getRemainingMoves(), getName(), getUsage()));
 			}
 			
@@ -46,7 +46,7 @@ public class MoveArmy implements Command {
 			return new Response(String.format("Sucessfully moved army %d %d tiles.%n%s", army.getArmyID(), res, additionalInfo[0]));
 		}
 		catch (NumberFormatException e) {
-			return new Response(String.format("Move Army: Malformed argument%nFormat: %s - %s", getName(), getUsage()));
+			return new Response(String.format("Move Army: Malformed argument%nFormat: %s %s", getName(), getUsage()));
 		}
 	}
 

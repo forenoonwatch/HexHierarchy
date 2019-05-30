@@ -62,12 +62,8 @@ public class Siege {
 		
 		if (winner == attacker) {
 			defender.getRegion().setOwnerID(attacker.getOwnerID());
-			
-			if (attacker.getPendingMoves().size() >= 2) {
-				Hexagon h = attacker.getPendingMoves().get(attacker.getPendingMoves().size() - 2);
-				attacker.setQ(h.getQ());
-				attacker.setR(h.getR());
-			}
+			attacker.setQ(defender.getQ());
+			attacker.setR(defender.getR());
 		}
 		else {
 			attacker.getGame().removeArmy(attacker);
@@ -75,8 +71,8 @@ public class Siege {
 		
 		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
 				attacker.getOwner().getName(), oldDefender,
-				winner.getOwner().getName(), winner.getUnits("infantry"), winner.getUnits("cavalry"),
-				winner.getUnits("artillery"));
+				winner == attacker ? attacker.getOwner().getName() : oldDefender,
+				winner.getUnits("infantry"), winner.getUnits("cavalry"), winner.getUnits("artillery"));
 		
 		defender.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
 	}

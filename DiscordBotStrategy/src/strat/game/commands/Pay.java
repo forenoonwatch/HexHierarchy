@@ -14,7 +14,7 @@ public class Pay implements Command {
 	public Response execute(GameManager gameManager, long senderID, String rawMessage, String lowerMessage,
 			String[] tokens) {
 		if (tokens.length < 3) {
-			return new Response(String.format("Pay: Incorrect number of arguments: %d\nFormat: %s - %s",
+			return new Response(String.format("Pay: Incorrect number of arguments: %d\nFormat: %s %s",
 					tokens.length - 1, getName(), getUsage()));
 		}
 		

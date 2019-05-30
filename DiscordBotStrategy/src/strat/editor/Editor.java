@@ -217,6 +217,14 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 				System.out.println(le.description);
 				System.out.println();
 			}
+			
+			for (TurnLog.LogEntry le : gameManager.getGame().getTurnLog().getBattleEntries()) {
+				System.out.println(le.title);
+				System.out.println(le.description);
+				System.out.println();
+			}
+			
+			repaint();
 		}
 	}
 	

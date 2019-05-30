@@ -17,12 +17,12 @@ public class Hire implements Command {
 	public Response execute(GameManager gameManager, long senderID, String rawMessage, String lowerMessage,
 			String[] tokens) {
 		if (tokens.length != 4) {
-			return new Response(String.format("Hire: Invalid number of arguments: %d%nFormat: %s - %s",
+			return new Response(String.format("Hire: Invalid number of arguments: %d%nFormat: %s %s",
 					tokens.length - 1, getName(), getUsage()));
 		}
 		
 		if (!GameRules.isValidUnitType(tokens[1])) {
-			return new Response(String.format("Hire: Must hire either infantry, cavalry, or artillery%nFormat: %s - %s",
+			return new Response(String.format("Hire: Must hire either infantry, cavalry, or artillery%nFormat: %s %s",
 					getName(), getUsage()));
 		}
 		

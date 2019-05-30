@@ -155,7 +155,7 @@ public class GameRenderer {
 		
 		for (Army a : game.getArmies()) {
 			if (a.getOwnerID() == n.getNationID()) {
-				a.getHexagon().render(drawG, new Color(0, 120, 0),
+				a.getHexagon().render(drawG, new Color(0, 255, 0),
 						game.getMap().getOffsetX(), game.getMap().getOffsetY(), game.getMap().getRadius(), false);
 			}
 			

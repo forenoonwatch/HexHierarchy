@@ -122,9 +122,9 @@ public class Battle {
 		b.setUnits(targ, Math.max(b.getUnits(targ) - dmgToB, 0));
 		
 		//if (sb != null) {
-			//sb.append(String.format("%s launches %s.%n%s takes %d %s losses. %s takes %d %s losses.%n",
-			//		a.getNation().getName(), getUnitAttackName(atk), a.getNation().getName(), dmgToA,
-			//		getUnitName(atk), b.getNation().getName(), dmgToB, getUnitName(targ)));
+			//System.out.println(String.format("%s launches %s.%n%s takes %d %s losses. %s takes %d %s losses.%n",
+			//		a.getOwner().getName(), getUnitAttackName(atk), a.getOwner().getName(), dmgToA,
+				//	getUnitName(atk), b.getOwner().getName(), dmgToB, getUnitName(targ)));
 		//}
 	}
 	
