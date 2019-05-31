@@ -21,6 +21,8 @@ public class Timer {
 		
 		startDate = ZonedDateTime.now();
 		startDate = startDate.minusHours(startDate.getHour()).minusMinutes(startDate.getMinute()).minusSeconds(startDate.getSecond());
+		
+		shouldAdvanceTurn();
 	}
 	
 	public boolean shouldAdvanceTurn() {

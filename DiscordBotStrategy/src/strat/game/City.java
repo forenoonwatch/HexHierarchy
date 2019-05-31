@@ -130,7 +130,6 @@ public class City extends MapObject {
 			owner.setSpawnedArmies(owner.getSpawnedArmies() + 1);
 			out = new Army(getMap(), getOwnerID(),
 					owner.getSpawnedArmies(), getQ(), getR());
-			
 			getGame().addArmy(out);
 		}
 		

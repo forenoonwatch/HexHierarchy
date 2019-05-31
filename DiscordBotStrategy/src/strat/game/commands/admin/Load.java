@@ -29,7 +29,7 @@ public class Load implements Command {
 		
 		gameManager.setGame(game);
 		
-		return new Response("Successfully loaded game file" + tokens[1]);
+		return new Response("Successfully loaded game file: " + tokens[1]);
 	}
 
 	@Override

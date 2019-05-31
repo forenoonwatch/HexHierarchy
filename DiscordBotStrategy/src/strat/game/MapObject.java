@@ -18,6 +18,7 @@ public abstract class MapObject implements ISerializable {
 		this.map = map;
 		this.q = q;
 		this.r = r;
+		this.ownerID = ownerID;
 	}
 	
 	public abstract void render(Graphics g);

@@ -69,7 +69,7 @@ public class BotUtils {
             try {
                 channel.sendFile(file);
             }
-            catch (DiscordException | FileNotFoundException e){
+            catch (DiscordException | FileNotFoundException | NullPointerException e){
                 System.err.println("Message could not be sent with error: ");
                 e.printStackTrace();
             }

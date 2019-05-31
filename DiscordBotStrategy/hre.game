@@ -1,26 +1,28 @@
-10.000000
-2
+10.0
+7
 1032
-2
-3
+7
+5
 31
-Nation,2,Papal States,FFFF00,301,1
-Nation,3,Duchy of Lower Lorraine,9BC990,400,0
-Nation,4,Duchy of Bavaria,A4ECF2,400,0
-Nation,5,Principality of Luneberg,C7D45F,244,1
-Nation,6,Duchy of Pomerania,E1A1B1,200,1
-Nation,7,Lombardy,D8AFED,300,0
-Nation,8,Duchy of Mecklenburg,F26528,300,0
-Nation,9,Republic of Venice,7D1008,300,0
-Nation,10,Free City of Trieste,BF4432,300,0
-Nation,11,Duchy of Burgundy,800020,400,0
-Nation,12,Holland,DE8D00,400,0
-Nation,13,Duchy of Lorraine,144E82,201,1
-Nation,14,Archbishopric of Verona,F91D4E,300,0
-Nation,15,Austrian Empire,FFC200,400,0
-Nation,16,Electorate of Brandenburg,80808,200,1
-Nation,17,Duchy of Bohemia,DECE1F,203,1
-Nation,18,Grand Duchy of Tuscany,B1551D,250,2
+Nation,2,Papal States,FFFF00,2400,5,129658386085052417
+Nation,3,Duchy of Lower Lorraine,9BC990,900,0,127876153288425473
+Nation,4,Duchy of Bavaria,A4ECF2,900,0,230789626921484289
+Nation,5,Principality of Luneberg,C7D45F,352,2,201044396127420417
+Nation,6,Duchy of Pomerania,E1A1B1,1006,4,332983927985668096
+Nation,7,Archbishopric of Milan,D8AFED,1731,2,216322312981446656
+Nation,8,Duchy of Mecklenburg,F26528,1600,4,280849571863592961
+Nation,9,Republic of Venice,7D1008,55,2,350047625170386986
+Nation,10,Free City of Trieste,BF4432,194,3,264104287972360193
+Nation,11,Duchy of Burgundy,800020,900,0,0
+Nation,12,Holland,DE8D00,900,0,523635609252921366
+Nation,13,Duchy of Lorraine,144E82,1239,4,239783590580191232
+Nation,14,Archbishopric of Verona,F91D4E,3,6,234409990092357632
+Nation,15,Austrian Empire,FFC200,900,0,0
+Nation,16,Electorate of Brandenburg,A0A0A0,904,2,81909233016111104
+Nation,17,Duchy of Bohemia,DECE1F,13,3,218920788009549824
+Nation,18,Grand Duchy of Tuscany,B1551D,746,3,254370661118509057
+Nation,19,Piedmont,FFFFFF,500,0,0
+Nation,20,Archbishopric of Provence,2F20A9,4,3,149937878066135040
 Region,1,Lower Lorraine,3,9BC990
 Region,2,Upper Lorraine,13,85E85E
 Region,3,Swabia,0,E9B791
@@ -28,18 +30,18 @@ Region,4,Burgundy,11,C8C800
 Region,5,Lombardy,7,D8AFED
 Region,6,Tuscany,18,C0FFEE
 Region,7,Lazio,2,FFFF00
-Region,8,Spoleto,0,EDB6E0
-Region,9,Pentapolis,0,BE7667
-Region,10,Venice,9,46A1C0
+Region,8,Spoleto,2,EDB6E0
+Region,9,Pentapolis,7,BE7667
+Region,10,Venice,14,46A1C0
 Region,11,Verona,14,68146C
 Region,12,Frisia,12,EDC140
-Region,13,Saxony,5,337D98
+Region,13,Saxony,8,337D98
 Region,14,Mecklenburg,8,F26528
 Region,15,Brandenburg,16,175C23
 Region,16,Pomerania,6,E1A1B1
 Region,17,Meissen,0,69428F
 Region,18,Bohemia,17,74F127
-Region,19,Moravia,0,A8613B
+Region,19,Moravia,17,A8613B
 Region,20,Thuringia,0,F16E27
 Region,21,Austria,15,EEEF84
 Region,22,Franconia,0,EFA4EE
@@ -49,54 +51,66 @@ Region,25,Trieste,10,9C3F35
 Region,26,Calabria,0,FFCBF8
 Region,27,Basilicata,0,865E42
 Region,28,Apulla,0,72F260
-Region,29,Campania,0,F35151
+Region,29,Campania,2,F35151
 Region,30,Jutland,0,596F53
 Region,31,Flanders,0,FFA200
-Region,32,Piedmont,0,30677B
-Region,33,Provence,0,D05143
-Region,34,Carinthia,0,F5D4D1
+Region,32,Piedmont,20,30677B
+Region,33,Provence,20,D05143
+Region,34,Carinthia,10,F5D4D1
 Region,35,Lower Saxony,0,C977E9
 City,12,-14,-4,Utrecht,1,1,1,1,1
 City,1,-15,0,Aachen,1,1,1,1,1
-City,2,-14,3,Metz,1,1,1,1,2
-City,33,-15,15,Avignon,1,1,1,1,1
+City,2,-14,3,Metz,1,1,1,2,5
+City,33,-15,15,Avignon,1,1,1,5,5
 City,4,-16,12,Lyon,1,1,1,1,1
-City,5,-8,8,Milan,1,1,1,1,3
-City,32,-12,11,Turin,1,1,1,1,1
-City,7,-2,13,Rome,1,1,1,1,3
-City,8,-2,11,Spoleto,1,1,1,1,1
-City,9,-5,8,Bologna,1,1,1,1,1
-City,10,-4,5,Venice,1,1,1,1,3
-City,11,-6,6,Verona,1,1,1,1,3
+City,5,-8,8,Milan,1,1,1,1,5
+City,32,-12,11,Turin,1,1,1,5,5
+City,7,-2,13,Rome,1,1,1,2,5
+City,8,-2,11,Spoleto,1,1,1,1,5
+City,9,-5,8,Bologna,1,1,1,2,3
+City,10,-4,5,Venice,1,1,1,3,5
+City,11,-6,6,Verona,2,2,2,1,5
 City,28,4,10,Bari,1,1,1,1,1
 City,26,4,15,Catanzaro,1,1,1,1,1
 City,27,3,13,Potenza,1,1,1,1,1
-City,29,1,12,Naples,1,1,1,1,1
+City,29,1,12,Naples,1,1,1,1,2
 City,6,-5,10,Florence,1,1,1,1,2
-City,34,1,1,Freisach,1,1,1,1,1
+City,34,1,1,Freisach,1,2,1,1,5
 City,21,2,-2,Vienna,1,1,1,1,1
-City,19,4,-7,Olmutz,1,1,1,1,1
-City,18,0,-6,Prague,1,1,1,1,2
+City,19,4,-7,Olmutz,1,2,1,1,2
+City,18,0,-6,Prague,2,2,1,2,5
 City,23,-3,-1,Regensburg,1,1,1,1,1
 City,24,-5,0,Eichstadt,1,1,1,1,1
 City,3,-8,3,Augsburg,1,1,1,1,1
 City,22,-9,-1,Frankfurt,1,1,1,1,1
 City,20,-7,-4,Erfurt,1,1,1,1,1
 City,17,-3,-6,Meissen,1,1,1,1,1
-City,15,-4,-8,Brandenburg,1,1,1,1,2
-City,13,-7,-9,Luneberg,1,1,1,1,2
-City,14,-5,-11,Mecklenburg,1,1,1,1,3
+City,15,-4,-8,Brandenburg,1,1,1,5,5
+City,13,-7,-9,Luneberg,1,1,1,3,3
+City,14,-5,-11,Mecklenburg,1,1,1,2,5
 City,30,-8,-14,Aarhus,1,1,1,1,1
-City,16,-1,-12,Stettin,1,1,1,1,2
+City,16,-1,-12,Stettin,1,1,1,1,5
 City,31,-18,1,Bruges,1,1,1,1,1
 City,35,-12,-3,Munster,1,1,1,1,1
-City,25,-1,4,Trieste,1,1,1,1,3
-Army,6,1,-3,-9,30,0,0
-Army,5,1,-5,-9,12,2,1
-Army,13,1,-14,5,18,3,1
-Army,16,1,-3,-8,22,0,2
-Army,17,1,1,-6,15,4,1
-Army,18,2,-4,10,5,0,0
+City,25,-1,4,Trieste,2,2,2,1,5
+Army,17,1,0,-6,35,11,4
+Army,17,2,0,-6,25,6,4
+Army,17,3,4,-7,30,4,9
+Army,10,1,-1,4,69,31,8
+Army,10,2,-1,4,50,20,5
+Army,10,3,-1,4,50,6,3
+Army,13,2,-10,0,34,3,2
+Army,13,3,-14,3,31,0,5
+Army,13,4,-14,3,0,12,0
+Army,20,1,-12,11,76,2,7
+Army,20,2,-12,11,20,0,5
+Army,16,2,-4,-8,128,2,22
+Army,14,2,-4,5,82,40,7
+Army,14,3,-4,5,50,20,5
+Army,14,4,-4,5,50,10,0
+Army,0,3,-15,15,50,0,0
+Army,0,5,-6,6,50,0,0
+Army,0,6,-6,6,0,19,0
 -1,-1,23
 0,-1,23
 -2,-1,23

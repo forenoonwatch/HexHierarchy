@@ -8,8 +8,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -39,6 +41,10 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 	
 	private JTextField field;
 	
+	private int viewX = 0, viewY = 0;
+	private int bgX = 206, bgY = 329;
+	private int width = 436, height = 434;
+	
 	public Editor(String title, int width, int height) throws IOException {
 		Dimension d = new Dimension(width, height);
 		setSize(d);
@@ -54,7 +60,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		
 		maxRegionID = game.getMap().getRegions().size() - 1;
 		
-		//background = ImageIO.read(new File("background.png"));
+		background = ImageIO.read(new File("background.png"));
 		
 		JFrame window = new JFrame(title);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -86,13 +92,21 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 			repaint();
 		});
 		
+		gameManager.getGame().getMap().setOffsetX(375);
+		gameManager.getGame().getMap().setOffsetY(360);
+		
 		requestFocus();
 		repaint();
 	}
 	
 	@Override
 	public void paint(Graphics g) {
-		//g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+		//g.drawImage(background, -bgX, -bgY, null);
+		g.drawImage(background, 0, 0, getWidth(), getHeight(),
+				bgX + viewX, bgY + viewY,
+				bgX + width + viewX, bgY + height + viewY, null);
+		gameManager.getGame().getMap().setOffsetX(375.0 - (double)viewX * getWidth() / (double)width);
+		gameManager.getGame().getMap().setOffsetY(360.0 - (double)viewY * getHeight() / (double)height);
 		//g.setColor(Color.BLACK);
 		//g.fillRect(0, 0, gameManager.getGame().getMap().getWidth(), gameManager.getGame().getMap().getHeight());
 		gameManager.getRenderer().clear();
@@ -176,6 +190,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 			}
 			
 			System.out.println("Saved");
+			return;
 		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_Q) {
@@ -225,6 +240,22 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 				System.out.println();
 			}
 			
+			repaint();
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_W) {
+			--viewY;
+			repaint();
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_S) {
+			++viewY;
+			repaint();
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_A) {
+			++viewX;
+			repaint();
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_D) {
+			--viewX;
 			repaint();
 		}
 	}
