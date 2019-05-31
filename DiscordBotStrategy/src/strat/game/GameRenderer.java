@@ -156,9 +156,15 @@ public class GameRenderer {
 			if (a.getOwnerID() == n.getNationID()) {
 				a.getHexagon().render(drawG, new Color(0, 255, 0),
 						game.getMap().getOffsetX(), game.getMap().getOffsetY(), game.getMap().getRadius(), false);
+				a.render(drawG);
+				
+				for (Army a2 : game.getArmies()) {
+					if (a2.getOwnerID() != a.getOwnerID()
+							&& a2.getHexagon().distanceFrom(a.getHexagon()) <= GameRules.getRulei("movesPerTurn") + 1) {
+						a2.render(drawG);
+					}
+				}
 			}
-			
-			a.render(drawG);
 		}
 		
 		return drawBuffer;

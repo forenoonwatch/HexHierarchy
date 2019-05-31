@@ -18,6 +18,8 @@ public class Map {
 	private int width;
 	private int height;
 	
+	private HashMap<String, RenderPosition> renderPositions;
+	
 	public Map(Game game) {
 		this.game = game;
 		
@@ -33,6 +35,8 @@ public class Map {
 		
 		width = 1;
 		height = 1;
+		
+		renderPositions = new HashMap<>();
 	}
 	
 	public void setRadiusAutoOffset(double radius) {
@@ -175,6 +179,18 @@ public class Map {
 	
 	public void removeCity(City c) {
 		cities.remove(c);
+	}
+	
+	public void addRenderPosition(RenderPosition rp) {
+		renderPositions.put(rp.getName(), rp);
+	}
+	
+	public RenderPosition getRenderPosition(String name) {
+		return renderPositions.get(name);
+	}
+	
+	public HashMap<String, RenderPosition> getRenderPositions() {
+		return renderPositions;
 	}
 	
 	public HashMap<Integer, Region> getRegions() {
