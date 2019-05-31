@@ -51,7 +51,7 @@ public class Pay implements Command {
 		n.setMoney(n.getMoney() + cost);
 		
 		String desc = String.format("Transferred %d:moneybag: to %s%n", cost, n.getName());
-		gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender, "**PAYMENT - " + sender.getName().toUpperCase() + "**",
+		gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender, ":moneybag: **PAYMENT - " + sender.getName().toUpperCase() + "**",
 				desc, TurnLog.Type.PAYMENT));
 		
 		return new Response(String.format("Pay: Successfully transferred %d:moneybag: to %s", cost, n.getName()));

@@ -23,7 +23,7 @@ public class Battle {
 	}
 	
 	public void resolve() {
-		String title = String.format("**BATTLE OF %s, %s**%n%n",
+		String title = String.format(":crossed_swords: **BATTLE OF %s, %s**%n%n",
 				attacker.getMap().getRegion(location.getRegionID()).getName().toUpperCase(),
 				attacker.getGame().getCurrentDate().toUpperCase());
 		

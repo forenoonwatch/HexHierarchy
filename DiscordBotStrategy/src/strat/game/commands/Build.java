@@ -54,8 +54,8 @@ public class Build implements Command {
 		sender.setMoney(sender.getMoney() - cost);
 		
 		String desc = String.format("Constructed %s in %s%n", tokens[1], targetCity.getName());
-		gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender, "**CONSTRUCTION - " + sender.getName().toUpperCase() + "**",
-				desc, TurnLog.Type.CONSTRUCTION));
+		gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender, ":hammer_pick: **CONSTRUCTION - "
+				+ sender.getName().toUpperCase() + "**", desc, TurnLog.Type.CONSTRUCTION));
 		
 		return new Response(desc);
 	}

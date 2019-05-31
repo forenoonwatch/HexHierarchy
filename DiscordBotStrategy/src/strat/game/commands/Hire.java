@@ -68,7 +68,8 @@ public class Hire implements Command {
 		
 		sender.setMoney(sender.getMoney() - cost);
 		
-		String desc = String.format("Recruited %d %s in %s%n", amount, tokens[1], targetCity.getName()); 
+		String desc = String.format("Recruited %d %s %s in %s%n", amount, tokens[1],
+				getUnitEmoji(tokens[1]), targetCity.getName()); 
 		gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender, "**RECRUITMENT - " + sender.getName().toUpperCase() + "**",
 				desc, TurnLog.Type.RECRUITMENT));
 		
@@ -93,5 +94,18 @@ public class Hire implements Command {
 	@Override
 	public PermissionLevel getPermissionLevel() {
 		return PermissionLevel.NATION;
+	}
+	
+	private static String getUnitEmoji(String unit) {
+		switch (unit) {
+			case "infantry":
+				return ":guardsman:";
+			case "cavalry":
+				return ":horse:";
+			case "artillery":
+				return ":bomb:";
+			default:
+				return ":bust_in_silhouette:";
+		}
 	}
 }
