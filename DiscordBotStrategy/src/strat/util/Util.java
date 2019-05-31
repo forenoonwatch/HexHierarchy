@@ -1,8 +1,12 @@
 package strat.util;
 
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
+	public static final Pattern QUOTE_PATTERN = Pattern.compile("\"(.*?)\"");
+	
 	public static int longestCommonSubstring(String s, String t) {
 		if (t.length() > s.length()) {
 			String temp = s;
@@ -90,5 +94,25 @@ public class Util {
 		}
 		
 		return max;
+	}
+	
+	public static String findTokenInString(String token, String lowerMessage, String rawMessage) {
+		for (int i = 0; i < rawMessage.length() - token.length(); ++i) {
+			if (lowerMessage.startsWith(token)) {
+				return rawMessage.substring(i, i + token.length());
+			}
+		}
+		
+		return null;
+	}
+	
+	public static String getQuotedSubstring(String rawMessage) {
+		Matcher m = QUOTE_PATTERN.matcher(rawMessage);
+		
+		if (m.find()) {
+			return m.group(1);
+		}
+		
+		return null;
 	}
 }

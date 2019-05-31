@@ -30,6 +30,10 @@ public class CommandRegistry {
 		addCommand(new Spy());
 		addCommand(new Split());
 		addCommand(new Complete());
+		addCommand(new CreateAlliance());
+		addCommand(new JoinAlliance());
+		addCommand(new Accept());
+		addCommand(new Decline());
 		
 		addCommand(new AddNation());
 		addCommand(new AdvanceTurn());
@@ -39,6 +43,7 @@ public class CommandRegistry {
 		addCommand(new SetOwner());
 		addCommand(new Save());
 		addCommand(new Load());
+		addCommand(new RunAs());
 	}
 	
 	public static Response executeCommand(GameManager gameManager, String message,

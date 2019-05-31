@@ -8,6 +8,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import strat.game.relationships.Alliance;
+import strat.game.relationships.Relationship;
 import strat.util.Util;
 
 public class Game {
@@ -18,6 +20,8 @@ public class Game {
 	private ArrayList<Army> armies;
 	private ArrayList<Battle> battles;
 	private ArrayList<Siege> sieges;
+	
+	private ArrayList<Alliance> alliances;
 	
 	private int currentTurn;
 	private int daysPerTurn;
@@ -36,6 +40,8 @@ public class Game {
 		armies = new ArrayList<>();
 		battles = new ArrayList<>();
 		sieges = new ArrayList<>();
+		
+		alliances = new ArrayList<>();
 		
 		currentTurn = 0;
 		daysPerTurn = 1;
@@ -102,6 +108,10 @@ public class Game {
 			}
 			
 			for (Army a : armies) {
+				o.println(a.serialize());
+			}
+			
+			for (Alliance a : alliances) {
 				o.println(a.serialize());
 			}
 			
@@ -193,6 +203,53 @@ public class Game {
 		}
 		
 		return null;
+	}
+	
+	public void addAlliance(Alliance a) {
+		alliances.add(a);
+	}
+	
+	public boolean removeAlliance(Alliance a) {
+		return alliances.remove(a);
+	}
+	
+	public Alliance getAllianceForNation(Nation n) {
+		for (Alliance a : alliances) {
+			if (a.hasNation(n)) {
+				return a;
+			}
+		}
+		
+		return null;
+	}
+	
+	public Relationship findSimilarRelationship(Relationship r) {
+		if (r instanceof Alliance) {
+			Alliance a = (Alliance)r;
+			return findSimilarAlliance(a.getName(), a.getRGB());
+		}
+		
+		return null;
+	}
+	
+	public Alliance findSimilarAlliance(String name, int rgb) {
+		for (Alliance a : alliances) {
+			if (a.getName().equals(name) && a.getRGB() == rgb) {
+				return a;
+			}
+		}
+		
+		return null;
+	}
+	
+	public void addRelationship(Relationship r) {
+		if (r instanceof Alliance) {
+			addAlliance((Alliance)r);
+		}
+	}
+	
+	public ArrayList<Alliance> getAlliances() {
+		return alliances;
 	}
 	
 	public HashMap<Integer, Nation> getNations() {
@@ -305,6 +362,10 @@ public class Game {
 					// add ai to aj
 					aj.add(ai);
 					armiesToRemove.add(ai);
+					
+					for (String unit : GameRules.getUnitTypes()) {
+						ai.setUnits(unit, 0);
+					}
 				}
 			}
 		}

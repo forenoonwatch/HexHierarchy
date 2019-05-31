@@ -9,6 +9,8 @@ import java.util.HashSet;
 
 import strat.bot.BotUtils;
 import strat.bot.DiscordBot;
+import strat.game.relationships.Alliance;
+import strat.game.relationships.Relationship;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 
 public class GameManager {
@@ -20,16 +22,20 @@ public class GameManager {
 	private Game game;
 	private GameRenderer gameRenderer;
 	private Timer timer;
+	private Timer autosaveTimer;
 	
 	private HashSet<Nation> turnsCompleted;
+	private ArrayList<Relationship> relationshipRequests;
 	
 	public GameManager(Game game) throws IOException {
 		this.game = game;
 		
 		gameRenderer = new GameRenderer(800, 800);
 		timer = new Timer(Duration.ofHours(12));
+		autosaveTimer = new Timer(Duration.ofMinutes(30));
 		
 		turnsCompleted = new HashSet<>();
+		relationshipRequests = new ArrayList<>();
 		
 		gameRenderer.renderSingleImages(game);
 		gameRenderer.renderPoliticalImage(game);
@@ -37,10 +43,15 @@ public class GameManager {
 	
 	public void startTimer() {
 		for (;;) {
-			if (timer.shouldAdvanceTurn()) {
+			if (timer.isDurationPassed()) {
 				saveGame(DEFAULT_FILE_NAME + ".bak");
 				advanceTurn();
 				save();
+			}
+			
+			if (autosaveTimer.isDurationPassed()) {
+				saveGame(DEFAULT_FILE_NAME + ".bak");
+				System.out.println("Autosaved");
 			}
 			
 			try {
@@ -169,6 +180,53 @@ public class GameManager {
 			default:
 				return null;
 		}
+	}
+	
+	public void addPendingRelationship(Relationship r) {
+		relationshipRequests.add(r);
+	}
+	
+	public Alliance getPendingAlliance(Nation n) {
+		for (Relationship r : relationshipRequests) {
+			if (r instanceof Alliance && r.hasNation(n)) {
+				return (Alliance)r;
+			}
+		}
+		
+		return null;
+	}
+	
+	public Alliance findPendingAllianceBetween(Nation a, Nation b) {
+		for (Relationship r : relationshipRequests) {
+			if (r instanceof Alliance && r.hasNation(a) && r.hasNation(b)) {
+				return (Alliance)r;
+			}
+		}
+		
+		return null;
+	}
+	
+	public boolean acceptRelationship(Relationship r) {
+		if (relationshipRequests.remove(r)) {
+			Relationship similar = game.findSimilarRelationship(r);
+			
+			if (similar != null) {
+				for (Nation n : r.getNations()) {
+					similar.addNation(n);
+				}
+			}
+			else {
+				game.addRelationship(r);
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean declineRelationship(Relationship r) {
+		return relationshipRequests.remove(r);
 	}
 	
 	public City findFirstCity(String lowerName) {

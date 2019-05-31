@@ -44,6 +44,8 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 	private int bgX = 206, bgY = 329;
 	private int width = 436, height = 434;
 	
+	private long user = Nation.NO_NATION.getOwner();
+	
 	public Editor(String title, int width, int height) throws IOException {
 		Dimension d = new Dimension(width, height);
 		setSize(d);
@@ -54,7 +56,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		setFocusable(true);
 		
 		Game game = new Game();
-		game.load("hre.game");
+		game.load("testmap.game");
 		gameManager = new GameManager(game);
 		
 		maxRegionID = game.getMap().getRegions().size() - 1;
@@ -82,7 +84,8 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		
 		field.addActionListener(e -> {
 			System.out.println(field.getText());
-			Response r = CommandRegistry.executeCommand(gameManager, field.getText(), Nation.NO_NATION.getOwner(), InputLevel.GAME_CHANNEL);
+			Response r = CommandRegistry.executeCommand(gameManager, field.getText(), user,
+					InputLevel.GAME_CHANNEL);
 			
 			if (r != null) {
 				System.out.println(r.content);

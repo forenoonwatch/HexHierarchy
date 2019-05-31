@@ -22,7 +22,7 @@ public class Build implements Command {
 		}
 		
 		if (!GameRules.isValidBuilding(tokens[1])) {
-			return new Response(String.format("Build: Can only build fort, market, barracks, stables, or foundry%nFormat: %s - %s",
+			return new Response(String.format("Build: Can only build fort, market, barracks, stables, or foundry%nFormat: %s %s",
 					getName(), getUsage()));
 		}
 		

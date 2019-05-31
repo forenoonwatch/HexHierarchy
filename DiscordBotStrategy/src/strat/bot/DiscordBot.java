@@ -18,11 +18,12 @@ import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.StatusType;
+import sx.blah.discord.util.DiscordException;
 
 //ID: 437030179001597962
 public class DiscordBot {
 	public static final String TOKEN = "NDM3MDMwMTc5MDAxNTk3OTYy.DbwJOw.CHs1YJ_qPZDYtnmpgFkX1ozjc7A";
-	public static final String VERSION = "0.4.2";
+	public static final String VERSION = "0.4.4";
 	
 	public static final long SERVER_ID = 473942834395742239L;
 	public static final long TURN_CHANNEL_ID = 582266844153643029L;
@@ -42,9 +43,15 @@ public class DiscordBot {
 	private GameManager gameManager;
 	
 	public DiscordBot() {
-		client = new ClientBuilder().withToken(TOKEN).build();
-		client.getDispatcher().registerListener(this);
-		client.login();
+		try {
+			client = new ClientBuilder().withToken(TOKEN).build();
+			client.getDispatcher().registerListener(this);
+			client.login();
+		}
+		catch (Exception e ) {
+			System.out.println("CAUGHT BIG BUG");
+			e.printStackTrace();
+		}
 		
 		try {
 			Game game = new Game();
@@ -82,20 +89,25 @@ public class DiscordBot {
 		}
 		
 		if (r != null) {
-			IChannel target = r.type == ResponseType.PRIVATE ? event.getAuthor().getOrCreatePMChannel() : event.getChannel();
-			
-			if (target != null) {
-				if (r.title == null) {
-					BotUtils.sendLongMessage(target, r.content);
+			try {
+				IChannel target = r.type == ResponseType.PRIVATE ? event.getAuthor().getOrCreatePMChannel() : event.getChannel();
+				
+				if (target != null) {
+					if (r.title == null) {
+						BotUtils.sendLongMessage(target, r.content);
+					}
+					else {
+						EmbedObject eo = new EmbedObject();
+						eo.title = r.title;
+						eo.description = r.content;
+						eo.color = r.color;
+						
+						BotUtils.sendEmbed(target, eo);
+					}
 				}
-				else {
-					EmbedObject eo = new EmbedObject();
-					eo.title = r.title;
-					eo.description = r.content;
-					eo.color = r.color;
-					
-					BotUtils.sendEmbed(target, eo);
-				}
+			}
+			catch (DiscordException e) {
+				System.out.println("Could not created DM channel with: " + event.getMessage().getAuthor().getName());
 			}
 		}
 	}

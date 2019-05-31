@@ -22,10 +22,10 @@ public class Timer {
 		startDate = ZonedDateTime.now();
 		startDate = startDate.minusHours(startDate.getHour()).minusMinutes(startDate.getMinute()).minusSeconds(startDate.getSecond());
 		
-		shouldAdvanceTurn();
+		isDurationPassed();
 	}
 	
-	public boolean shouldAdvanceTurn() {
+	public boolean isDurationPassed() {
 		long sec = ChronoUnit.SECONDS.between(startDate, ZonedDateTime.now());
 		
 		if (sec >= timePerTurn.getSeconds()) {

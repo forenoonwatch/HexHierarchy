@@ -85,6 +85,14 @@ public class BotUtils {
     			return 0L;
     		}
     	}
+    	else if (token.matches("<@!\\d+>")) {
+    		try {
+    			return Long.parseLong(token.substring(3, token.length() - 1));
+    		}
+    		catch (NumberFormatException e) {
+    			return 0L;
+    		}
+    	}
     	else {
     		try {
     			return Long.parseLong(token);
