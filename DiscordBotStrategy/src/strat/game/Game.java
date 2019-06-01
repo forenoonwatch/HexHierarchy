@@ -412,7 +412,8 @@ public class Game {
 	}
 	
 	private boolean canBesiege(Army a, City c) {
-		return a.getOwnerID() != c.getOwnerID() && findWarBetween(a.getOwner(), c.getOwner()) != null;
+		return a.getOwnerID() != c.getOwnerID()
+				&& (findWarBetween(a.getOwner(), c.getOwner()) != null || c.getRegion().getOwnerID() == Nation.NO_NATION.getNationID());
 	}
 	
 	private void resolveArmyIntersections() {
