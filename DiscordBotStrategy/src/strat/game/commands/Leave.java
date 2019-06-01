@@ -1,7 +1,5 @@
 package strat.game.commands;
 
-import java.util.ArrayList;
-
 import strat.bot.BotUtils;
 import strat.commands.Command;
 import strat.commands.PermissionLevel;
@@ -47,6 +45,7 @@ public class Leave implements Command {
 				r = gameManager.getGame().findAllianceBetween(sender, target);
 				break;
 			case "trade":
+				r = gameManager.getGame().findTradeBetween(sender, target);
 				break;
 			default:
 				return null;
@@ -83,11 +82,9 @@ public class Leave implements Command {
 				break;
 			case "trade":
 			{
-				ArrayList<Nation> ns = new ArrayList<>();
-				r.getNations().forEach(n -> ns.add(n));
-				
 				gameManager.immediateLog(new LogEntry(sender, ":scales: **TRADE AGREEMENT BROKEN**",
-						String.format("%s has broken their trade agreement with %s"), LogEntry.Type.TRADE_LEFT));
+						String.format("%s has broken their trade agreement with %s", sender.getName(), target.getName()),
+						LogEntry.Type.TRADE_LEFT));
 			}
 				break;
 		}
