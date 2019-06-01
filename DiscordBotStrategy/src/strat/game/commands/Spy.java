@@ -57,7 +57,7 @@ public class Spy implements Command {
 		else {
 			gameManager.getGame().getTurnLog().addEntry(new LogEntry(sender,
 					String.format(":spy: **SPY CAUGHT - %s**", targetCity.getName().toUpperCase()),
-					String.format("A spy from %s was caught trying to enter into %s!", sender.getName(), targetCity.getName()),
+					String.format("A spy from %s was caught trying to enter into %s!%n", sender.getName(), targetCity.getName()),
 					LogEntry.Type.SPY_CAUGHT));
 			
 			return new Response(ResponseType.PRIVATE, null,
@@ -108,7 +108,7 @@ public class Spy implements Command {
 		sb.append(String.format("Foundry Level:\t%d (%d recruits available)%n",
 				c.getBuildingLevel("foundry"), c.getRecruitCapacity("artillery")));
 		
-		return new Response(ResponseType.PRIVATE, String.format("**%s, %s**", c.getName(), c.getRegion().getName()), sb.toString(),
+		return new Response(ResponseType.PRIVATE, String.format(":spy: **%s, %s**", c.getName(), c.getRegion().getName()), sb.toString(),
 				c.getOwner().getRGB());
 	}
 }

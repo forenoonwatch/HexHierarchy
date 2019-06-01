@@ -102,7 +102,7 @@ public class DiscordBot {
 						eo.description = r.content;
 						eo.color = r.color;
 						
-						BotUtils.sendEmbed(target, eo);
+						BotUtils.sendLongEmbed(target, eo);
 					}
 				}
 			}

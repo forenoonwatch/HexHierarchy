@@ -77,7 +77,7 @@ public class GameManager {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("<@&582267448661639176>! Turn ").append(game.getCurrentTurn() - 1)
-				.append(" has ended. The current standings are as follows:\n\n");
+				.append(" has ended. The current standings are as follows:\n\n:crown: ");
 		
 		for (java.util.Map.Entry<Nation, Integer> e : holdings) {
 			sb.append(e.getKey().getName()).append(": ").append(e.getValue()).append(" regions.\n");
