@@ -50,7 +50,7 @@ public class ChangeName implements Command {
 		}
 		
 		n.setName(nationName.toString());
-		gameManager.getRenderer().renderPoliticalImage(gameManager.getGame());
+		gameManager.getRenderer().renderPoliticalImages(gameManager.getGame());
 		
 		return new Response(String.format("Set name of \"%s\" to \"%s\"",
 				n.getName(), nationName.toString()));

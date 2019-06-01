@@ -39,7 +39,7 @@ public class GameManager {
 		relationshipRequests = new ArrayList<>();
 		
 		gameRenderer.renderSingleImages(game);
-		gameRenderer.renderPoliticalImage(game);
+		gameRenderer.renderPoliticalImages(game);
 	}
 	
 	public void startTimer() {
@@ -132,7 +132,7 @@ public class GameManager {
 			}
 		}
 		
-		gameRenderer.renderPoliticalImage(game);
+		gameRenderer.renderPoliticalImages(game);
 		
 		resetTurnsCompleted();
 		game.clearLog();
@@ -312,7 +312,7 @@ public class GameManager {
 		turnsCompleted.clear();
 		
 		gameRenderer.renderSingleImages(game);
-		gameRenderer.renderPoliticalImage(game);
+		gameRenderer.renderPoliticalImages(game);
 	}
 	
 	public Game getGame() {

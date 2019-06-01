@@ -18,6 +18,8 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import strat.game.relationships.Alliance;
+
 public class GameRenderer {
 	public static final Font DEFAULT_FONT = new Font("Arial", Font.PLAIN, 12);
 	
@@ -25,6 +27,7 @@ public class GameRenderer {
 	private static final File regionView = new File("images/regions.png");
 	private static final File cityView = new File("images/cities.png");
 	private static final File politicalView = new File("images/political.png");
+	private static final File nationView = new File("images/nations.png");
 	
 	private BufferedImage drawBuffer;
 	private Graphics2D drawG;
@@ -55,14 +58,21 @@ public class GameRenderer {
 		renderToFile(fileBuffer, cityView);
 	}
 	
-	public void renderPoliticalImage(Game game) {
+	public void renderPoliticalImages(Game game) {
 		BufferedImage fileBuffer = new BufferedImage(game.getMap().getWidth(), game.getMap().getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D)fileBuffer.getGraphics();
+		int[] data = ((DataBufferInt)fileBuffer.getRaster().getDataBuffer()).getData();
 		
 		clear();
 		renderPoliticalView(game);
 		g.drawImage(drawBuffer, 0, 0, null);
 		renderToFile(fileBuffer, politicalView);
+		
+		clear();
+		Arrays.fill(data, 0);
+		renderNationView(game);
+		g.drawImage(drawBuffer, 0, 0, null);
+		renderToFile(fileBuffer, nationView);
 	}
 	
 	public File renderArmyImage(Game game, Nation nation) {
@@ -172,6 +182,76 @@ public class GameRenderer {
 	
 	public BufferedImage renderPoliticalView(Game game) {
 		int[] pos = new int[2];
+		HashMap<Alliance, Integer> asx = new HashMap<>(), asy = new HashMap<>();
+		HashMap<Alliance, Integer> aCounts = new HashMap<>();
+		HashMap<Integer, Integer> sx = new HashMap<>(), sy = new HashMap<>();
+		HashMap<Integer, Integer> counts = new HashMap<>();
+		
+		for (Nation n : game.getNations().values()) {
+			sx.put(n.getNationID(), 0);
+			sy.put(n.getNationID(), 0);
+			counts.put(n.getNationID(), 0);
+		}
+		
+		for (Alliance a : game.getAlliances()) {
+			asx.put(a, 0);
+			asy.put(a, 0);
+			aCounts.put(a, 0);
+		}
+		
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		game.getMap().forEach(h -> {
+			h.toPixels(game.getMap().getOffsetX(),
+					game.getMap().getOffsetY(), game.getMap().getRadius(), pos);
+			Nation n = game.getNation(game.getMap().getRegion(h.getRegionID()).getOwnerID());
+			Alliance a = game.getAllianceForNation(n);
+			
+			if (a != null) {
+				h.render(drawG, new Color(a.getRGB()), game.getMap().getOffsetX(),
+						game.getMap().getOffsetY(), game.getMap().getRadius(), false);
+				
+				asx.put(a, asx.get(a) + pos[0]);
+				asy.put(a, asy.get(a) + pos[1]);
+				aCounts.put(a, aCounts.get(a) + 1);
+			}
+			else {
+				h.render(drawG, n.getColor(), game.getMap().getOffsetX(),
+						game.getMap().getOffsetY(), game.getMap().getRadius(), false);
+				
+				sx.put(n.getNationID(), sx.get(n.getNationID()) + pos[0]);
+				sy.put(n.getNationID(), sy.get(n.getNationID()) + pos[1]);
+				counts.put(n.getNationID(), counts.get(n.getNationID()) + 1);
+			}
+		});
+		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		game.getMap().getCities().forEach(c -> c.render(drawG, false));
+		
+		drawG.setColor(Color.BLACK);
+		
+		for (Nation n : game.getNations().values()) {
+			if (counts.get(n.getNationID()) == 0) {
+				continue;
+			}
+			
+			int px = sx.get(n.getNationID()) / counts.get(n.getNationID()) - n.getName().length() * drawG.getFont().getSize() / 4;
+			int py = sy.get(n.getNationID()) / counts.get(n.getNationID());
+			
+			drawG.drawString(n.getName(), px, py); // TODO: change to better text renderer
+		}
+		
+		for (Alliance a : game.getAlliances()) {
+			int px = asx.get(a) / aCounts.get(a) - a.getName().length() * drawG.getFont().getSize() / 4;
+			int py = asy.get(a) / aCounts.get(a);
+			
+			drawG.drawString(a.getName(), px, py); // TODO: change to better text renderer
+		}
+		
+		return drawBuffer;
+	}
+	
+	public BufferedImage renderNationView(Game game) {
+		int[] pos = new int[2];
 		HashMap<Integer, Integer> sx = new HashMap<>(), sy = new HashMap<>();
 		HashMap<Integer, Integer> counts = new HashMap<>();
 		
@@ -247,6 +327,10 @@ public class GameRenderer {
 	
 	public File getPoliticalView() {
 		return politicalView;
+	}
+	
+	public File getNationView() {
+		return nationView;
 	}
 	
 	public static void drawOutlinedString(Graphics g, String str, int x, int y) {

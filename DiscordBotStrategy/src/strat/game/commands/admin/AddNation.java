@@ -58,7 +58,7 @@ public class AddNation implements Command {
 		gameManager.getGame().addNation(n);
 		targetCity.getRegion().setOwnerID(n.getNationID());
 		
-		gameManager.getRenderer().renderPoliticalImage(gameManager.getGame());
+		gameManager.getRenderer().renderPoliticalImages(gameManager.getGame());
 		
 		return new Response(String.format("Successfully created nation %s with capital %s", n.getName(), targetCity.getName()));
 	}
