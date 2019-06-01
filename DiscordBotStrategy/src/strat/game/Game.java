@@ -331,6 +331,10 @@ public class Game {
 		return defaultRenderRadius;
 	}
 	
+	public boolean areFriendlyTroops(Army a, Army b) {
+		return a.getOwnerID() == b.getOwnerID() || findAllianceBetween(a.getOwner(), b.getOwner()) != null;
+	}
+	
 	private boolean canFight(Army a, Army b) {
 		return a.getOwnerID() != b.getOwnerID();
 	}

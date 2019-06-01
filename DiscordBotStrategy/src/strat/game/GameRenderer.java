@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 
@@ -162,16 +163,31 @@ public class GameRenderer {
 		
 		game.getMap().getCities().forEach(c -> c.render(drawG, false));
 		
+		HashSet<Army> rendered = new HashSet<>();
+		
 		for (Army a : game.getArmies()) {
-			if (a.getOwnerID() == n.getNationID()) {
+			if (a.getOwnerID() == n.getNationID() || game.findAllianceBetween(a.getOwner(), n) != null) {
 				a.getHexagon().render(drawG, new Color(0, 255, 0),
 						game.getMap().getOffsetX(), game.getMap().getOffsetY(), game.getMap().getRadius(), false);
 				a.render(drawG);
+				rendered.add(a);
 				
-				for (Army a2 : game.getArmies()) {
-					if (a2.getOwnerID() != a.getOwnerID()
-							&& a2.getHexagon().distanceFrom(a.getHexagon()) <= GameRules.getRulei("movesPerTurn") + 1) {
-						a2.render(drawG);
+				if (a.getOwnerID() == n.getNationID()) {
+					for (Army a2 : game.getArmies()) {
+						if (a2.getOwnerID() != a.getOwnerID()
+								&& !rendered.contains(a2)
+								&& a2.getHexagon().distanceFrom(a.getHexagon()) <= GameRules.getRulei("movesPerTurn") + 1) {
+							a2.render(drawG);
+							rendered.add(a2);
+						}
+					}
+				}
+			}
+			else if (!rendered.contains(a)) {
+				for (City c : game.getMap().getCities()) {
+					if (a.getHexagon().distanceFrom(c.getHexagon()) <= GameRules.getRulei("movesPerTurn") + 1) {
+						a.render(drawG);
+						rendered.add(a);
 					}
 				}
 			}
