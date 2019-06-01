@@ -192,7 +192,7 @@ public class GameManager {
 		eo.description = entry.description;
 		eo.color = entry.nation.getRGB();
 		
-		//BotUtils.sendEmbed(DiscordBot.getDiplomacyChannel(), eo);
+		BotUtils.sendEmbed(DiscordBot.getDiplomacyChannel(), eo);
 	}
 	
 	public void addPendingRelationship(Relationship r) {

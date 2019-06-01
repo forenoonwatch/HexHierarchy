@@ -355,6 +355,18 @@ public class Game {
 		return profit;
 	}
 	
+	public int calcGrossLossForNation(Nation n) {
+		int loss = 0;
+		
+		for (Army a : armies) {
+			if (a.getOwnerID() == n.getNationID()) {
+				loss += a.calcUpkeepCost();
+			}
+		}
+		
+		return loss;
+	}
+	
 	public ArrayList<Alliance> getAlliances() {
 		return alliances;
 	}
@@ -510,6 +522,11 @@ public class Game {
 			for (Nation n : t.getNations()) {
 				n.setMoney(n.getMoney() + GameRules.getRulei("tradeProfit"));
 			}
+		}
+		
+		for (Army a : armies) {
+			Nation o = a.getOwner();
+			o.setMoney(o.getMoney() - a.calcUpkeepCost());
 		}
 	}
 	

@@ -176,6 +176,17 @@ public class Army extends MapObject {
 		setUnits(GameRules.getUnitTypes().get(unitID), value);
 	}
 	
+	public int calcUpkeepCost() {
+		double aLoss = 0.0;
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			aLoss += ((double)getUnits(unit) / GameRules.getRuled(unit + "Weight")) 
+					* GameRules.getRuled("upkeepCost");
+		}
+		
+		return (int)aLoss;
+	}
+	
 	public int getArmyID() {
 		return armyID;
 	}

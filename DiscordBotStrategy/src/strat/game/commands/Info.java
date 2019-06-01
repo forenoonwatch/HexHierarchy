@@ -29,8 +29,7 @@ public class Info implements Command {
 		}
 		else {
 			Nation sender = gameManager.getNationByUser(senderID);
-			IUser user = DiscordBot.getUserByID(senderID);
-			String info = getInfoForNation(gameManager.getGame(), sender, user, true);
+			String info = getInfoForNation(gameManager.getGame(), sender, null, true);
 			
 			return new Response(ResponseType.PRIVATE, info);
 		}
@@ -58,7 +57,6 @@ public class Info implements Command {
 	
 	private static String getInfoForNation(Game game, Nation n, IUser user, boolean showMoney) {
 		int numLands = 0;
-		int profitPerTurn = game.calcGrossProfitForNation(n);
 		
 		for (City c : game.getMap().getCities()) {
 			if (c.getOwnerID() == n.getNationID()) {
@@ -67,8 +65,11 @@ public class Info implements Command {
 		}
 		
 		if (showMoney) {
-			return String.format("**%s**%nMoney:\t\t%d (+%d/turn)%nRegions held:\t%d%n", n.getName(),
-					n.getMoney(), profitPerTurn, numLands);
+			int profitPerTurn = game.calcGrossProfitForNation(n);
+			int lossPerTurn = game.calcGrossLossForNation(n);
+			
+			return String.format("**%s**%nMoney:\t\t%d (%d/turn)%nRegions held:\t%d%nProfit:\t\t%d%nLoss:\t\t%d%n", n.getName(),
+					n.getMoney(), profitPerTurn - lossPerTurn, numLands, profitPerTurn, lossPerTurn);
 		}
 		
 		return String.format("**%s**%nLeader:\t%s%nRegions held:\t%d%n", n.getName(),

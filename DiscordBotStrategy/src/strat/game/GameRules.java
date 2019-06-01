@@ -95,6 +95,7 @@ public final class GameRules {
 		RULES.put("cavalryCost", 13.0);
 		RULES.put("artilleryCost", 20.0);
 		RULES.put("replenishmentCost", 5.0);
+		RULES.put("upkeepCost", 4.0);
 		
 		RULES.put("fortCost", 100.0);
 		RULES.put("marketCost", 150.0);
@@ -103,6 +104,7 @@ public final class GameRules {
 		RULES.put("foundryCost", 300.0);
 		
 		RULES.put("spyScalar", 0.2);
+		RULES.put("spyCost", 100.0);
 		
 		UNIT_TYPES.add("infantry");
 		UNIT_TYPES.add("cavalry");

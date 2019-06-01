@@ -48,6 +48,12 @@ public class Spy implements Command {
 			return new Response("Spy: Cannot send out spies with no cities.");
 		}
 		
+		if (sender.getMoney() < GameRules.getRulei("spyCost")) {
+			return new Response("Spy: Not enough money to send spy.");
+		}
+		
+		sender.setMoney(sender.getMoney() - GameRules.getRulei("spyCost"));
+		
 		double chance = GameRules.getRuled("spyScalar");
 		chance = Math.exp(chance - chance * minDist);
 		
