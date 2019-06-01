@@ -159,6 +159,10 @@ public class Game {
 			c.resetCapacity();
 		}
 		
+		for (War w : wars) {
+			w.setNumTurns(w.getNumTurns() + 1);
+		}
+		
 		updateMoney();
 	}
 	
@@ -328,6 +332,27 @@ public class Game {
 		else if (r instanceof TradeAgreement) {
 			removeTradeAgreement((TradeAgreement)r);
 		}
+		else if (r instanceof War) {
+			removeWar((War)r);
+		}
+	}
+	
+	public int calcGrossProfitForNation(Nation n) {
+		int profit = 0;
+		
+		for (City c : map.getCities()) {
+			if (c.getOwnerID() == n.getNationID()) {
+				profit += c.getBuildingLevel("market") * GameRules.getRulei("marketProfit");
+			}
+		}
+		
+		for (TradeAgreement t : tradeAgreements) {
+			if (t.hasNation(n)) {
+				profit += GameRules.getRulei("tradeProfit");
+			}
+		}
+		
+		return profit;
 	}
 	
 	public ArrayList<Alliance> getAlliances() {
@@ -371,11 +396,11 @@ public class Game {
 	}
 	
 	private boolean canFight(Army a, Army b) {
-		return a.getOwnerID() != b.getOwnerID();
+		return a.getOwnerID() != b.getOwnerID() && findWarBetween(a.getOwner(), b.getOwner()) != null;
 	}
 	
 	private boolean canBesiege(Army a, City c) {
-		return a.getOwnerID() != c.getOwnerID();
+		return a.getOwnerID() != c.getOwnerID() && findWarBetween(a.getOwner(), c.getOwner()) != null;
 	}
 	
 	private void resolveArmyIntersections() {
@@ -479,6 +504,12 @@ public class Game {
 		for (City c : map.getCities()) {
 			Nation o = c.getOwner();
 			o.setMoney(o.getMoney() + c.getBuildingLevel("market") * GameRules.getRulei("marketProfit"));
+		}
+		
+		for (TradeAgreement t : tradeAgreements) {
+			for (Nation n : t.getNations()) {
+				n.setMoney(n.getMoney() + GameRules.getRulei("tradeProfit"));
+			}
 		}
 	}
 	

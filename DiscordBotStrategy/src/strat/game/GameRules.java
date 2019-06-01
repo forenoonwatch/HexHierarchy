@@ -86,6 +86,8 @@ public final class GameRules {
 		
 		RULES.put("startingMoney", 300.0);
 		RULES.put("marketProfit", 100.0);
+		RULES.put("tradeProfit", 100.0);
+		
 		RULES.put("recruitmentCap", 5.0);
 		RULES.put("buildingCap", 5.0);
 		

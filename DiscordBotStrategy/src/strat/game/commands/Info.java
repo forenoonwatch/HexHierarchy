@@ -8,7 +8,6 @@ import strat.commands.ResponseType;
 import strat.game.City;
 import strat.game.Game;
 import strat.game.GameManager;
-import strat.game.GameRules;
 import strat.game.Nation;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -59,14 +58,11 @@ public class Info implements Command {
 	
 	private static String getInfoForNation(Game game, Nation n, IUser user, boolean showMoney) {
 		int numLands = 0;
-		int profitPerTurn = 0;
+		int profitPerTurn = game.calcGrossProfitForNation(n);
 		
 		for (City c : game.getMap().getCities()) {
 			if (c.getOwnerID() == n.getNationID()) {
 				++numLands;
-				int profit = c.getBuildingLevel("market") * GameRules.getRulei("marketProfit");
-				
-				profitPerTurn += profit;
 			}
 		}
 		

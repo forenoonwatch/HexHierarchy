@@ -6,7 +6,6 @@ import strat.commands.Response;
 import strat.commands.ResponseType;
 import strat.game.City;
 import strat.game.GameManager;
-import strat.game.GameRules;
 import strat.game.Map;
 import strat.game.Nation;
 
@@ -46,21 +45,8 @@ public class Regions implements Command {
 		
 		for (City c : map.getCities()) {
 			if (c.getOwnerID() == n.getNationID()) {
-				int profit = c.getBuildingLevel("market") * GameRules.getRulei("marketProfit");
-				
 				sb.append(String.format("%nRegion:\t\t%s%nCapital:\t%s%n", c.getRegion().getName(), c.getName()));
-				sb.append(String.format("Fort Level:\t%d (%d/%d infantry, %d/%d cavalry, %d/%d artillery)%n", 
-						c.getBuildingLevel("fort"), c.getGarrison().getUnits("infantry"), c.getGarrisonCapacity("infantry"),
-						c.getGarrison().getUnits("cavalry"), c.getGarrisonCapacity("cavalry"),
-						c.getGarrison().getUnits("artillery"), c.getGarrisonCapacity("artillery")));
-				sb.append(String.format("Market Level:\t%d (+%d/turn)%n", c.getBuildingLevel("market"),
-						profit));
-				sb.append(String.format("Barracks Level:\t%d (%d recruits available)%n",
-						c.getBuildingLevel("barracks"), c.getRecruitCapacity("infantry")));
-				sb.append(String.format("Stables Level:\t%d (%d recruits available)%n",
-						c.getBuildingLevel("stables"), c.getRecruitCapacity("cavalry")));
-				sb.append(String.format("Foundry Level:\t%d (%d recruits available)%n",
-						c.getBuildingLevel("foundry"), c.getRecruitCapacity("artillery")));
+				sb.append(c.getInfo());
 			}
 		}
 		

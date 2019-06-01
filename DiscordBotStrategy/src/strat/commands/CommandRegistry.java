@@ -39,6 +39,10 @@ public class CommandRegistry {
 		addCommand(new Leave());
 		addCommand(new DeclareWar());
 		addCommand(new RequestPeace());
+		addCommand(new Trades());
+		addCommand(new Allies());
+		addCommand(new Wars());
+		addCommand(new Nearby());
 		
 		addCommand(new AddNation());
 		addCommand(new AdvanceTurn());

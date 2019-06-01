@@ -237,6 +237,27 @@ public class City extends MapObject {
 		
 		return sum;
 	}
+	
+	public String getInfo() {
+		StringBuilder sb = new StringBuilder();
+		
+		int profit = getBuildingLevel("market") * GameRules.getRulei("marketProfit");
+		
+		sb.append(String.format("Fort Level:\t%d (%d/%d infantry, %d/%d cavalry, %d/%d artillery)%n", 
+				getBuildingLevel("fort"), getGarrison().getUnits("infantry"), getGarrisonCapacity("infantry"),
+				getGarrison().getUnits("cavalry"), getGarrisonCapacity("cavalry"),
+				getGarrison().getUnits("artillery"), getGarrisonCapacity("artillery")));
+		sb.append(String.format("Market Level:\t%d (+%d/turn)%n", getBuildingLevel("market"),
+				profit));
+		sb.append(String.format("Barracks Level:\t%d (%d recruits available)%n",
+				getBuildingLevel("barracks"), getRecruitCapacity("infantry")));
+		sb.append(String.format("Stables Level:\t%d (%d recruits available)%n",
+				getBuildingLevel("stables"), getRecruitCapacity("cavalry")));
+		sb.append(String.format("Foundry Level:\t%d (%d recruits available)%n",
+				getBuildingLevel("foundry"), getRecruitCapacity("artillery")));
+		
+		return sb.toString();
+	}
 
 	@Override
 	public String serialize() {
