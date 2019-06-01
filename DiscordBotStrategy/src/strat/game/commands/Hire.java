@@ -6,8 +6,8 @@ import strat.commands.Response;
 import strat.game.City;
 import strat.game.GameManager;
 import strat.game.GameRules;
+import strat.game.LogEntry;
 import strat.game.Nation;
-import strat.game.TurnLog;
 
 public class Hire implements Command {
 	public static final String RAW_FORMAT = "hire ";
@@ -70,8 +70,8 @@ public class Hire implements Command {
 		
 		String desc = String.format("Recruited %d %s %s in %s%n", amount, tokens[1],
 				getUnitEmoji(tokens[1]), targetCity.getName()); 
-		gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender, "**RECRUITMENT - " + sender.getName().toUpperCase() + "**",
-				desc, TurnLog.Type.RECRUITMENT));
+		gameManager.getGame().getTurnLog().addEntry(new LogEntry(sender, "**RECRUITMENT - " + sender.getName().toUpperCase() + "**",
+				desc, LogEntry.Type.RECRUITMENT));
 		
 		return new Response(desc);
 	}

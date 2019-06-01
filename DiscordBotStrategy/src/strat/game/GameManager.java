@@ -11,6 +11,7 @@ import strat.bot.BotUtils;
 import strat.bot.DiscordBot;
 import strat.game.relationships.Alliance;
 import strat.game.relationships.Relationship;
+import strat.game.relationships.TradeAgreement;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 
 public class GameManager {
@@ -101,7 +102,7 @@ public class GameManager {
 		
 		eo.thumbnail = null;
 		
-		for (TurnLog.LogEntry le : game.getTurnLog().getBattleEntries()) {
+		for (LogEntry le : game.getTurnLog().getBattleEntries()) {
 			eo.title = le.title;
 			eo.description = le.description;
 			eo.color = le.nation.getRGB();
@@ -116,7 +117,7 @@ public class GameManager {
 			}
 		}
 		
-		for (TurnLog.LogEntry le : game.getTurnLog().getCommonEntries()) {
+		for (LogEntry le : game.getTurnLog().getCommonEntries()) {
 			eo.title = le.title;
 			eo.description = le.description;
 			eo.color = le.nation.getRGB();
@@ -182,18 +183,21 @@ public class GameManager {
 		}
 	}
 	
-	public void addPendingRelationship(Relationship r) {
-		relationshipRequests.add(r);
+	public void immediateLog(LogEntry entry) {
+		EmbedObject eo = new EmbedObject();
+		eo.title = entry.title;
+		eo.description = entry.description;
+		eo.color = entry.nation.getRGB();
+		
+		// TODO: FIXME: Uncomment
+		System.out.println(entry.title);
+		System.out.println(entry.description);
+		System.out.println();
+		//BotUtils.sendEmbed(DiscordBot.getActionChannel(), eo);
 	}
 	
-	public Alliance getPendingAlliance(Nation n) {
-		for (Relationship r : relationshipRequests) {
-			if (r instanceof Alliance && r.hasNation(n)) {
-				return (Alliance)r;
-			}
-		}
-		
-		return null;
+	public void addPendingRelationship(Relationship r) {
+		relationshipRequests.add(r);
 	}
 	
 	public Alliance findPendingAllianceBetween(Nation a, Nation b) {
@@ -206,17 +210,46 @@ public class GameManager {
 		return null;
 	}
 	
+	public TradeAgreement findPendingTradeBetween(Nation a, Nation b) {
+		for (Relationship r : relationshipRequests) {
+			if (r instanceof TradeAgreement && r.hasNation(a) && r.hasNation(b)) {
+				return (TradeAgreement)r;
+			}
+		}
+		
+		return null;
+	}
+	
 	public boolean acceptRelationship(Relationship r) {
 		if (relationshipRequests.remove(r)) {
 			Relationship similar = game.findSimilarRelationship(r);
 			
 			if (similar != null) {
 				for (Nation n : r.getNations()) {
-					similar.addNation(n);
+					if (similar.addNation(n) && r instanceof Alliance) {
+						Alliance al = (Alliance)r;
+						immediateLog(new LogEntry(n, ":handshake: **NATION JOINS ALLIANCE**",
+								String.format("%s joins %s", n.getName(), al.getName()), LogEntry.Type.ALLIANCE_JOINED));
+					}
 				}
 			}
 			else {
 				game.addRelationship(r);
+				
+				ArrayList<Nation> a = new ArrayList<>();
+				r.getNations().forEach(n -> a.add(n));
+				
+				if (r instanceof Alliance) {
+					Alliance al = (Alliance)r;
+					immediateLog(new LogEntry(a.get(0), String.format(":handshake: **ALLIANCE FORMED - %s**", al.getName()),
+							String.format("Alliance formed between the nations of %s and %s", a.get(0).getName(), a.get(1).getName()),
+							LogEntry.Type.ALLIANCE_FORMED));
+				}
+				else if (r instanceof TradeAgreement) {
+					immediateLog(new LogEntry(a.get(0), ":scales: **TRADE AGREEMENT SIGNED**",
+							String.format("Trade agreement signed between the nations of %s and %s", a.get(0).getName(), a.get(1).getName()),
+							LogEntry.Type.TRADE_AGREEMENT));
+				}
 			}
 			
 			return true;

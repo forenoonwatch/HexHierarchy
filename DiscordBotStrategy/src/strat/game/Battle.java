@@ -39,7 +39,7 @@ public class Battle {
 				winner.getOwner().getName(), winner.getUnits("infantry"), winner.getUnits("cavalry"),
 				winner.getUnits("artillery"));
 		
-		winner.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
+		winner.getGame().getTurnLog().addEntry(new LogEntry(winner.getOwner(), title, desc, LogEntry.Type.BATTLE));
 	}
 	
 	public Army calcWinner() {

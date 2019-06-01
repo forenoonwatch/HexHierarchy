@@ -74,7 +74,7 @@ public class Siege {
 				winner == attacker ? attacker.getOwner().getName() : oldDefender,
 				winner.getUnits("infantry"), winner.getUnits("cavalry"), winner.getUnits("artillery"));
 		
-		defender.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(winner.getOwner(), title, desc, TurnLog.Type.BATTLE));
+		defender.getGame().getTurnLog().addEntry(new LogEntry(winner.getOwner(), title, desc, LogEntry.Type.BATTLE));
 	}
 	
 	public Army getAttacker() {

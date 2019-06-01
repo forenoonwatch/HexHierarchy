@@ -43,6 +43,7 @@ public class Accept implements Command {
 				r = gameManager.findPendingAllianceBetween(sender, target);
 				break;
 			case "trade":
+				r = gameManager.findPendingTradeBetween(sender, target);
 				break;
 			default:
 				return null;
@@ -54,8 +55,6 @@ public class Accept implements Command {
 		}
 		
 		gameManager.acceptRelationship(r);
-		
-		// TODO: log occasion
 		
 		return new Response(String.format("Accepted %s with %s.", tokens[1], target.getName()));
 	}

@@ -12,7 +12,7 @@ public class TurnLog {
 	}
 	
 	public void addEntry(LogEntry entry) {
-		if (entry.type == Type.BATTLE) {
+		if (entry.type == LogEntry.Type.BATTLE) {
 			battleEntries.add(entry);
 		}
 		else {
@@ -38,27 +38,5 @@ public class TurnLog {
 	
 	public ArrayList<LogEntry> getBattleEntries() {
 		return battleEntries;
-	}
-	
-	public static enum Type {
-		BATTLE,
-		CONSTRUCTION,
-		RECRUITMENT,
-		PAYMENT,
-		SPY_CAUGHT
-	}
-	
-	public static class LogEntry {
-		public Nation nation;
-		public String title;
-		public String description;
-		public Type type;
-		
-		public LogEntry(Nation nation, String title, String description, Type type) {
-			this.nation = nation;
-			this.title = title;
-			this.description = description;
-			this.type = type;
-		}
 	}
 }

@@ -22,8 +22,8 @@ import strat.game.City;
 import strat.game.Game;
 import strat.game.GameManager;
 import strat.game.Hexagon;
+import strat.game.LogEntry;
 import strat.game.Nation;
-import strat.game.TurnLog;
 
 @SuppressWarnings("serial")
 public class Editor extends Canvas implements MouseListener, KeyListener {
@@ -230,13 +230,13 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 		else if (e.getKeyCode() == KeyEvent.VK_M) {
 			gameManager.getGame().endTurn();
 			
-			for (TurnLog.LogEntry le : gameManager.getGame().getTurnLog().getCommonEntries()) {
+			for (LogEntry le : gameManager.getGame().getTurnLog().getCommonEntries()) {
 				System.out.println(le.title);
 				System.out.println(le.description);
 				System.out.println();
 			}
 			
-			for (TurnLog.LogEntry le : gameManager.getGame().getTurnLog().getBattleEntries()) {
+			for (LogEntry le : gameManager.getGame().getTurnLog().getBattleEntries()) {
 				System.out.println(le.title);
 				System.out.println(le.description);
 				System.out.println();

@@ -8,8 +8,8 @@ import strat.commands.ResponseType;
 import strat.game.City;
 import strat.game.GameManager;
 import strat.game.GameRules;
+import strat.game.LogEntry;
 import strat.game.Nation;
-import strat.game.TurnLog;
 
 public class Spy implements Command {
 
@@ -55,10 +55,10 @@ public class Spy implements Command {
 			return getCityInfo(targetCity);
 		}
 		else {
-			gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender,
+			gameManager.getGame().getTurnLog().addEntry(new LogEntry(sender,
 					String.format(":spy: **SPY CAUGHT - %s**", targetCity.getName().toUpperCase()),
 					String.format("A spy from %s was caught trying to enter into %s!", sender.getName(), targetCity.getName()),
-					TurnLog.Type.SPY_CAUGHT));
+					LogEntry.Type.SPY_CAUGHT));
 			
 			return new Response(ResponseType.PRIVATE, null,
 					"Spy action failed! Your spy has been caught, this incident will be publicized at the end of the turn.", 0);

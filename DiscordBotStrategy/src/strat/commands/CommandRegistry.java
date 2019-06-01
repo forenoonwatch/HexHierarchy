@@ -32,8 +32,10 @@ public class CommandRegistry {
 		addCommand(new Complete());
 		addCommand(new CreateAlliance());
 		addCommand(new JoinAlliance());
+		addCommand(new TradeWith());
 		addCommand(new Accept());
 		addCommand(new Decline());
+		addCommand(new Leave());
 		
 		addCommand(new AddNation());
 		addCommand(new AdvanceTurn());

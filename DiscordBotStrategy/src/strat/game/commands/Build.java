@@ -6,8 +6,8 @@ import strat.commands.Response;
 import strat.game.City;
 import strat.game.GameManager;
 import strat.game.GameRules;
+import strat.game.LogEntry;
 import strat.game.Nation;
-import strat.game.TurnLog;
 
 public class Build implements Command {
 	public static final String RAW_FORMAT = "build ";
@@ -54,8 +54,8 @@ public class Build implements Command {
 		sender.setMoney(sender.getMoney() - cost);
 		
 		String desc = String.format("Constructed %s in %s%n", tokens[1], targetCity.getName());
-		gameManager.getGame().getTurnLog().addEntry(new TurnLog.LogEntry(sender, ":hammer_pick: **CONSTRUCTION - "
-				+ sender.getName().toUpperCase() + "**", desc, TurnLog.Type.CONSTRUCTION));
+		gameManager.getGame().getTurnLog().addEntry(new LogEntry(sender, ":hammer_pick: **CONSTRUCTION - "
+				+ sender.getName().toUpperCase() + "**", desc, LogEntry.Type.CONSTRUCTION));
 		
 		return new Response(desc);
 	}

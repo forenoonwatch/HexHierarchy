@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import strat.game.relationships.Alliance;
 import strat.game.relationships.Relationship;
+import strat.game.relationships.TradeAgreement;
 import strat.util.Util;
 
 public class Game {
@@ -22,6 +23,7 @@ public class Game {
 	private ArrayList<Siege> sieges;
 	
 	private ArrayList<Alliance> alliances;
+	private ArrayList<TradeAgreement> tradeAgreements;
 	
 	private int currentTurn;
 	private int daysPerTurn;
@@ -42,6 +44,7 @@ public class Game {
 		sieges = new ArrayList<>();
 		
 		alliances = new ArrayList<>();
+		tradeAgreements = new ArrayList<>();
 		
 		currentTurn = 0;
 		daysPerTurn = 1;
@@ -113,6 +116,10 @@ public class Game {
 			
 			for (Alliance a : alliances) {
 				o.println(a.serialize());
+			}
+			
+			for (TradeAgreement t : tradeAgreements) {
+				o.println(t.serialize());
 			}
 			
 			map.forEach(h -> o.println(h.serialize()));
@@ -213,6 +220,14 @@ public class Game {
 		return alliances.remove(a);
 	}
 	
+	public void addTradeAgreement(TradeAgreement t) {
+		tradeAgreements.add(t);
+	}
+	
+	public boolean removeTradeAgreement(TradeAgreement t) {
+		return tradeAgreements.remove(t);
+	}
+	
 	public Alliance getAllianceForNation(Nation n) {
 		for (Alliance a : alliances) {
 			if (a.hasNation(n)) {
@@ -242,14 +257,50 @@ public class Game {
 		return null;
 	}
 	
+	public Alliance findAllianceBetween(Nation na, Nation nb) {
+		for (Alliance a : alliances) {
+			if (a.hasNation(na) && a.hasNation(nb)) {
+				return a;
+			}
+		}
+		
+		return null;
+	}
+	
+	public TradeAgreement findTradeBetween(Nation a, Nation b) {
+		for (TradeAgreement t : tradeAgreements) {
+			if (t.hasNation(a) && t.hasNation(b)) {
+				return t;
+			}
+		}
+		
+		return null;
+	}
+	
 	public void addRelationship(Relationship r) {
 		if (r instanceof Alliance) {
 			addAlliance((Alliance)r);
+		}
+		else if (r instanceof TradeAgreement) {
+			addTradeAgreement((TradeAgreement)r);
+		}
+	}
+	
+	public void removeRelationship(Relationship r) {
+		if (r instanceof Alliance) {
+			removeAlliance((Alliance)r);
+		}
+		else if (r instanceof TradeAgreement) {
+			removeTradeAgreement((TradeAgreement)r);
 		}
 	}
 	
 	public ArrayList<Alliance> getAlliances() {
 		return alliances;
+	}
+	
+	public ArrayList<TradeAgreement> getTradeAgreements() {
+		return tradeAgreements;
 	}
 	
 	public HashMap<Integer, Nation> getNations() {
@@ -405,6 +456,12 @@ public class Game {
 		}
 		else if (serializedData.startsWith("Army")) {
 			armies.add(new Army(map, serializedData));
+		}
+		else if (serializedData.startsWith("Alliance")) {
+			alliances.add(new Alliance(this, serializedData));
+		}
+		else if (serializedData.startsWith("TradeAgreement")) {
+			tradeAgreements.add(new TradeAgreement(this, serializedData));
 		}
 		else {
 			map.add(new Hexagon(serializedData));

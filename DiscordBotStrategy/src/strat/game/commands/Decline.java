@@ -43,6 +43,7 @@ public class Decline implements Command {
 				r = gameManager.findPendingAllianceBetween(sender, target);
 				break;
 			case "trade":
+				r = gameManager.findPendingTradeBetween(sender, target);
 				break;
 			default:
 				return null;
@@ -54,8 +55,6 @@ public class Decline implements Command {
 		}
 		
 		gameManager.declineRelationship(r);
-		
-		// TODO: log occasion
 		
 		return new Response(String.format("Declined %s with %s.", tokens[1], target.getName()));
 	}
