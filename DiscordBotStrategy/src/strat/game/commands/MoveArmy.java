@@ -57,7 +57,7 @@ public class MoveArmy implements Command {
 	
 	@Override
 	public String getUsage() {
-		return "army_number direction(0-6) distance";
+		return "army_number direction(1-6) distance";
 	}
 
 	@Override
