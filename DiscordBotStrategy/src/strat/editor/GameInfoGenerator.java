@@ -8,12 +8,19 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject;
 
 public class GameInfoGenerator {
 	// #format-test
-	//public static final String WEBHOOK = "https://discordapp.com/api/webhooks/583146707047546880/oJ99RZ2_O92hQatYBrTSEpTvMAvEAhub_bIslOu_1_BFUxehN4bDsTA_zjqyNgKAy0OD";
+	public static final String WEBHOOK = "https://discordapp.com/api/webhooks/583146707047546880/oJ99RZ2_O92hQatYBrTSEpTvMAvEAhub_bIslOu_1_BFUxehN4bDsTA_zjqyNgKAy0OD";
 	// #game-info
-	public static final String WEBHOOK = "https://discordapp.com/api/webhooks/584491680334610462/Hvs3519w9-ppjVixsnTdlp3nNmPiEXKohgV8SovzTGLXf0QCvnTK6OYDrcwgEPHI34y9";
+	//public static final String WEBHOOK = "https://discordapp.com/api/webhooks/584491680334610462/Hvs3519w9-ppjVixsnTdlp3nNmPiEXKohgV8SovzTGLXf0QCvnTK6OYDrcwgEPHI34y9";
+	// #welcome
+	//public static final String WEBHOOK = "https://discordapp.com/api/webhooks/584496786253676574/lvi4QaP90SSdDbuYDhyZzwiWExNxxmM_24kaNsa3MqL-9egI8frKp2C2CEgVeEJw8kKy";
 	
 	public static void main(String[] args) throws IOException {
 		Webhook w = new Webhook(WEBHOOK);
+		
+		sendEmbed(w, getWelcome());
+	}
+	
+	static void genRules(Webhook w) {
 		EmbedObject[] rules = {getInitialGameInfo(), getTurnInfo(), getBuildingInfo(),
 				getEspionageInfo(),
 				getTradeInfo(), getAllianceInfo(), getWarInfo(),
@@ -44,6 +51,13 @@ public class GameInfoGenerator {
 			w.setImage(null);
 		}
 		
+		if (eo.thumbnail != null) {
+			w.setThumbnail(new Webhook.Image(eo.thumbnail.url, eo.thumbnail.width, eo.thumbnail.height));
+		}
+		else {
+			w.setThumbnail(null);
+		}
+		
 		w.send();
 	}
 	
@@ -53,8 +67,10 @@ public class GameInfoGenerator {
 		e.description = "Welcome to the HexHierarchy Game Discord Server!\n\nHexHierarchy is a project dedicated to creating"
 				+ " a fun, social experience through a military strategic boardgame played entirely over Discord. "
 				+ "The game takes inspiration from various sources, including Total War, Civilization, Risk, as "
-				+ "well as the now defunct Modern-Feudal project that preceded this.\n\nHead over to <#582342162268815382> to start reading the rules, "
-				+ "or just head to <#473942834399936512> and talk to a moderator to see how you can get involved in the game.";
+				+ "well as the now defunct Modern-Feudal project that preceded this.\n\nHead over to <#582342162268815382> to start reading the rules,"
+				+ "or just head to <#473942834399936512> and start talking with other players.\n"
+				+ "\nIf you would like to join the game with your own nation, post a correctly formatted nation request in <#582579700191199243>"
+				+ "\n\n**DISCORD INVITE**\nhttp://discord.gg/AxHa8pJ";
 		e.color = 0x44bd32;
 		
 		EmbedObject.ThumbnailObject to = new EmbedObject.ThumbnailObject();

@@ -38,6 +38,10 @@ public class Webhook {
 		embed.put("image", image != null ? image.getJSON() : null);
 	}
 	
+	public void setThumbnail(Webhook.Image thumbnail) {
+		embed.put("thumbnail", thumbnail != null ? thumbnail.getJSON() : null);
+	}
+	
 	public boolean send() {
 		return send(url, json.toString());
 	}
