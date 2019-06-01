@@ -70,7 +70,7 @@ public class Hire implements Command {
 		
 		String desc = String.format("Recruited %d %s %s in %s%n", amount, tokens[1],
 				getUnitEmoji(tokens[1]), targetCity.getName()); 
-		gameManager.getGame().getTurnLog().addEntry(new LogEntry(sender, "**RECRUITMENT - " + sender.getName().toUpperCase() + "**",
+		gameManager.getGame().getTurnLog().addEntry(new LogEntry(sender, ":postal_horn: **RECRUITMENT - " + sender.getName().toUpperCase() + "**",
 				desc, LogEntry.Type.RECRUITMENT));
 		
 		return new Response(desc);

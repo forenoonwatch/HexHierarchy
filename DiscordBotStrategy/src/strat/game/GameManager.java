@@ -9,6 +9,7 @@ import java.util.HashSet;
 
 import strat.bot.BotUtils;
 import strat.bot.DiscordBot;
+import strat.commands.Response;
 import strat.game.relationships.Alliance;
 import strat.game.relationships.PeaceTreaty;
 import strat.game.relationships.Relationship;
@@ -85,6 +86,7 @@ public class GameManager {
 		EmbedObject eo = new EmbedObject();
 		eo.title = String.format("Conclusion of turn %d (%s to %s)", game.getCurrentTurn() - 1, lastDate, game.getCurrentDate());
 		eo.description = sb.toString();
+		eo.color = Response.DEFAULT_COLOR;
 		
 		EmbedObject.ThumbnailObject to = new EmbedObject.ThumbnailObject();
 		to.url = "https://cdn.discordapp.com/attachments/548382890296082433/582297151321669678/hex-strat.png";
