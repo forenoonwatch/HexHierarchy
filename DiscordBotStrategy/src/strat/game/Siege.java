@@ -22,8 +22,7 @@ public class Siege {
 		HashMap<String, Integer> numUnits = new HashMap<>();
 		
 		for (String unit : GameRules.getUnitTypes()) {
-			numUnits.put(unit, defender.getGarrison().getUnits(unit));
-			def.setUnits(unit, numUnits.get(unit));
+			def.setUnits(unit, defender.getGarrison().getUnits(unit));
 		}
 		
 		int numArmies = 1;
@@ -34,6 +33,10 @@ public class Siege {
 				def.add(a);
 				++numArmies;
 			}
+		}
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			numUnits.put(unit, def.getUnits(unit));
 		}
 		
 		Army winner = new Battle(attacker, def, defender.getHexagon()).calcWinner();
