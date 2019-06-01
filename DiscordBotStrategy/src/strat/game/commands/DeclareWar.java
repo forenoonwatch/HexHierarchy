@@ -7,6 +7,7 @@ import strat.commands.Response;
 import strat.game.GameManager;
 import strat.game.LogEntry;
 import strat.game.Nation;
+import strat.game.relationships.Alliance;
 import strat.game.relationships.War;
 
 public class DeclareWar implements Command {
@@ -50,8 +51,24 @@ public class DeclareWar implements Command {
 		
 		gameManager.getGame().addWar(w);
 		
+		StringBuilder desc = new StringBuilder();
+		
+		desc.append(String.format("%s has declared war on %s%n", sender.getName(), target.getName()));
+		
+		Alliance a = gameManager.getGame().getAllianceForNation(target);
+		
+		if (a != null) {
+			desc.append("*").append(a.getName()).append("* has joined the war on the side of ").append(target.getName()).append("\n\n");
+			
+			for (Nation n : a.getNations()) {
+				if (n != target) {
+					desc.append(n.getName()).append(" joins the war.\n");
+				}
+			}
+		}
+		
 		gameManager.logDiplomacy(new LogEntry(sender, ":crossed_swords: **WAR DECLARED**",
-				String.format("%s has declared war on %s", sender.getName(), target.getName()), LogEntry.Type.WAR));
+				desc.toString(), LogEntry.Type.WAR));
 		
 		return new Response(String.format("You have declared war on %s!", target.getName()));
 	}
