@@ -1,17 +1,21 @@
 package strat.game.relationships;
 
 import strat.game.Game;
+import strat.game.Nation;
 
 public class Alliance extends Relationship {
 	private String name;
 	private int rgb;
 	
-	public Alliance(String name, int rgb) {
+	public Alliance(Nation sender, String name, int rgb) {
+		super(sender);
 		this.name = name;
 		this.rgb = rgb;
 	}
 	
 	public Alliance(Game game, String serializedData) {
+		super(null);
+		
 		String[] data = serializedData.split(",");
 		
 		name = data[1];

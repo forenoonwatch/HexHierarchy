@@ -45,6 +45,10 @@ public class CreateAlliance implements Command {
 			return new Response(String.format("CreateAlliance: Already requested alliance with %s", target.getName()));
 		}
 		
+		if (gameManager.getGame().findWarBetween(sender, target) != null) {
+			return new Response(String.format("CreateAlliance: Cannot ally %s as you are at war.", target.getName()));
+		}
+		
 		int rgb;
 		
 		try {
@@ -60,7 +64,7 @@ public class CreateAlliance implements Command {
 			return new Response("CreateAlliance: Malformed alliance name.");
 		}
 		
-		Alliance a = new Alliance(properName, rgb);
+		Alliance a = new Alliance(sender, properName, rgb);
 		a.addNation(sender);
 		a.addNation(target);
 		

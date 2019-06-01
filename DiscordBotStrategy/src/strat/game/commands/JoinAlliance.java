@@ -46,7 +46,11 @@ public class JoinAlliance implements Command {
 			return new Response(String.format("JoinAlliance: Already requested alliance with %s", target.getName()));
 		}
 		
-		Alliance a = new Alliance(targetA.getName(), targetA.getRGB());
+		if (gameManager.getGame().findWarBetween(sender, target) != null) {
+			return new Response(String.format("JoinAlliance: Cannot ally %s as you are at war.", target.getName()));
+		}
+		
+		Alliance a = new Alliance(sender, targetA.getName(), targetA.getRGB());
 		a.addNation(sender);
 		a.addNation(target);
 		

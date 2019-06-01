@@ -7,8 +7,10 @@ import strat.game.Nation;
 
 public abstract class Relationship implements ISerializable {
 	private HashSet<Nation> nations;
+	private Nation sender;
 	
-	public Relationship() {
+	public Relationship(Nation sender) {
+		this.sender = sender;
 		nations = new HashSet<>();
 	}
 	
@@ -26,6 +28,10 @@ public abstract class Relationship implements ISerializable {
 	
 	public HashSet<Nation> getNations() {
 		return nations;
+	}
+	
+	public Nation getSender() {
+		return sender;
 	}
 	
 	@Override

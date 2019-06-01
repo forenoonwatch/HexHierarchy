@@ -45,6 +45,9 @@ public class Accept implements Command {
 			case "trade":
 				r = gameManager.findPendingTradeBetween(sender, target);
 				break;
+			case "peace":
+				r = gameManager.findPendingPeaceBetween(sender, target);
+				break;
 			default:
 				return null;
 		}
@@ -52,6 +55,10 @@ public class Accept implements Command {
 		if (r == null) {
 			return new Response(String.format("No pending %s with %s to accept.",
 					tokens[1], target.getName()));
+		}
+		
+		if (r.getSender() == sender) {
+			return new Response("Accept: Cannot accept your own " + tokens[1] + ".");
 		}
 		
 		gameManager.acceptRelationship(r);
@@ -71,15 +78,15 @@ public class Accept implements Command {
 
 	@Override
 	public String getUsage() {
-		return "[alliance|trade] user(ping)";
+		return "[alliance|trade|peace] user(ping)";
 	}
 
 	@Override
 	public String getInfo() {
-		return "accept an alliance or trade partnership with a user";
+		return "accept an alliance, trade partnership, or peace treaty with a user";
 	}
 	
 	private static boolean isValid(String token) {
-		return token.equals("alliance") || token.equals("trade");
+		return token.equals("alliance") || token.equals("trade") || token.equals("peace");
 	}
 }

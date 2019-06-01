@@ -45,6 +45,8 @@ public class Decline implements Command {
 			case "trade":
 				r = gameManager.findPendingTradeBetween(sender, target);
 				break;
+			case "peace":
+				r = gameManager.findPendingPeaceBetween(sender, target);;
 			default:
 				return null;
 		}
@@ -52,6 +54,10 @@ public class Decline implements Command {
 		if (r == null) {
 			return new Response(String.format("No pending %s with %s to decline.",
 					tokens[1], target.getName()));
+		}
+		
+		if (r.getSender() == sender) {
+			return new Response("Decline: Cannot decline your own " + tokens[1] + ".");
 		}
 		
 		gameManager.declineRelationship(r);
@@ -71,15 +77,15 @@ public class Decline implements Command {
 
 	@Override
 	public String getUsage() {
-		return "[alliance|trade] user(ping)";
+		return "[alliance|trade|peace] user(ping)";
 	}
 
 	@Override
 	public String getInfo() {
-		return "decline an alliance or trade partnership with a user";
+		return "decline an alliance, trade partnership, or peace treaty with a user";
 	}
 	
 	private static boolean isValid(String token) {
-		return token.equals("alliance") || token.equals("trade");
+		return token.equals("alliance") || token.equals("trade") || token.equals("peace");
 	}
 }

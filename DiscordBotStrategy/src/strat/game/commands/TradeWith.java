@@ -38,7 +38,11 @@ public class TradeWith implements Command {
 			return new Response(String.format("TradeWith: You are already trading with %s.", target.getName()));
 		}
 		
-		TradeAgreement ta = new TradeAgreement();
+		if (gameManager.getGame().findWarBetween(sender, target) != null) {
+			return new Response(String.format("Cannot trade with %s as you are at war.", target.getName()));
+		}
+		
+		TradeAgreement ta = new TradeAgreement(sender);
 		ta.addNation(sender);
 		ta.addNation(target);
 		

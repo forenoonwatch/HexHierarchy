@@ -10,6 +10,7 @@ import java.util.HashSet;
 import strat.bot.BotUtils;
 import strat.bot.DiscordBot;
 import strat.game.relationships.Alliance;
+import strat.game.relationships.PeaceTreaty;
 import strat.game.relationships.Relationship;
 import strat.game.relationships.TradeAgreement;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
@@ -220,6 +221,16 @@ public class GameManager {
 		return null;
 	}
 	
+	public PeaceTreaty findPendingPeaceBetween(Nation a, Nation b) {
+		for (Relationship r : relationshipRequests) {
+			if (r instanceof PeaceTreaty && r.hasNation(a) && r.hasNation(b)) {
+				return (PeaceTreaty)r;
+			}
+		}
+		
+		return null;
+	}
+	
 	public boolean acceptRelationship(Relationship r) {
 		if (relationshipRequests.remove(r)) {
 			Relationship similar = game.findSimilarRelationship(r);
@@ -249,6 +260,11 @@ public class GameManager {
 					immediateLog(new LogEntry(a.get(0), ":scales: **TRADE AGREEMENT SIGNED**",
 							String.format("Trade agreement signed between the nations of %s and %s", a.get(0).getName(), a.get(1).getName()),
 							LogEntry.Type.TRADE_AGREEMENT));
+				}
+				else if (r instanceof PeaceTreaty) {
+					immediateLog(new LogEntry(a.get(0), ":dove: **PEACE TREATY SIGNED**",
+							String.format("Peace treaty signed between the nations of %s and %s", a.get(0).getName(), a.get(1).getName()),
+							LogEntry.Type.PEACE_TREATY));
 				}
 			}
 			

@@ -3,13 +3,13 @@ package strat.game.relationships;
 import strat.game.Game;
 import strat.game.Nation;
 
-public class TradeAgreement extends Relationship {
+public class PeaceTreaty extends Relationship {
 
-	public TradeAgreement(Nation sender) {
+	public PeaceTreaty(Nation sender) {
 		super(sender);
 	}
 	
-	public TradeAgreement(Game game, String serializedData) {
+	public PeaceTreaty(Game game, String serializedData) {
 		super(null);
 		
 		String[] data = serializedData.split(",");
@@ -21,7 +21,7 @@ public class TradeAgreement extends Relationship {
 	
 	@Override
 	public String serialize() {
-		return "TradeAgreement," + toString();
+		return "PeaceTreaty," + toString();
 	}
 
 }
