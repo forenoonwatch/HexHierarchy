@@ -30,6 +30,7 @@ public class DiscordBot {
 	public static final long BATTLE_CHANNEL_ID = 582269433129730048L;
 	public static final long ACTION_CHANNEL_ID = 582266965771419726L;
 	public static final long GAME_CHANNEL_ID = 582267327467487242L;
+	public static final long DIPLOMACY_CHANNEL_ID = 584416141460373528L;
 	
 	private static DiscordBot instance = new DiscordBot();
 	
@@ -39,6 +40,7 @@ public class DiscordBot {
 	private static IChannel turnChannel = null;
 	private static IChannel battleChannel = null;
 	private static IChannel actionChannel = null;
+	private static IChannel diplomacyChannel = null;
 	
 	private GameManager gameManager;
 	
@@ -119,6 +121,7 @@ public class DiscordBot {
 			turnChannel = event.getGuild().getChannelByID(TURN_CHANNEL_ID);
 			battleChannel = event.getGuild().getChannelByID(BATTLE_CHANNEL_ID);
 			actionChannel = event.getGuild().getChannelByID(ACTION_CHANNEL_ID);
+			diplomacyChannel = event.getGuild().getChannelByID(DIPLOMACY_CHANNEL_ID);
 		}
 	}
 	
@@ -146,6 +149,10 @@ public class DiscordBot {
 	
 	public static IChannel getBattleChannel() {
 		return battleChannel;
+	}
+	
+	public static IChannel getDiplomacyChannel() {
+		return diplomacyChannel;
 	}
 	
 	public static IUser getUserByID(long userID) {

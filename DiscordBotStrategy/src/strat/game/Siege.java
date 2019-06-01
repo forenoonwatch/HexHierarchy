@@ -14,7 +14,8 @@ public class Siege {
 	}
 	
 	public void resolve() {
-		String title = String.format(":european_castle: **SIEGE OF %s**%n%n", defender.getName().toUpperCase());
+		String title = String.format(":european_castle: **SIEGE OF %s, %s**%n%n",
+				defender.getName().toUpperCase(), attacker.getGame().getCurrentDate().toUpperCase());
 		String oldDefender = defender.getOwner().getName();
 		int oldDefenderID = defender.getOwnerID();
 		

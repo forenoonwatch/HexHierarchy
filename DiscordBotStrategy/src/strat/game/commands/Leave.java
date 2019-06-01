@@ -70,19 +70,19 @@ public class Leave implements Command {
 				Alliance al = (Alliance)r;
 				
 				if (remove) {
-					gameManager.immediateLog(new LogEntry(sender, ":broken_heart: **ALLIANCE DESTROYED**",
+					gameManager.logDiplomacy(new LogEntry(sender, ":broken_heart: **ALLIANCE DESTROYED**",
 							String.format("%s has been completely shattered. No nations remain within.", al.getName()),
 							LogEntry.Type.ALLIANCE_LEFT));
 				}
 				else {
-					gameManager.immediateLog(new LogEntry(sender, ":broken_heart: **ALLIANCE BROKEN**",
+					gameManager.logDiplomacy(new LogEntry(sender, ":broken_heart: **ALLIANCE BROKEN**",
 							String.format("%s has left %s", sender.getName(), al.getName()), LogEntry.Type.ALLIANCE_LEFT));
 				}
 			}
 				break;
 			case "trade":
 			{
-				gameManager.immediateLog(new LogEntry(sender, ":scales: **TRADE AGREEMENT BROKEN**",
+				gameManager.logDiplomacy(new LogEntry(sender, ":scales: **TRADE AGREEMENT BROKEN**",
 						String.format("%s has broken their trade agreement with %s", sender.getName(), target.getName()),
 						LogEntry.Type.TRADE_LEFT));
 			}

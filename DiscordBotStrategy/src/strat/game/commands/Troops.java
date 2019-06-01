@@ -70,6 +70,6 @@ public class Troops implements Command {
 		}
 		
 		return new Response(ResponseType.PRIVATE, String.format("**ARMIES - %s**\n\n", n.getName().toUpperCase()), sb.toString(),
-				Response.DEFAULT_COLOR);
+				n.getRGB());
 	}
 }

@@ -50,7 +50,7 @@ public class DeclareWar implements Command {
 		
 		gameManager.getGame().addWar(w);
 		
-		gameManager.immediateLog(new LogEntry(sender, ":crossed_swords: **WAR DECLARED**",
+		gameManager.logDiplomacy(new LogEntry(sender, ":crossed_swords: **WAR DECLARED**",
 				String.format("%s has declared war on %s", sender.getName(), target.getName()), LogEntry.Type.WAR));
 		
 		return new Response(String.format("You have declared war on %s!", target.getName()));

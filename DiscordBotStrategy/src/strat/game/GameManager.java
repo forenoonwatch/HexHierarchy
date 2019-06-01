@@ -186,17 +186,13 @@ public class GameManager {
 		}
 	}
 	
-	public void immediateLog(LogEntry entry) {
+	public void logDiplomacy(LogEntry entry) {
 		EmbedObject eo = new EmbedObject();
 		eo.title = entry.title;
 		eo.description = entry.description;
 		eo.color = entry.nation.getRGB();
 		
-		// TODO: FIXME: Uncomment
-		System.out.println(entry.title);
-		System.out.println(entry.description);
-		System.out.println();
-		//BotUtils.sendEmbed(DiscordBot.getActionChannel(), eo);
+		BotUtils.sendEmbed(DiscordBot.getDiplomacyChannel(), eo);
 	}
 	
 	public void addPendingRelationship(Relationship r) {
@@ -241,7 +237,7 @@ public class GameManager {
 				for (Nation n : r.getNations()) {
 					if (similar.addNation(n) && r instanceof Alliance) {
 						Alliance al = (Alliance)r;
-						immediateLog(new LogEntry(n, ":handshake: **NATION JOINS ALLIANCE**",
+						logDiplomacy(new LogEntry(n, ":handshake: **NATION JOINS ALLIANCE**",
 								String.format("%s joins %s", n.getName(), al.getName()), LogEntry.Type.ALLIANCE_JOINED));
 					}
 				}
@@ -254,17 +250,17 @@ public class GameManager {
 				
 				if (r instanceof Alliance) {
 					Alliance al = (Alliance)r;
-					immediateLog(new LogEntry(a.get(0), String.format(":handshake: **ALLIANCE FORMED - %s**", al.getName()),
+					logDiplomacy(new LogEntry(a.get(0), String.format(":handshake: **ALLIANCE FORMED - %s**", al.getName()),
 							String.format("Alliance formed between the nations of %s and %s", a.get(0).getName(), a.get(1).getName()),
 							LogEntry.Type.ALLIANCE_FORMED));
 				}
 				else if (r instanceof TradeAgreement) {
-					immediateLog(new LogEntry(a.get(0), ":scales: **TRADE AGREEMENT SIGNED**",
+					logDiplomacy(new LogEntry(a.get(0), ":scales: **TRADE AGREEMENT SIGNED**",
 							String.format("Trade agreement signed between the nations of %s and %s", a.get(0).getName(), a.get(1).getName()),
 							LogEntry.Type.TRADE_AGREEMENT));
 				}
 				else if (r instanceof PeaceTreaty) {
-					immediateLog(new LogEntry(a.get(0), ":dove: **PEACE TREATY SIGNED**",
+					logDiplomacy(new LogEntry(a.get(0), ":dove: **PEACE TREATY SIGNED**",
 							String.format("Peace treaty signed between the nations of %s and %s", a.get(0).getName(), a.get(1).getName()),
 							LogEntry.Type.PEACE_TREATY));
 				}
