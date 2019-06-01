@@ -63,6 +63,12 @@ public class DeclareWar implements Command {
 			for (Nation n : a.getNations()) {
 				if (n != target) {
 					desc.append(n.getName()).append(" joins the war.\n");
+					
+					War w2 = new War(sender);
+					w2.addNation(sender);
+					w2.addNation(n);
+					
+					gameManager.getGame().addWar(w2);
 				}
 			}
 		}
