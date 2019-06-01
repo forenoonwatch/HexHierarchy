@@ -16,6 +16,7 @@ public class Siege {
 	public void resolve() {
 		String title = String.format(":european_castle: **SIEGE OF %s**%n%n", defender.getName().toUpperCase());
 		String oldDefender = defender.getOwner().getName();
+		int oldDefenderID = defender.getOwnerID();
 		
 		Army def = new Army(defender.getMap(), defender.getOwnerID());
 		HashMap<String, Integer> numUnits = new HashMap<>();
@@ -46,7 +47,7 @@ public class Siege {
 		}
 		
 		for (Army a : defender.getGame().getArmies()) {
-			if (a.getOwnerID() == defender.getOwnerID() && a.getQ() == defender.getQ()
+			if (a.getOwnerID() == oldDefenderID && a.getQ() == defender.getQ()
 					&& a.getR() == defender.getR()) {
 				for (String unit : GameRules.getUnitTypes()) {
 					int loss = Math.min(avgLosses.get(unit), a.getUnits(unit));
