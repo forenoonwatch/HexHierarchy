@@ -242,6 +242,8 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 				System.out.println();
 			}
 			
+			gameManager.getGame().clearLog();
+			
 			repaint();
 		}
 		else if (e.getKeyCode() == KeyEvent.VK_W) {

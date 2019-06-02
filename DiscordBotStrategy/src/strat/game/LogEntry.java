@@ -25,6 +25,7 @@ public class LogEntry {
 		TRADE_AGREEMENT,
 		TRADE_LEFT,
 		WAR,
-		PEACE_TREATY
+		PEACE_TREATY,
+		ATTRITION
 	}
 }

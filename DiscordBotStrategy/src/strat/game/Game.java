@@ -552,8 +552,30 @@ public class Game {
 		
 		for (Army a : armies) {
 			if (a.getOwner().getMoney() <= 0) {
-				if (a.applyAttrition()) {
+				HashMap<String, Integer> numLost = new HashMap<>();
+				
+				for (String unit : GameRules.getUnitTypes()) {
+					numLost.put(unit, a.getUnits(unit));
+				}
+				
+				boolean res = a.applyAttrition();
+				
+				for (String unit : GameRules.getUnitTypes()) {
+					numLost.put(unit, numLost.get(unit) - a.getUnits(unit));
+				}
+				
+				if (res) {
 					armiesToRemove.add(a);
+					
+					turnLog.addEntry(new LogEntry(a.getOwner(), String.format(":skull_crossbones: **%s**",
+							a.getOwner().getName().toUpperCase()), String.format("Army %d has fallen completely to attrition.",
+							a.getArmyID()), LogEntry.Type.ATTRITION));
+				}
+				else {
+					turnLog.addEntry(new LogEntry(a.getOwner(), String.format(":skull_crossbones: **%s**",
+							a.getOwner().getName().toUpperCase()), String.format("Army %d has lost %d infantry, %d cavalry, and %d artillery%n",
+							a.getArmyID(), numLost.get("infantry"), numLost.get("cavalry"),
+							numLost.get("artillery")), LogEntry.Type.ATTRITION));
 				}
 			}
 		}
