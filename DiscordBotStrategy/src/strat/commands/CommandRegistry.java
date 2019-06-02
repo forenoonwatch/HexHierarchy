@@ -2,7 +2,6 @@ package strat.commands;
 
 import java.util.HashMap;
 
-import strat.game.AdminRegistry;
 import strat.game.GameManager;
 import strat.game.commands.*;
 import strat.game.commands.admin.*;
@@ -64,7 +63,7 @@ public class CommandRegistry {
 		PermissionLevel permissionLevel = PermissionLevel.ALL;
 		
 		if (AdminRegistry.isAdmin(senderID)) {
-			permissionLevel = PermissionLevel.ADMIN;
+			permissionLevel = AdminRegistry.getPermissionLevel(senderID);
 		}
 		else if (gameManager.getNationByUser(senderID) != null) {
 			permissionLevel = PermissionLevel.NATION;

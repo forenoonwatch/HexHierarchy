@@ -100,9 +100,9 @@ public final class GameRules {
 		
 		RULES.put("fortCost", 150.0);
 		RULES.put("marketCost", 200.0);
-		RULES.put("barracksCost", 300.0);
-		RULES.put("stablesCost", 300.0);
-		RULES.put("foundryCost", 300.0);
+		RULES.put("barracksCost", 200.0);
+		RULES.put("stablesCost", 200.0);
+		RULES.put("foundryCost", 200.0);
 		
 		RULES.put("spyScalar", 0.2);
 		RULES.put("spyCost", 100.0);

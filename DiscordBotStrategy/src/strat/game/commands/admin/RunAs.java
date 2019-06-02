@@ -45,7 +45,7 @@ public class RunAs implements Command {
 
 	@Override
 	public PermissionLevel getPermissionLevel() {
-		return PermissionLevel.ADMIN;
+		return PermissionLevel.OWNER;
 	}
 
 	@Override

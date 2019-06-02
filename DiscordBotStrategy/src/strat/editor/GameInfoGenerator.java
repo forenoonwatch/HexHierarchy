@@ -25,7 +25,7 @@ public class GameInfoGenerator {
 		EmbedObject[] rules = {getInitialGameInfo(), getTurnInfo(), getBuildingInfo(),
 				getEspionageInfo(),
 				getTradeInfo(), getAllianceInfo(), getWarInfo(),
-				getArmyInfo(), getBattleAndSiegeInfo(), getArmyMovementInfo(),
+				getArmyInfo(), getAttritionInfo(), getBattleAndSiegeInfo(), getArmyMovementInfo(),
 				getPriceList()};
 		
 		for (EmbedObject e : rules) {
@@ -86,7 +86,9 @@ public class GameInfoGenerator {
 	static EmbedObject getInitialGameInfo() {
 		EmbedObject e = new EmbedObject();
 		e.title = "**THE GAME**";
-		e.description = "The object of the game is to conquer as many regions as you can within the game's duration. To conquer a region, you must besiege its capital and defeat its garrison with one of your armies.\r\n";
+		e.description = "The object of the game is to conquer as many regions as you can within the game's duration."
+				+ " To conquer a region, you must besiege its capital and defeat its garrison with one of your armies."
+				+ " In other words, you must be the *Nation* (not Alliance) holding the most regions at the end of the game's last turn.\r\n";
 		e.color = 0x44bd32;
 		
 		return e;
@@ -179,12 +181,27 @@ public class GameInfoGenerator {
 				"\r\n" + 
 				"If an army ends its turn on the tile of another friendly army, they will combine forces at the start of the next turn.\r\n" +
 				"Armies have upkeep costs, which are as follows:\r\n" + 
-				String.format("Infantry: %.1f per unit per turn\r\n" + 
+				String.format("\r\nInfantry: %.1f per unit per turn\r\n" + 
 						"Cavalry: %.1f per unit per turn\r\n" + 
 						"Artillery: %.1f per unit per turn",
 						GameRules.getRuled("upkeepCost") / GameRules.getRuled("infantryWeight"),
 						GameRules.getRuled("upkeepCost") / GameRules.getRuled("cavalryWeight"),
 						GameRules.getRuled("upkeepCost") / GameRules.getRuled("artilleryWeight"));
+		e.color = 0x44bd32;
+		
+		return e;
+	}
+	
+	static EmbedObject getAttritionInfo() {
+		EmbedObject e = new EmbedObject();
+		e.title = "**ATTRITION**";
+		e.description = "If your upkeep costs are too high and your nation's money drops below `0`, your armies will begin to"
+				+ " take attrition. At the end of every turn they wil lose:\r\n" + 
+				String.format("`%d` infantry\r\n" + 
+				"`%d` cavalry\r\n" + 
+				"`%d` artillery", GameRules.getRulei("attrition") * GameRules.getRulei("infantryWeight"),
+				GameRules.getRulei("attrition") * GameRules.getRulei("cavalryWeight"),
+				GameRules.getRulei("attrition") * GameRules.getRulei("artilleryWeight"));
 		e.color = 0x44bd32;
 		
 		return e;

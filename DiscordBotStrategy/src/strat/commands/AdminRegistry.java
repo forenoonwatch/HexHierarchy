@@ -1,16 +1,18 @@
-package strat.game;
+package strat.commands;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public final class AdminRegistry {
 	
 	public static final String ADMIN_REGISTRY_FILE = "admins.dat";
 	
-	private static final HashSet<Long> admins = new HashSet<>();
+	private static final HashMap<Long, PermissionLevel> ADMINS = new HashMap<>();
+	
 	private static boolean initialized = false;
 	
 	private AdminRegistry() {}
@@ -23,8 +25,10 @@ public final class AdminRegistry {
 		initialized = true;
 		
 		try (Scanner i = new Scanner(new File(ADMIN_REGISTRY_FILE))) {
-			while (i.hasNextLong()) {
-				admins.add(i.nextLong());
+			while (i.hasNextLine()) {
+				String[] tokens = i.nextLine().split(",");
+				
+				ADMINS.put(Long.parseLong(tokens[0]), PermissionLevel.valueOf(tokens[1]));
 			}
 		}
 		catch (IOException e) {
@@ -39,8 +43,8 @@ public final class AdminRegistry {
 		}
 		
 		try (PrintWriter o = new PrintWriter(new File(fileName))) {
-			for (Long l : admins) {
-				o.println(l);
+			for (Map.Entry<Long, PermissionLevel> e : ADMINS.entrySet()) {
+				o.println(String.format("%d,%s", e.getKey(), e.getValue()));
 			}
 		}
 		catch (IOException e) {
@@ -48,18 +52,22 @@ public final class AdminRegistry {
 		}
 	}
 	
-	public static boolean add(long user) {
+	public static boolean add(long user, PermissionLevel permissionLevel) {
 		init();
-		return admins.add(user);
+		return ADMINS.put(user, permissionLevel) != null;
 	}
 	
 	public static boolean remove(long user) {
 		init();
-		return admins.remove(user);
+		return ADMINS.remove(user) != null;
 	}
 	
 	public static boolean isAdmin(long user) {
 		init();
-		return admins.contains(user);
+		return ADMINS.containsKey(user);
+	}
+	
+	public static PermissionLevel getPermissionLevel(long user) {
+		return ADMINS.get(user);
 	}
 }
