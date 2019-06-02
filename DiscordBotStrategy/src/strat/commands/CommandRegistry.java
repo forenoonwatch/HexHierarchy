@@ -53,6 +53,8 @@ public class CommandRegistry {
 		addCommand(new Load());
 		addCommand(new RunAs());
 		addCommand(new Debug());
+		addCommand(new Admin());
+		addCommand(new Unadmin());
 	}
 	
 	public static Response executeCommand(GameManager gameManager, String message,
