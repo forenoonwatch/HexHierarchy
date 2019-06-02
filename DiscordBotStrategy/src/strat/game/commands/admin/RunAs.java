@@ -1,5 +1,6 @@
 package strat.game.commands.admin;
 
+import strat.bot.BotUtils;
 import strat.commands.Command;
 import strat.commands.CommandRegistry;
 import strat.commands.PermissionLevel;
@@ -12,13 +13,13 @@ public class RunAs implements Command {
 	public Response execute(GameManager gameManager, long senderID, String rawMessage, String lowerMessage,
 			String[] tokens) {
 		if (tokens.length < 3) {
-			return null;
+			return new Response("RunAs: Invalid number of arguments.");
 		}
 		
 		long userID;
 		
 		try {
-			userID = Long.parseLong(tokens[1]);
+			userID = BotUtils.parseUserID(tokens[1]);
 		}
 		catch (NumberFormatException e) {
 			return new Response("Invalid user");
@@ -26,7 +27,7 @@ public class RunAs implements Command {
 		
 		String cmd = null;
 		
-		for (int i = tokens[0].length() + tokens[1].length(); i < rawMessage.length(); ++i) {
+		for (int i = tokens[0].length(); i < rawMessage.length(); ++i) {
 			if (lowerMessage.substring(i).startsWith(tokens[1])) {
 				cmd = rawMessage.substring(i + tokens[1].length());
 				break;
@@ -34,7 +35,7 @@ public class RunAs implements Command {
 		}
 		
 		if (cmd == null) {
-			return null;
+			return new Response("Could not find command.");
 		}
 		
 		cmd = cmd.trim();

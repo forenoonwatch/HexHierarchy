@@ -23,7 +23,7 @@ import sx.blah.discord.util.DiscordException;
 //ID: 437030179001597962
 public class DiscordBot {
 	public static final String TOKEN = "NDM3MDMwMTc5MDAxNTk3OTYy.DbwJOw.CHs1YJ_qPZDYtnmpgFkX1ozjc7A";
-	public static final String VERSION = "0.4.4";
+	public static final String VERSION = "0.5.4";
 	
 	public static final long SERVER_ID = 473942834395742239L;
 	public static final long TURN_CHANNEL_ID = 582266844153643029L;

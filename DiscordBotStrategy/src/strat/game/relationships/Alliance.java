@@ -44,6 +44,6 @@ public class Alliance extends Relationship {
 	
 	@Override
 	public String serialize() {
-		return String.format("Alliance,%s,%s,%X", name, rgb & 0xFFFFFF, toString());
+		return String.format("Alliance,%s,%X,%s", name, rgb & 0xFFFFFF, toString());
 	}
 }

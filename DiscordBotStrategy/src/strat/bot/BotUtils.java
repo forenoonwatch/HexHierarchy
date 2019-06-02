@@ -93,6 +93,7 @@ public class BotUtils {
     			return Long.parseLong(token.substring(2, token.length() - 1));
     		}
     		catch (NumberFormatException e) {
+    			System.out.println("failed 1: " + token);
     			return 0L;
     		}
     	}
@@ -101,6 +102,7 @@ public class BotUtils {
     			return Long.parseLong(token.substring(3, token.length() - 1));
     		}
     		catch (NumberFormatException e) {
+    			System.out.println("failed 2: " + token);
     			return 0L;
     		}
     	}
@@ -109,6 +111,7 @@ public class BotUtils {
     			return Long.parseLong(token);
     		}
     		catch (NumberFormatException e) {
+    			System.out.println("failed 3: " + token);
     			return 0L;
     		}
     	}

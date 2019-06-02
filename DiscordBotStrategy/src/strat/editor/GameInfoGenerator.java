@@ -8,16 +8,17 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject;
 
 public class GameInfoGenerator {
 	// #format-test
-	public static final String WEBHOOK = "https://discordapp.com/api/webhooks/583146707047546880/oJ99RZ2_O92hQatYBrTSEpTvMAvEAhub_bIslOu_1_BFUxehN4bDsTA_zjqyNgKAy0OD";
+	//public static final String WEBHOOK = "https://discordapp.com/api/webhooks/583146707047546880/oJ99RZ2_O92hQatYBrTSEpTvMAvEAhub_bIslOu_1_BFUxehN4bDsTA_zjqyNgKAy0OD";
 	// #game-info
-	//public static final String WEBHOOK = "https://discordapp.com/api/webhooks/584491680334610462/Hvs3519w9-ppjVixsnTdlp3nNmPiEXKohgV8SovzTGLXf0QCvnTK6OYDrcwgEPHI34y9";
+	public static final String WEBHOOK = "https://discordapp.com/api/webhooks/584491680334610462/Hvs3519w9-ppjVixsnTdlp3nNmPiEXKohgV8SovzTGLXf0QCvnTK6OYDrcwgEPHI34y9";
 	// #welcome
 	//public static final String WEBHOOK = "https://discordapp.com/api/webhooks/584496786253676574/lvi4QaP90SSdDbuYDhyZzwiWExNxxmM_24kaNsa3MqL-9egI8frKp2C2CEgVeEJw8kKy";
 	
 	public static void main(String[] args) throws IOException {
 		Webhook w = new Webhook(WEBHOOK);
 		
-		sendEmbed(w, getWelcome());
+		//sendEmbed(w, getWelcome());
+		genRules(w);
 	}
 	
 	static void genRules(Webhook w) {

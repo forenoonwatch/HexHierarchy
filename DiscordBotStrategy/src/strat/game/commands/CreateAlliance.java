@@ -21,9 +21,9 @@ public class CreateAlliance implements Command {
 		
 		Nation sender = gameManager.getNationByUser(senderID);
 		
-		if (gameManager.getGame().getAllianceForNation(sender) != null) {
+		/*if (gameManager.getGame().getAllianceForNation(sender) != null) {
 			return new Response("CreateAlliance: You are already in an alliance.");
-		}
+		}*/
 		
 		long userID = BotUtils.parseUserID(tokens[1]);
 		

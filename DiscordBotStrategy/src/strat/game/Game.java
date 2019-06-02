@@ -164,6 +164,7 @@ public class Game {
 		}
 		
 		updateMoney();
+		resolveAttrition();
 	}
 	
 	public void clearLog() {
@@ -225,6 +226,21 @@ public class Game {
 	}
 	
 	public void addAlliance(Alliance a) {
+		if (a.getSender() != null) {
+			Alliance senderA = getAllianceForNation(a.getSender());
+			
+			if (senderA != null) {
+				senderA.setName(a.getName());
+				senderA.setRGB(a.getRGB());
+				
+				for (Nation n : a.getNations()) {
+					senderA.addNation(n);
+				}
+				
+				return;
+			}
+		}
+		
 		alliances.add(a);
 	}
 	
@@ -528,6 +544,22 @@ public class Game {
 		for (Army a : armies) {
 			Nation o = a.getOwner();
 			o.setMoney(o.getMoney() - a.calcUpkeepCost());
+		}
+	}
+	
+	private void resolveAttrition() {
+		ArrayList<Army> armiesToRemove = new ArrayList<>();
+		
+		for (Army a : armies) {
+			if (a.getOwner().getMoney() <= 0) {
+				if (a.applyAttrition()) {
+					armiesToRemove.add(a);
+				}
+			}
+		}
+		
+		for (Army a : armiesToRemove) {
+			armies.remove(a);
 		}
 	}
 	

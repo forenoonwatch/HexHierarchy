@@ -20,7 +20,7 @@ public class GameManager {
 	public static final String DEFAULT_FILE_NAME = "hre.game";
 	public static final String MOVEMENT_LOG_FILE = "movelog.dat";
 	
-	public static final double COMPLETION_PERCENTAGE = 0.75;
+	public static final double COMPLETION_PERCENTAGE = 0.7;
 	
 	private Game game;
 	private GameRenderer gameRenderer;
@@ -266,6 +266,8 @@ public class GameManager {
 				}
 			}
 			
+			gameRenderer.renderPoliticalImages(game);
+			
 			return true;
 		}
 		
@@ -318,6 +320,10 @@ public class GameManager {
 	
 	public int getNumRequiredToComplete() {
 		return (int)(COMPLETION_PERCENTAGE * getNumOwnedNations());
+	}
+	
+	public int getNumCompleted() {
+		return turnsCompleted.size();
 	}
 	
 	public void setGame(Game game) {

@@ -187,6 +187,22 @@ public class Army extends MapObject {
 		return (int)aLoss;
 	}
 	
+	public boolean applyAttrition() {
+		boolean remove = true;
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			int loss = Math.min(numUnits.get(unit),
+					GameRules.getRulei("attrition") * GameRules.getRulei(unit + "Weight"));
+			numUnits.put(unit, numUnits.get(unit) - loss);
+			
+			if (numUnits.get(unit) > 0) {
+				remove = false;
+			}
+		}
+		
+		return remove;
+	}
+	
 	public int getArmyID() {
 		return armyID;
 	}
