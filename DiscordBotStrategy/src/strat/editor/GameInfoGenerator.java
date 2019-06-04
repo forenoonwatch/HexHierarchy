@@ -109,7 +109,7 @@ public class GameInfoGenerator {
 		e.description = "There are 5 types of buildings in each city, each with its own purpose. "
 				+ "Buildings in a city can be upgraded, but each building caps at `" + GameRules.getRulei("buildingCap") + "` upgrades.\r\n" + 
 				String.format("Market: Produces income at `%d` per level per turn\r\n", GameRules.getRulei("marketProfit")) + 
-				String.format("Fort: Fortifies the garrison of the city by `%d` infantry, `%d` cavalry, and `%d` infantry per level\r\n",
+				String.format("Fort: Fortifies the garrison of the city by `%d` infantry, `%d` cavalry, and `%d` artillery per level\r\n",
 						GameRules.getRulei("armiesPerFortLevel") * GameRules.getRulei("infantryWeight"),
 						GameRules.getRulei("armiesPerFortLevel") * GameRules.getRulei("cavalryWeight"),
 						GameRules.getRulei("armiesPerFortLevel") * GameRules.getRulei("artilleryWeight")) + 

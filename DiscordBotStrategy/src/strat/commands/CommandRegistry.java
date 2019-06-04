@@ -88,7 +88,7 @@ public class CommandRegistry {
 		
 		for (Command cmd : commands.values()) {
 			if (cmd.getPermissionLevel().ordinal() <= pl.ordinal()) {
-				sb.append(String.format("%s %s - %s%n", cmd.getName(), cmd.getUsage(), cmd.getInfo()));
+				sb.append(String.format("**%s%s** *%s* - %s%n", prefix, cmd.getName(), cmd.getUsage(), cmd.getInfo()));
 			}
 		}
 		
