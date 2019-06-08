@@ -60,7 +60,7 @@ public class CommandRegistry {
 	public static Response executeCommand(GameManager gameManager, String message,
 			long senderID, InputLevel sourceLevel) {
 		String lowerMessage = message.toLowerCase();
-		String[] tokens = lowerMessage.split("\\s");
+		String[] tokens = lowerMessage.split("\\s+");
 		
 		PermissionLevel permissionLevel = PermissionLevel.ALL;
 		
