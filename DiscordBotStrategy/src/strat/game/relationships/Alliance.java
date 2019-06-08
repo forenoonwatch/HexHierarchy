@@ -7,21 +7,23 @@ public class Alliance extends Relationship {
 	private String name;
 	private int rgb;
 	
-	public Alliance(Nation sender, String name, int rgb) {
-		super(sender);
+	public Alliance(Nation sender, String name, int rgb, boolean isRequest) {
+		super(sender, isRequest);
 		this.name = name;
 		this.rgb = rgb;
 	}
 	
 	public Alliance(Game game, String serializedData) {
-		super(null);
+		super(null, false);
 		
 		String[] data = serializedData.split(",");
 		
 		name = data[1];
 		rgb = Integer.valueOf(data[2], 16);
 		
-		for (int i = 3; i < data.length; ++i) {
+		setRequest(Boolean.valueOf(data[3]));
+		
+		for (int i = 4; i < data.length; ++i) {
 			addNation(game.getNation(Integer.parseInt(data[i])));
 		}
 	}

@@ -8,18 +8,20 @@ public class War extends Relationship {
 	private int numTurns;
 	
 	public War(Nation sender) {
-		super(sender);
+		super(sender, false);
 		numTurns = 0;
 	}
 	
 	public War(Game game, String serializedData) {
-		super(null);
+		super(null, false);
 		
 		String[] data = serializedData.split(",");
 		
 		numTurns = Integer.parseInt(data[1]);
 		
-		for (int i = 2; i < data.length; ++i) {
+		setRequest(Boolean.valueOf(data[2]));
+		
+		for (int i = 3; i < data.length; ++i) {
 			addNation(game.getNation(Integer.parseInt(data[i])));
 		}
 	}

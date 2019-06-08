@@ -50,7 +50,7 @@ public class JoinAlliance implements Command {
 			return new Response(String.format("JoinAlliance: Cannot ally %s as you are at war.", target.getName()));
 		}
 		
-		Alliance a = new Alliance(sender, targetA.getName(), targetA.getRGB());
+		Alliance a = new Alliance(sender, targetA.getName(), targetA.getRGB(), true);
 		a.addNation(sender);
 		a.addNation(target);
 		

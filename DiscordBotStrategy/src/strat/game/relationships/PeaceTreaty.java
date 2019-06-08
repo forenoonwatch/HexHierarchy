@@ -5,16 +5,18 @@ import strat.game.Nation;
 
 public class PeaceTreaty extends Relationship {
 
-	public PeaceTreaty(Nation sender) {
-		super(sender);
+	public PeaceTreaty(Nation sender, boolean isRequest) {
+		super(sender, isRequest);
 	}
 	
 	public PeaceTreaty(Game game, String serializedData) {
-		super(null);
+		super(null, false);
 		
 		String[] data = serializedData.split(",");
 		
-		for (int i = 1; i < data.length; ++i) {
+		setRequest(Boolean.valueOf(data[1]));
+		
+		for (int i = 2; i < data.length; ++i) {
 			addNation(game.getNation(Integer.parseInt(data[i])));
 		}
 	}

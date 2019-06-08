@@ -14,6 +14,10 @@ public class Siege {
 	}
 	
 	public void resolve() {
+		if (attacker.getOwnerID() == defender.getOwnerID()) {
+			return;
+		}
+		
 		String title = String.format(":european_castle: **SIEGE OF %s, %s**%n%n",
 				defender.getName().toUpperCase(), attacker.getGame().getCurrentDate().toUpperCase());
 		String oldDefender = defender.getOwner().getName();
@@ -50,20 +54,7 @@ public class Siege {
 			avgLosses.put(unit, losses.get(unit) / numArmies);
 		}
 		
-		for (Army a : defender.getGame().getArmies()) {
-			if (a.getOwnerID() == oldDefenderID && a.getQ() == defender.getQ()
-					&& a.getR() == defender.getR()) {
-				for (String unit : GameRules.getUnitTypes()) {
-					int loss = Math.min(avgLosses.get(unit), a.getUnits(unit));
-					a.setUnits(unit, a.getUnits(unit) - loss);
-					losses.put(unit, losses.get(unit) - loss);
-				}
-			}
-		}
-		
-		for (String unit : GameRules.getUnitTypes()) {
-			defender.getGarrison().setUnits(unit, Math.max(losses.get(unit), 0));
-		}
+		resolveDefenderLosses(oldDefenderID, losses, avgLosses);
 		
 		if (winner == attacker) {
 			defender.getRegion().setOwnerID(attacker.getOwnerID());
@@ -88,5 +79,23 @@ public class Siege {
 	
 	public City getDefender() {
 		return defender;
+	}
+	
+	private void resolveDefenderLosses(int oldDefenderID,
+			HashMap<String, Integer> losses, HashMap<String, Integer> avgLosses) {
+		for (Army a : defender.getGame().getArmies()) {
+			if (a.getOwnerID() == oldDefenderID && a.getQ() == defender.getQ()
+					&& a.getR() == defender.getR()) {
+				for (String unit : GameRules.getUnitTypes()) {
+					int loss = Math.min(avgLosses.get(unit), a.getUnits(unit));
+					a.setUnits(unit, a.getUnits(unit) - loss);
+					losses.put(unit, losses.get(unit) - loss);
+				}
+			}
+		}
+		
+		for (String unit : GameRules.getUnitTypes()) {
+			defender.getGarrison().setUnits(unit, Math.max(defender.getGarrison().getUnits(unit) - losses.get(unit), 0));
+		}
 	}
 }

@@ -64,7 +64,7 @@ public class CreateAlliance implements Command {
 			return new Response("CreateAlliance: Malformed alliance name.");
 		}
 		
-		Alliance a = new Alliance(sender, properName, rgb);
+		Alliance a = new Alliance(sender, properName, rgb, true);
 		a.addNation(sender);
 		a.addNation(target);
 		

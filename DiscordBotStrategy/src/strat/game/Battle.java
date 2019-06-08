@@ -27,6 +27,14 @@ public class Battle {
 				attacker.getMap().getRegion(location.getRegionID()).getName().toUpperCase(),
 				attacker.getGame().getCurrentDate().toUpperCase());
 		
+		StringBuilder desc = new StringBuilder();
+		
+		desc.append(String.format("%s Army %d (%d, %d, %d)%n", attacker.getOwner().getName(), attacker.getArmyID(),
+				attacker.getUnits("infantry"), attacker.getUnits("cavalry"), attacker.getUnits("artillery")));
+		desc.append("vs.\n");
+		desc.append(String.format("%s Army %d (%d, %d, %d)%n%n", defender.getOwner().getName(), defender.getArmyID(),
+				defender.getUnits("infantry"), defender.getUnits("cavalry"), defender.getUnits("artillery")));
+		
 		Army winner = calcWinner();
 		Army loser = attacker == winner ? defender : attacker;
 		
@@ -34,12 +42,12 @@ public class Battle {
 		winner.setQ(location.getQ());
 		winner.setR(location.getR());
 		
-		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
+		desc.append(String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
 				attacker.getOwner().getName(), defender.getOwner().getName(),
 				winner.getOwner().getName(), winner.getUnits("infantry"), winner.getUnits("cavalry"),
-				winner.getUnits("artillery"));
+				winner.getUnits("artillery")));
 		
-		winner.getGame().getTurnLog().addEntry(new LogEntry(winner.getOwner(), title, desc, LogEntry.Type.BATTLE));
+		winner.getGame().getTurnLog().addEntry(new LogEntry(winner.getOwner(), title, desc.toString(), LogEntry.Type.BATTLE));
 	}
 	
 	public Army calcWinner() {
@@ -109,11 +117,15 @@ public class Battle {
 		
 		double advAB = ((double)a.getUnits(atk) / (double)atkWeight)
 				/ ((double)b.getUnits(targ) / (double)targWeight);
-		//System.out.printf("Advantage: %.3f%n", advAB * ATTACK_SCALE);
-		int dmgToA = (int)(GameRules.getRuled("attackScale") / advAB * effectiveness[1] * Math.random())
-				* atkWeight;
-		int dmgToB = (int)(GameRules.getRuled("attackScale") * advAB * effectiveness[0] * Math.random())
-				* targWeight;
+		//System.out.printf("Advantage: %.3f%n", advAB);
+		//System.out.println("Effectiveness B to A: " + effectiveness[1]);
+		//System.out.println("Effectiveness A to B: " + effectiveness[0]);
+		//System.out.println("Deterministic BA: " + (GameRules.getRuled("attackScale") / advAB * effectiveness[1]));
+		//System.out.println("Deterministic AB: " + (GameRules.getRuled("attackScale") * advAB * effectiveness[0]));
+		int dmgToA = (int)(GameRules.getRuled("attackScale") / advAB * effectiveness[1]
+				* atkWeight * Math.random());
+		int dmgToB = (int)(GameRules.getRuled("attackScale") * advAB * effectiveness[0]
+				* targWeight * Math.random());
 		
 		dmgToA = Math.min(dmgToA, a.getUnits(atk));
 		dmgToB = Math.min(dmgToB, b.getUnits(targ));
@@ -124,7 +136,7 @@ public class Battle {
 		//if (sb != null) {
 			//System.out.println(String.format("%s launches %s.%n%s takes %d %s losses. %s takes %d %s losses.%n",
 			//		a.getOwner().getName(), getUnitAttackName(atk), a.getOwner().getName(), dmgToA,
-				//	getUnitName(atk), b.getOwner().getName(), dmgToB, getUnitName(targ)));
+			//		getUnitName(atk), b.getOwner().getName(), dmgToB, getUnitName(targ)));
 		//}
 	}
 	

@@ -39,7 +39,7 @@ public class RequestPeace implements Command {
 			return new Response(String.format("Already sent a peace treat request to %s.", target.getName()));
 		}
 		
-		PeaceTreaty p = new PeaceTreaty(sender);
+		PeaceTreaty p = new PeaceTreaty(sender, true);
 		p.addNation(sender);
 		p.addNation(target);
 		

@@ -8,10 +8,16 @@ import strat.game.Nation;
 public abstract class Relationship implements ISerializable {
 	private HashSet<Nation> nations;
 	private Nation sender;
+	private boolean request;
 	
-	public Relationship(Nation sender) {
+	public Relationship(Nation sender, boolean isRequest) {
 		this.sender = sender;
 		nations = new HashSet<>();
+		request = isRequest;
+	}
+	
+	public void setRequest(boolean request) {
+		this.request = request;
 	}
 	
 	public boolean addNation(Nation n) {
@@ -34,9 +40,15 @@ public abstract class Relationship implements ISerializable {
 		return sender;
 	}
 	
+	public boolean isRequest() {
+		return request;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		
+		sb.append(request).append(',');
 		
 		for (Nation n : nations) {
 			sb.append(n.getNationID()).append(',');

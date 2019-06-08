@@ -16,6 +16,8 @@ import strat.game.relationships.War;
 import strat.util.Util;
 
 public class Game {
+	private GameManager manager;
+	
 	private Map map;
 	
 	private HashMap<Integer, Nation> nations;
@@ -128,6 +130,10 @@ public class Game {
 			
 			for (War w : wars) {
 				o.println(w.serialize());
+			}
+			
+			for (LogEntry le : turnLog.getCommonEntries()) {
+				o.println(le.serialize());
 			}
 			
 			map.forEach(h -> o.println(h.serialize()));
@@ -324,6 +330,8 @@ public class Game {
 	}
 	
 	public void addRelationship(Relationship r) {
+		r.setRequest(false);
+		
 		if (r instanceof Alliance) {
 			addAlliance((Alliance)r);
 		}
@@ -351,6 +359,10 @@ public class Game {
 		else if (r instanceof War) {
 			removeWar((War)r);
 		}
+	}
+	
+	public void setManager(GameManager manager) {
+		this.manager = manager;
 	}
 	
 	public int calcGrossProfitForNation(Nation n) {
@@ -417,6 +429,10 @@ public class Game {
 	
 	public TurnLog getTurnLog() {
 		return turnLog;
+	}
+	
+	public GameManager getManager() {
+		return manager;
 	}
 	
 	public double getDefaultRenderRadius() {
@@ -520,12 +536,12 @@ public class Game {
 	}
 	
 	private void resolveCombat() {
-		for (Battle b : battles) {
-			b.resolve();
-		}
-		
 		for (Siege s : sieges) {
 			s.resolve();
+		}
+		
+		for (Battle b : battles) {
+			b.resolve();
 		}
 	}
 	
@@ -600,13 +616,34 @@ public class Game {
 			armies.add(new Army(map, serializedData));
 		}
 		else if (serializedData.startsWith("Alliance")) {
-			alliances.add(new Alliance(this, serializedData));
+			Alliance a = new Alliance(this, serializedData);
+			
+			if (a.isRequest()) {
+				if (manager != null) {
+					manager.addPendingRelationship(a);
+				}
+			}
+			else {
+				alliances.add(a);
+			}
 		}
 		else if (serializedData.startsWith("TradeAgreement")) {
-			tradeAgreements.add(new TradeAgreement(this, serializedData));
+			TradeAgreement t = new TradeAgreement(this, serializedData);
+			
+			if (t.isRequest()) {
+				if (manager != null) {
+					manager.addPendingRelationship(t);
+				}
+			}
+			else {
+				tradeAgreements.add(t);
+			}
 		}
 		else if (serializedData.startsWith("War")) {
 			wars.add(new War(this, serializedData));
+		}
+		else if (serializedData.startsWith("LogEntry")) {
+			turnLog.addEntry(new LogEntry(this, serializedData));
 		}
 		else {
 			map.add(new Hexagon(serializedData));

@@ -329,6 +329,8 @@ public class GameManager {
 	public void setGame(Game game) {
 		this.game = game;
 		
+		game.setManager(this);
+		
 		turnsCompleted.clear();
 		
 		gameRenderer.renderSingleImages(game);

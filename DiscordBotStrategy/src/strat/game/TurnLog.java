@@ -1,16 +1,18 @@
 package strat.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class TurnLog {
-	private ArrayList<LogEntry> commonEntries;
-	private ArrayList<LogEntry> battleEntries;
-	private ArrayList<LogEntry> diplomaticEntries;
+	private List<LogEntry> commonEntries;
+	private List<LogEntry> battleEntries;
+	private List<LogEntry> diplomaticEntries;
 	
 	public TurnLog() {
-		commonEntries = new ArrayList<>();
-		battleEntries = new ArrayList<>();
-		diplomaticEntries = new ArrayList<>();
+		commonEntries = Collections.synchronizedList(new ArrayList<>());
+		battleEntries = Collections.synchronizedList(new ArrayList<>());
+		diplomaticEntries = Collections.synchronizedList(new ArrayList<>());
 	}
 	
 	public void addEntry(LogEntry entry) {
@@ -45,15 +47,15 @@ public class TurnLog {
 		diplomaticEntries.clear();
 	}
 	
-	public ArrayList<LogEntry> getCommonEntries() {
+	public List<LogEntry> getCommonEntries() {
 		return commonEntries;
 	}
 	
-	public ArrayList<LogEntry> getBattleEntries() {
+	public List<LogEntry> getBattleEntries() {
 		return battleEntries;
 	}
 	
-	public ArrayList<LogEntry> getDiplomaticEntries() {
+	public List<LogEntry> getDiplomaticEntries() {
 		return diplomaticEntries;
 	}
 }
