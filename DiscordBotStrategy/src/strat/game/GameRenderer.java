@@ -257,6 +257,10 @@ public class GameRenderer {
 		}
 		
 		for (Alliance a : game.getAlliances()) {
+			if (aCounts.get(a) == 0) {
+				continue;
+			}
+			
 			int px = asx.get(a) / aCounts.get(a) - a.getName().length() * drawG.getFont().getSize() / 4;
 			int py = asy.get(a) / aCounts.get(a);
 			
