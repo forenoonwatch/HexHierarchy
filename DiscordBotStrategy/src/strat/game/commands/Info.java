@@ -65,11 +65,16 @@ public class Info implements Command {
 		}
 		
 		if (showMoney) {
-			int profitPerTurn = game.calcGrossProfitForNation(n);
+			int[] profitPerTurn = game.calcGrossProfitForNation(n);
+			int totalProfit = 0;
 			int lossPerTurn = game.calcGrossLossForNation(n);
 			
-			return String.format("**%s**%nMoney:\t\t%d (%d/turn)%nRegions held:\t%d%nProfit:\t\t%d%nLoss:\t\t%d%n", n.getName(),
-					n.getMoney(), profitPerTurn - lossPerTurn, numLands, profitPerTurn, lossPerTurn);
+			for (int i = 0; i < profitPerTurn.length; ++i) {
+				totalProfit += profitPerTurn[i];
+			}
+			
+			return String.format("**%s**%nMoney:\t\t%d (%d/turn)%nRegions held:\t%d%nTax Profit:\t\t%d%nTrade Profit:\t\t%d%nLoss:\t\t%d%n",
+					n.getName(), n.getMoney(), totalProfit - lossPerTurn, numLands, profitPerTurn[0], profitPerTurn[1], lossPerTurn);
 		}
 		
 		return String.format("**%s**%nLeader:\t%s%nRegions held:\t%d%n", n.getName(),

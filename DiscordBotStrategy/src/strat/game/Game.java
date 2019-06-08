@@ -365,22 +365,26 @@ public class Game {
 		this.manager = manager;
 	}
 	
-	public int calcGrossProfitForNation(Nation n) {
-		int profit = 0;
+	public int[] calcGrossProfitForNation(Nation n) {
+		int[] res = new int[2]; // 0: domestic, 1: foreign
+		
+		for (int i = 0; i < res.length; ++i) {
+			res[i] = 0;
+		}
 		
 		for (City c : map.getCities()) {
 			if (c.getOwnerID() == n.getNationID()) {
-				profit += c.getBuildingLevel("market") * GameRules.getRulei("marketProfit");
+				res[0] += c.getBuildingLevel("market") * GameRules.getRulei("marketProfit");
 			}
 		}
 		
 		for (TradeAgreement t : tradeAgreements) {
 			if (t.hasNation(n)) {
-				profit += GameRules.getRulei("tradeProfit");
+				res[1] += GameRules.getRulei("tradeProfit");
 			}
 		}
 		
-		return profit;
+		return res;
 	}
 	
 	public int calcGrossLossForNation(Nation n) {
