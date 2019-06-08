@@ -23,6 +23,7 @@ import strat.game.relationships.Alliance;
 
 public class GameRenderer {
 	public static final Font DEFAULT_FONT = new Font("Arial", Font.PLAIN, 12);
+	public static final Color WATER_COLOR = new Color(0x9ED8E9);
 	
 	// hidden away to mask code for future variability between game files
 	private static final File regionView = new File("images/regions.png");
@@ -93,6 +94,12 @@ public class GameRenderer {
 	public BufferedImage renderCities(Game game) {
 		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		game.getMap().forEach(h -> {
+			if (h.isWater()) {
+				h.render(drawG, WATER_COLOR, game.getMap().getOffsetX(),
+						game.getMap().getOffsetY(), game.getMap().getRadius(), false);
+				return;
+			}
+			
 			Region r = game.getMap().getRegion(h.getRegionID());
 			h.render(drawG, r.getColor(), game.getMap().getOffsetX(),
 					game.getMap().getOffsetY(), game.getMap().getRadius(), false);
@@ -117,6 +124,12 @@ public class GameRenderer {
 		
 		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		game.getMap().forEach(h -> {
+			if (h.isWater()) {
+				h.render(drawG, WATER_COLOR, game.getMap().getOffsetX(),
+						game.getMap().getOffsetY(), game.getMap().getRadius(), false);
+				return;
+			}
+			
 			h.toPixels(game.getMap().getOffsetX(), game.getMap().getOffsetY(), game.getMap().getRadius(), pos);
 			Region r = game.getMap().getRegion(h.getRegionID());
 			h.render(drawG, r.getColor(), game.getMap().getOffsetX(),
@@ -146,6 +159,12 @@ public class GameRenderer {
 	
 	public BufferedImage renderArmyView(Game game, Nation n) {
 		game.getMap().forEach(h -> {
+			if (h.isWater()) {
+				h.render(drawG, WATER_COLOR, game.getMap().getOffsetX(),
+						game.getMap().getOffsetY(), game.getMap().getRadius(), true);
+				return;
+			}
+			
 			Region r = game.getMap().getRegion(h.getRegionID());
 			h.render(drawG, r.getColor(), game.getMap().getOffsetX(),
 					game.getMap().getOffsetY(), game.getMap().getRadius(), true);
@@ -217,6 +236,12 @@ public class GameRenderer {
 		
 		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		game.getMap().forEach(h -> {
+			if (h.isWater()) {
+				h.render(drawG, WATER_COLOR, game.getMap().getOffsetX(),
+						game.getMap().getOffsetY(), game.getMap().getRadius(), false);
+				return;
+			}
+			
 			h.toPixels(game.getMap().getOffsetX(),
 					game.getMap().getOffsetY(), game.getMap().getRadius(), pos);
 			Nation n = game.getNation(game.getMap().getRegion(h.getRegionID()).getOwnerID());
@@ -283,6 +308,12 @@ public class GameRenderer {
 		
 		drawG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		game.getMap().forEach(h -> {
+			if (h.isWater()) {
+				h.render(drawG, WATER_COLOR, game.getMap().getOffsetX(),
+						game.getMap().getOffsetY(), game.getMap().getRadius(), false);
+				return;
+			}
+			
 			h.toPixels(game.getMap().getOffsetX(),
 					game.getMap().getOffsetY(), game.getMap().getRadius(), pos);
 			Nation n = game.getNation(game.getMap().getRegion(h.getRegionID()).getOwnerID());
@@ -315,7 +346,7 @@ public class GameRenderer {
 	}
 	
 	public BufferedImage renderEditorView(Game game) {
-		game.getMap().forEach(h -> h.render(drawG, Color.WHITE,
+		game.getMap().forEach(h -> h.render(drawG, h.isWater() ? WATER_COLOR : Color.WHITE,
 				game.getMap().getOffsetX(), game.getMap().getOffsetY(), game.getMap().getRadius(), true));
 		
 		return drawBuffer;

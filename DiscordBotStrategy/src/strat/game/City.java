@@ -183,6 +183,10 @@ public class City extends MapObject {
 		}
 	}
 	
+	public void setRegionID(int regionID) {
+		this.regionID = regionID;
+	}
+	
 	public int getRegionID() {
 		return regionID;
 	}

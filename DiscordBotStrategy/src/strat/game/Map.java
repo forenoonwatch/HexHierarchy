@@ -169,6 +169,14 @@ public class Map {
 		this.radius = radius;
 	}
 	
+	public void setWidth(int width) {
+		this.width = width;
+	}
+	
+	public void setHeight(int height) {
+		this.height = height;
+	}
+	
 	public void addCity(City c) {
 		cities.add(c);
 	}
@@ -179,6 +187,10 @@ public class Map {
 	
 	public void removeCity(City c) {
 		cities.remove(c);
+	}
+	
+	public void removeRegion(Region r) {
+		regions.remove(r.getRegionID());
 	}
 	
 	public void addRenderPosition(RenderPosition rp) {

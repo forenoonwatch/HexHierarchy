@@ -49,7 +49,7 @@ public class Hexagon implements ISerializable {
 		
 		regionID = Integer.parseInt(data[2]);
 		
-		water = Boolean.valueOf(data[3]);
+		water = data.length >= 4 ? Boolean.valueOf(data[3]) : false;
 	}
 	
 	public void render(Graphics g, Color color, double offsetX, double offsetY, double radius, boolean outline) {

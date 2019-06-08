@@ -1,4 +1,4 @@
-package strat.editor;
+package strat.debug;
 
 import java.awt.Canvas;
 import java.awt.Dimension;

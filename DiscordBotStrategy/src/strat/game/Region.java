@@ -37,6 +37,15 @@ public class Region implements ISerializable {
 		this.ownerID = ownerID;
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+		rgb = color.getRGB() & 0xFFFFFF;
+	}
+	
 	public int getRegionID() {
 		return regionID;
 	}
@@ -60,6 +69,6 @@ public class Region implements ISerializable {
 	@Override
 	public String serialize() {
 		return String.format("Region,%d,%s,%d,%X", regionID, name,
-				ownerID, rgb);
+				ownerID, rgb & 0xFFFFFF);
 	}
 }

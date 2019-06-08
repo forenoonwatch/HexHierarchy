@@ -58,7 +58,7 @@ public class Game {
 		
 		turnLog = new TurnLog();
 		
-		defaultRenderRadius = 1.0;
+		defaultRenderRadius = 10.0;
 	}
 	
 	public void load(String fileName) throws IOException {
@@ -143,6 +143,18 @@ public class Game {
 		catch (IOException e) {
 			throw e;
 		}
+	}
+	
+	public Game initForSize(int width, int height) {
+		map.setWidth(width);
+		map.setHeight(height);
+		
+		map.setOffsetX((double)width * 0.5);
+		map.setOffsetY((double)height * 0.5);
+		
+		map.setRadius(10.0);
+		
+		return this;
 	}
 	
 	public void endTurn() {
