@@ -16,20 +16,28 @@ public class Hexagon implements ISerializable {
 	
 	private int regionID;
 	
+	private boolean water;
+	
 	public Hexagon(int q, int r) {
 		this(q, -q - r, r);
 	}
 	
-	public Hexagon(int x, int y, int z) {
-		this(x, y, z, 0);
+	public Hexagon(int q, int r, boolean water) {
+		this(q, -q - r, r, 0, water);
 	}
 	
-	public Hexagon(int x, int y, int z, int regionID) {
+	public Hexagon(int x, int y, int z) {
+		this(x, y, z, 0, false);
+	}
+	
+	public Hexagon(int x, int y, int z, int regionID, boolean water) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		
 		this.regionID = regionID;
+		
+		this.water = water;
 	}
 	
 	public Hexagon(String serializedData) {
@@ -40,6 +48,8 @@ public class Hexagon implements ISerializable {
 		y = -x - z;
 		
 		regionID = Integer.parseInt(data[2]);
+		
+		water = Boolean.valueOf(data[3]);
 	}
 	
 	public void render(Graphics g, Color color, double offsetX, double offsetY, double radius, boolean outline) {
@@ -106,6 +116,10 @@ public class Hexagon implements ISerializable {
 		this.regionID = regionID;
 	}
 	
+	public void setWater(boolean water) {
+		this.water = water;
+	}
+	
 	public int getX() {
 		return x;
 	}
@@ -129,9 +143,13 @@ public class Hexagon implements ISerializable {
 	public int getRegionID() {
 		return regionID;
 	}
+	
+	public boolean isWater() {
+		return water;
+	}
 
 	@Override
 	public String serialize() {
-		return String.format("%d,%d,%d", getQ(), getR(), regionID);
+		return String.format("%d,%d,%d,%s", getQ(), getR(), regionID, water);
 	}
 }

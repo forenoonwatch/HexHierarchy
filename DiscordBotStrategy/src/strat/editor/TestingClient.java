@@ -26,7 +26,7 @@ import strat.game.LogEntry;
 import strat.game.Nation;
 
 @SuppressWarnings("serial")
-public class Editor extends Canvas implements MouseListener, KeyListener {
+public class TestingClient extends Canvas implements MouseListener, KeyListener {
 	private GameManager gameManager;
 	private int renderType = 0;
 	private int regionID = 0;
@@ -46,7 +46,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 	
 	private long user = Nation.NO_NATION.getOwner();
 	
-	public Editor(String title, int width, int height) throws IOException {
+	public TestingClient(String title, int width, int height) throws IOException {
 		Dimension d = new Dimension(width, height);
 		setSize(d);
 		setMinimumSize(d);
@@ -266,7 +266,7 @@ public class Editor extends Canvas implements MouseListener, KeyListener {
 	
 	public static void main(String[] args) throws IOException {
 		CommandRegistry.init();
-		new Editor("Hexmap Game Editor", 700, 700);
+		new TestingClient("Hexmap Game Editor", 700, 700);
 	}
 
 	@Override
