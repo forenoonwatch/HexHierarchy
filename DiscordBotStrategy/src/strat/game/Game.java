@@ -181,6 +181,7 @@ public class Game {
 			w.setNumTurns(w.getNumTurns() + 1);
 		}
 		
+		resolveValidTrades();
 		updateMoney();
 		resolveAttrition();
 	}
@@ -558,6 +559,46 @@ public class Game {
 		
 		for (Battle b : battles) {
 			b.resolve();
+		}
+	}
+	
+	private void resolveValidTrades() {
+		ArrayList<TradeAgreement> tradesToRemove = new ArrayList<>();
+		
+		for (TradeAgreement t : tradeAgreements) {
+			Nation[] ns = new Nation[t.getNations().size()];
+			t.getNations().toArray(ns);
+			
+			int minDist = Integer.MAX_VALUE;
+			
+			for (int i = 0; i < map.getCities().size(); ++i) {
+				City ci = map.getCities().get(i);
+				
+				if (ci.getOwnerID() == ns[0].getNationID()) {
+					for (int j = i + 1; j < map.getCities().size(); ++j) {
+						City cj = map.getCities().get(j);
+						
+						if (cj.getOwnerID() == ns[1].getNationID()) {
+							int dist = ci.getHexagon().distanceFrom(cj.getHexagon());
+							
+							if (dist < minDist) {
+								minDist = dist;
+							}
+						}
+					}
+				}
+			}
+			
+			if (minDist > GameRules.getRulei("tradeDistance")) {
+				tradesToRemove.add(t);
+				turnLog.addEntry(new LogEntry(ns[0], ":scales: **TRADE AGREEMENT BROKEN**",
+						String.format("%s and %s have lost their trade routes and can no longer trade.", ns[0].getName(), ns[1].getName()),
+						LogEntry.Type.TRADE_LEFT));
+			}
+		}
+		
+		for (TradeAgreement t : tradesToRemove) {
+			tradeAgreements.remove(t);
 		}
 	}
 	

@@ -77,6 +77,7 @@ public final class GameRules {
 		initialized = true;
 		
 		RULES.put("movesPerTurn", 3.0);
+		RULES.put("tradeDistance", 5.0);
 		
 		RULES.put("infantryWeight", 10.0);
 		RULES.put("cavalryWeight", 4.0);
@@ -85,8 +86,8 @@ public final class GameRules {
 		RULES.put("armiesPerFortLevel", 2.0);
 		
 		RULES.put("startingMoney", 300.0);
-		RULES.put("marketProfit", 80.0);
-		RULES.put("tradeProfit", 80.0);
+		RULES.put("marketProfit", 60.0);
+		RULES.put("tradeProfit", 60.0);
 		
 		RULES.put("recruitmentCap", 5.0);
 		RULES.put("buildingCap", 5.0);
@@ -95,7 +96,7 @@ public final class GameRules {
 		RULES.put("cavalryCost", 13.0);
 		RULES.put("artilleryCost", 20.0);
 		RULES.put("replenishmentCost", 5.0);
-		RULES.put("upkeepCost", 4.0);
+		RULES.put("upkeepCost", 8.0);
 		RULES.put("attrition", 2.0);
 		
 		RULES.put("fortCost", 150.0);
