@@ -10,7 +10,7 @@ public class Siege {
 		this.attacker = attacker;
 		this.defender = defender;
 		
-		attacker.setFighting(true);
+		//attacker.setFighting(true);
 	}
 	
 	public void resolve() {
