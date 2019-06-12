@@ -23,6 +23,8 @@ public class Siege {
 		String oldDefender = defender.getOwner().getName();
 		int oldDefenderID = defender.getOwnerID();
 		
+		StringBuilder desc = new StringBuilder();
+		
 		Army def = new Army(defender.getMap(), defender.getOwnerID());
 		HashMap<String, Integer> numUnits = new HashMap<>();
 		
@@ -43,6 +45,12 @@ public class Siege {
 		for (String unit : GameRules.getUnitTypes()) {
 			numUnits.put(unit, def.getUnits(unit));
 		}
+		
+		desc.append(String.format("%s Army %d (%d, %d, %d)%n", attacker.getOwner().getName(), attacker.getArmyNumber(),
+				attacker.getUnits("infantry"), attacker.getUnits("cavalry"), attacker.getUnits("artillery")));
+		desc.append("vs.\n");
+		desc.append(String.format("%s (%d, %d, %d)%n%n", defender.getName(),
+				def.getUnits("infantry"), def.getUnits("cavalry"), def.getUnits("artillery")));
 		
 		Army winner = new Battle(attacker, def, defender.getHexagon()).calcWinner();
 		
@@ -65,12 +73,12 @@ public class Siege {
 			attacker.getGame().removeArmy(attacker);
 		}
 		
-		String desc = String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
+		desc.append(String.format("%s vs %s%n%s is victorious with %d infantry, %d cavalry, and %d artillery remaining.%n",
 				attacker.getOwner().getName(), oldDefender,
 				winner == attacker ? attacker.getOwner().getName() : oldDefender,
-				winner.getUnits("infantry"), winner.getUnits("cavalry"), winner.getUnits("artillery"));
+				winner.getUnits("infantry"), winner.getUnits("cavalry"), winner.getUnits("artillery")));
 		
-		defender.getGame().getTurnLog().addEntry(new LogEntry(winner.getOwner(), title, desc, LogEntry.Type.BATTLE));
+		defender.getGame().getTurnLog().addEntry(new LogEntry(winner.getOwner(), title, desc.toString(), LogEntry.Type.BATTLE));
 	}
 	
 	public Army getAttacker() {

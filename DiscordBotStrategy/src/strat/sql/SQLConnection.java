@@ -22,6 +22,10 @@ public class SQLConnection {
 		return statement.executeQuery(query);
 	}
 	
+	public int executeUpdate(String query) throws SQLException {
+		return statement.executeUpdate(query);
+	}
+	
 	public PreparedStatement prepareStatement(String statement) throws SQLException {
 		return connection.prepareStatement(statement);
 	}

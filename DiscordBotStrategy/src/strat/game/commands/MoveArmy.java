@@ -43,7 +43,7 @@ public class MoveArmy implements Command {
 			String[] additionalInfo = new String[1];
 			int res = army.move(dir - 1, dist, additionalInfo);
 			
-			return new Response(String.format("Sucessfully moved army %d %d tiles.%n%s", army.getArmyID(), res, additionalInfo[0]));
+			return new Response(String.format("Sucessfully moved army %d %d tiles.%n%s", army.getArmyNumber(), res, additionalInfo[0]));
 		}
 		catch (NumberFormatException e) {
 			return new Response(String.format("Move Army: Malformed argument%nFormat: %s %s", getName(), getUsage()));

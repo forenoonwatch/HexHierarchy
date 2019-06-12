@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Army extends MapObject {
-	public static final int MOVES_PER_TURN = 3;
-	
-	private int armyID;
+	private int armyNumber;
 	
 	private HashMap<String, Integer> numUnits;
 	
@@ -21,10 +19,10 @@ public class Army extends MapObject {
 		this(map, ownerID, 0, 0, 0);
 	}
 	
-	public Army(Map map, int ownerID, int armyID, int q, int r) {
+	public Army(Map map, int ownerID, int armyNumber, int q, int r) {
 		super(map, q, r, ownerID);
 		
-		this.armyID = armyID;
+		this.armyNumber = armyNumber;
 		
 		numUnits = new HashMap<>();
 		
@@ -33,7 +31,7 @@ public class Army extends MapObject {
 		}
 		
 		pendingMoves = new ArrayList<>();
-		remainingMoves = MOVES_PER_TURN;
+		remainingMoves = GameRules.getRulei("movesPerTurn");
 		
 		fighting = false;
 	}
@@ -44,7 +42,7 @@ public class Army extends MapObject {
 		String[] data = serializedData.split(",");
 		
 		setOwnerID(Integer.parseInt(data[1]));
-		armyID = Integer.parseInt(data[2]);
+		armyNumber = Integer.parseInt(data[2]);
 		
 		setQ(Integer.parseInt(data[3]));
 		setR(Integer.parseInt(data[4]));
@@ -56,7 +54,7 @@ public class Army extends MapObject {
 		numUnits.put("artillery", Integer.parseInt(data[7]));
 		
 		pendingMoves = new ArrayList<>();
-		remainingMoves = MOVES_PER_TURN;
+		remainingMoves = GameRules.getRulei("movesPerTurn");
 		
 		fighting = false;
 	}
@@ -77,14 +75,14 @@ public class Army extends MapObject {
 				(int)getMap().getRadius());
 		
 		int offs = -g.getFont().getSize() / 2;
-		String str = Integer.toString(armyID);
+		String str = Integer.toString(armyNumber);
 		
 		g.drawString(str, pos[0] - str.length() * g.getFont().getSize() / 4, pos[1] - offs);
 	}
 	
 	public void resetForTurn() {
 		fighting = false;
-		remainingMoves = MOVES_PER_TURN;
+		remainingMoves = GameRules.getRulei("movesPerTurn");
 		pendingMoves.clear();
 	}
 	
@@ -106,7 +104,7 @@ public class Army extends MapObject {
 			Hexagon h = getMap().get(q, r);
 			
 			if (h == null) {
-				additionalInfo[0] = "Army " + armyID + " has reached the map edge.";
+				additionalInfo[0] = "Army " + armyNumber + " has reached the map edge.";
 				return i;
 			}
 			
@@ -121,7 +119,7 @@ public class Army extends MapObject {
 			}
 		}
 		
-		additionalInfo[0] = String.format("Army %d has finished moving.", armyID);
+		additionalInfo[0] = String.format("Army %d has finished moving.", armyNumber);
 		return distance;
 	}
 	
@@ -203,8 +201,8 @@ public class Army extends MapObject {
 		return remove;
 	}
 	
-	public int getArmyID() {
-		return armyID;
+	public int getArmyNumber() {
+		return armyNumber;
 	}
 	
 	public int getUnits(String unit) {
@@ -247,7 +245,7 @@ public class Army extends MapObject {
 
 	@Override
 	public String serialize() {
-		return String.format("Army,%d,%d,%d,%d,%d,%d,%d", getOwnerID(), armyID,
+		return String.format("Army,%d,%d,%d,%d,%d,%d,%d", getOwnerID(), armyNumber,
 				getQ(), getR(), numUnits.get("infantry"), numUnits.get("cavalry"), numUnits.get("artillery"));
 	}
 }

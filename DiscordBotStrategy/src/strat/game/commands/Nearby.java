@@ -41,7 +41,7 @@ public class Nearby implements Command {
 		for (Army a : gameManager.getGame().getArmies()) {
 			if (a.getOwnerID() != sender.getNationID()
 					&& a.getHexagon().distanceFrom(senderA.getHexagon()) <= GameRules.getRulei("movesPerTurn") + 1) {
-				info.append(a.getOwner().getName()).append(" army ").append(a.getArmyID()).append(":\n");
+				info.append(a.getOwner().getName()).append(" army ").append(a.getArmyNumber()).append(":\n");
 				
 				for (String unit : GameRules.getUnitTypes()) {
 					info.append("*").append(a.getUnits(unit)).append(" ").append(unit).append("*\n");

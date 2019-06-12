@@ -27,13 +27,13 @@ public class SystemsTester {
 		game.addArmy(at);
 		
 		for (int i = 0; i < 1; ++i) {
-			at.setUnits("infantry", 625);
-			at.setUnits("cavalry", 20);
-			at.setUnits("artillery", 17);
+			at.setUnits("infantry", 1);
+			at.setUnits("cavalry", 0);
+			at.setUnits("artillery", 0);
 			
-			de.setUnits("infantry", 237 + 53);
-			de.setUnits("cavalry", 9 + 10);
-			de.setUnits("artillery", 45 + 30);
+			de.setUnits("infantry", 1);
+			de.setUnits("cavalry", 0);
+			de.setUnits("artillery", 0);
 			
 			Battle b = new Battle(at, de, game.getMap().get(0, 0));
 			b.resolve();

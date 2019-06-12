@@ -29,10 +29,10 @@ public class Battle {
 		
 		StringBuilder desc = new StringBuilder();
 		
-		desc.append(String.format("%s Army %d (%d, %d, %d)%n", attacker.getOwner().getName(), attacker.getArmyID(),
+		desc.append(String.format("%s Army %d (%d, %d, %d)%n", attacker.getOwner().getName(), attacker.getArmyNumber(),
 				attacker.getUnits("infantry"), attacker.getUnits("cavalry"), attacker.getUnits("artillery")));
 		desc.append("vs.\n");
-		desc.append(String.format("%s Army %d (%d, %d, %d)%n%n", defender.getOwner().getName(), defender.getArmyID(),
+		desc.append(String.format("%s Army %d (%d, %d, %d)%n%n", defender.getOwner().getName(), defender.getArmyNumber(),
 				defender.getUnits("infantry"), defender.getUnits("cavalry"), defender.getUnits("artillery")));
 		
 		Army winner = calcWinner();
@@ -51,14 +51,9 @@ public class Battle {
 	}
 	
 	public Army calcWinner() {
+		//for (int i = 0; i < 5; ++i) {
 		while (attacker.isAlive() && defender.isAlive()) {
 			calcAttack(attacker, defender);
-			
-			if (!attacker.isAlive() || !defender.isAlive()) {
-				break;
-			}
-			
-			calcAttack(defender, attacker);
 		}
 		
 		return attacker.isAlive() ? attacker : defender;
@@ -73,149 +68,75 @@ public class Battle {
 	}
 	
 	private void calcAttack(Army a, Army b) {
-		int atk;
+		double[] dmgAToB = new double[3];
+		double[] dmgBToA = new double[3];
 		
-		do {
-			atk = (int)(Math.random() * 3);
-		}
-		while (!hasUnit(a, atk));
+		double aSum = 0, bSum = 0;
 		
-		
-		int targ = 0;
-		
-		switch (atk) {
-			case 0: // Infantry volley
-				targ = 1;
-				
-				if (!hasUnit(b, 1)) {
-					targ = hasUnit(b, 0) ? 0 : 2;
-				}
-				break;
-			case 1: // Cavalry charge
-				targ = 2;
-				
-				if (!hasUnit(b, 2)) {
-					targ = hasUnit(b, 1) ? 1 : 0;
-				}
-				break;
-			case 2: // Artillery barrage
-				targ = 0;
-				
-				if (!hasUnit(b, 0)) {
-					targ = hasUnit(b, 2) ? 2 : 1;
-				}
-				break;
-			default:
-				System.out.println(atk);
+		for (String unit : GameRules.getUnitTypes()) {
+			aSum += (double)a.getUnits(unit) / GameRules.getRuled(unit + "Weight");
+			bSum += (double)b.getUnits(unit) / GameRules.getRuled(unit + "Weight");
 		}
 		
-		int[] effectiveness = new int[2];
-		calcEffectiveness(atk, targ, effectiveness);
+		if (bSum != 0.0 && aSum / bSum > GameRules.getRuled("attackMaxAdvantage")) {
+			aSum = GameRules.getRuled("attackMaxAdvantage");
+			bSum = 1.0;
+		}
+		else if (aSum != 0.0 && bSum / aSum > GameRules.getRuled("attackMaxAdvantage")) {
+			aSum = 1.0;
+			bSum = GameRules.getRuled("attackMaxAdvantage");
+		}
 		
-		int atkWeight = GameRules.getRulei(GameRules.getUnitTypes().get(atk) + "Weight");
-		int targWeight = GameRules.getRulei(GameRules.getUnitTypes().get(targ) + "Weight");
+		calcDamageMatrix(a, b, dmgAToB, bSum == 0 ? aSum : aSum / bSum);
+		calcDamageMatrix(b, a, dmgBToA, aSum == 0 ? bSum : bSum / aSum);
 		
-		double advAB = ((double)a.getUnits(atk) / (double)atkWeight)
-				/ ((double)b.getUnits(targ) / (double)targWeight);
-		//System.out.printf("Advantage: %.3f%n", advAB);
-		//System.out.println("Effectiveness B to A: " + effectiveness[1]);
-		//System.out.println("Effectiveness A to B: " + effectiveness[0]);
-		//System.out.println("Deterministic BA: " + (GameRules.getRuled("attackScale") / advAB * effectiveness[1]));
-		//System.out.println("Deterministic AB: " + (GameRules.getRuled("attackScale") * advAB * effectiveness[0]));
-		int dmgToA = (int)(GameRules.getRuled("attackScale") / advAB * effectiveness[1]
-				* atkWeight * Math.random());
-		int dmgToB = (int)(GameRules.getRuled("attackScale") * advAB * effectiveness[0]
-				* targWeight * Math.random());
+		//System.out.printf("A takes (%.2f, %.2f, %.2f) damage%n", dmgBToA[0], dmgBToA[1], dmgBToA[2]);
+		//System.out.printf("B takes (%.2f, %.2f, %.2f) damage%n", dmgAToB[0], dmgAToB[1], dmgAToB[2]);
 		
-		dmgToA = Math.min(dmgToA, a.getUnits(atk));
-		dmgToB = Math.min(dmgToB, b.getUnits(targ));
+		for (int i = 0; i < GameRules.getUnitTypes().size(); ++i) {
+			a.setUnits(i, Math.max((int)Math.ceil(a.getUnits(i) - dmgBToA[i] * calcRNG()), 0));
+			b.setUnits(i, Math.max((int)Math.ceil(b.getUnits(i) - dmgAToB[i] * calcRNG()), 0));
+		}
 		
-		a.setUnits(atk, Math.max(a.getUnits(atk) - dmgToA, 0));
-		b.setUnits(targ, Math.max(b.getUnits(targ) - dmgToB, 0));
-		
-		//if (sb != null) {
-			//System.out.println(String.format("%s launches %s.%n%s takes %d %s losses. %s takes %d %s losses.%n",
-			//		a.getOwner().getName(), getUnitAttackName(atk), a.getOwner().getName(), dmgToA,
-			//		getUnitName(atk), b.getOwner().getName(), dmgToB, getUnitName(targ)));
-		//}
+		//System.out.printf("A(%d, %d, %d) B(%d, %d, %d)%n",
+		//		a.getUnits("infantry"), a.getUnits("cavalry"), a.getUnits("artillery"),
+		//		b.getUnits("infantry"), b.getUnits("cavalry"), b.getUnits("artillery"));
 	}
 	
-	private static boolean hasUnit(Army a, int unitID) {
-		return a.getUnits(unitID) > 0;
+	private double calcRNG() {
+		return 0.5 + 0.5 * Math.random();
 	}
 	
-	private static void calcEffectiveness(int atk, int def, int[] out) {
-		if (atk == def) {
-			out[0] = 1;
-			out[1] = 1;
-			return;
+	private void calcDamageMatrix(Army a, Army b, double[] out, double adv) {
+		for (int i = 0; i < GameRules.getUnitTypes().size(); ++i) {
+			String unit = GameRules.getUnitTypes().get(i);
+			
+			if (a.getUnits(unit) == 0) {
+				continue;
+			}
+			
+			calcRawPower(b, unit, out);
 		}
 		
-		switch (atk) {
-			case 0:
-				switch (def) {
-					case 1:
-						out[0] = 2;
-						out[1] = 1;
-						break;
-					case 2:
-						out[0] = 1;
-						out[1] = 2;
-						break;
-				}
-				break;
-			case 1:
-				switch (def) {
-					case 0:
-						out[0] = 1;
-						out[1] = 2;
-						break;
-					case 2:
-						out[0] = 2;
-						out[1] = 1;
-						break;
-				}
-				break;
-			case 2:
-				switch (def) {
-					case 0:
-						out[0] = 2;
-						out[1] = 1;
-						break;
-					case 1:
-						out[0] = 1;
-						out[1] = 2;
-						break;
-				}
-				break;
+		for (int i = 0; i < GameRules.getUnitTypes().size(); ++i) {
+			out[i] *= adv;
 		}
 	}
 	
-	@SuppressWarnings("unused")
-	private static String getUnitAttackName(int unitID) {
-		switch (unitID) {
-			case 0:
-				return "an infantry volley";
-			case 1:
-				return "a cavalry charge";
-			case 2:
-				return "an artillery barrage";
-			default:
-				return "ERROR";
+	private void calcRawPower(Army a, String attackUnit, double[] out) {
+		String comp = GameRules.getAttackCompUnit(attackUnit);
+		
+		if (a.getUnits(comp) > 0) {
+			out[GameRules.getUnitIndex(comp)] += GameRules.getRuled("attackAdvantage") * GameRules.getRuled(comp + "Weight");
 		}
-	}
-	
-	@SuppressWarnings("unused")
-	private static String getUnitName(int unitID) {
-		switch (unitID) {
-			case 0:
-				return "infantry";
-			case 1:
-				return "cavalry";
-			case 2:
-				return "artillery";
-			default:
-				return "ERROR";
+		else if (a.getUnits(attackUnit) > 0) {
+			out[GameRules.getUnitIndex(attackUnit)] += GameRules.getRuled(attackUnit + "Weight");
+		}
+		
+		comp = GameRules.getAttackCompUnit(comp);
+		
+		if (a.getUnits(comp) > 0) {
+			out[GameRules.getUnitIndex(comp)] += GameRules.getRuled(comp + "Weight") / GameRules.getRuled("attackAdvantage");
 		}
 	}
 }

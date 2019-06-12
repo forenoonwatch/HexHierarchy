@@ -73,6 +73,43 @@ public final class GameRules {
 		return false;
 	}
 	
+	public static int getUnitIndex(String unit) {
+		switch (unit) {
+			case "cavalry":
+				return 1;
+			case "artillery":
+				return 2;
+			default:
+				return 0;
+		}
+	}
+	
+	public static String getAttackCompUnit(String unit) {
+		switch (unit) {
+			case "infantry":
+				return "cavalry";
+			case "cavalry":
+				return "artillery";
+			default:
+				return "infantry";
+		}
+	}
+	
+	public static String getDefendCompUnit(String unit) {
+		switch (unit) {
+			case "infantry":
+				return "artillery";
+			case "cavalry":
+				return "infantry";
+			default:
+				return "artillery";
+		}
+	}
+	
+	public static String getUnitType(int i) {
+		return UNIT_TYPES.get(i);
+	}
+	
 	private static void init() {
 		initialized = true;
 		
@@ -82,8 +119,11 @@ public final class GameRules {
 		RULES.put("infantryWeight", 10.0);
 		RULES.put("cavalryWeight", 4.0);
 		RULES.put("artilleryWeight", 1.0);
-		RULES.put("attackScale", 3.0);
 		RULES.put("armiesPerFortLevel", 2.0);
+		
+		RULES.put("attackScale", 1.0);
+		RULES.put("attackAdvantage", 2.0);
+		RULES.put("attackMaxAdvantage", 2.0);
 		
 		RULES.put("startingMoney", 300.0);
 		RULES.put("marketProfit", 60.0);

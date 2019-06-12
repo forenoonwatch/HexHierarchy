@@ -226,7 +226,7 @@ public class Game {
 	
 	public Army getArmy(int nationID, int armyID) {
 		for (Army a : armies) {
-			if (a.getOwnerID() == nationID && a.getArmyID() == armyID) {
+			if (a.getOwnerID() == nationID && a.getArmyNumber() == armyID) {
 				return a;
 			}
 		}
@@ -473,7 +473,7 @@ public class Game {
 				Army ai = armies.get(i);
 				Army aj = armies.get(j);
 				
-				if (ai.getHexagon().distanceFrom(aj.getHexagon()) > 2 * Army.MOVES_PER_TURN) {
+				if (ai.getHexagon().distanceFrom(aj.getHexagon()) > 2 * GameRules.getRulei("movesPerTurn")) {
 					continue;
 				}
 				
@@ -642,12 +642,12 @@ public class Game {
 					
 					turnLog.addEntry(new LogEntry(a.getOwner(), String.format(":skull_crossbones: **ATTRITION - %s**",
 							a.getOwner().getName().toUpperCase()), String.format("Army %d has fallen completely to attrition.",
-							a.getArmyID()), LogEntry.Type.ATTRITION));
+							a.getArmyNumber()), LogEntry.Type.ATTRITION));
 				}
 				else {
 					turnLog.addEntry(new LogEntry(a.getOwner(), String.format(":skull_crossbones: **ATTRITION - %s**",
 							a.getOwner().getName().toUpperCase()), String.format("Army %d has lost %d infantry, %d cavalry, and %d artillery%n",
-							a.getArmyID(), numLost.get("infantry"), numLost.get("cavalry"),
+							a.getArmyNumber(), numLost.get("infantry"), numLost.get("cavalry"),
 							numLost.get("artillery")), LogEntry.Type.ATTRITION));
 				}
 			}

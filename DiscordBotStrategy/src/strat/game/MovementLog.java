@@ -17,7 +17,7 @@ public final class MovementLog {
 		try (PrintWriter pw = new PrintWriter(file)) {
 			for (Army a : game.getArmies()) {
 				if (!a.getPendingMoves().isEmpty()) {
-					pw.printf("Army,%d,%d%n", a.getOwnerID(), a.getArmyID());
+					pw.printf("Army,%d,%d%n", a.getOwnerID(), a.getArmyNumber());
 					
 					for (Hexagon h : a.getPendingMoves()) {
 						pw.printf("%d,%d%n", h.getQ(), h.getR());

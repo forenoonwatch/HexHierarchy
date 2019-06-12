@@ -47,12 +47,12 @@ public class Split implements Command {
 		}
 		
 		if (totalUnits == 0) {
-			return new Response("Split: Cannot split army " + a.getArmyID() + " in half. Army too small.");
+			return new Response("Split: Cannot split army " + a.getArmyNumber() + " in half. Army too small.");
 		}
 		
 		gameManager.getGame().addArmy(newArmy);
 		
-		return new Response(String.format("Successfully split army %d into new army %d", a.getArmyID(), newArmy.getArmyID()));
+		return new Response(String.format("Successfully split army %d into new army %d", a.getArmyNumber(), newArmy.getArmyNumber()));
 	}
 
 	@Override

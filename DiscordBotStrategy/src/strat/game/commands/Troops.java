@@ -58,13 +58,13 @@ public class Troops implements Command {
 			if (a.getOwnerID() == n.getNationID()) {
 				if (showDetailedInfo) {
 					sb.append(String.format("**%s Army %d**%nCurrent Region: %s%nMovement Remaining: %d%nUpkeep Cost: %d%n",
-							n.getName(), a.getArmyID(), game.getMap().getRegion(a.getHexagon().getRegionID()).getName(),
+							n.getName(), a.getArmyNumber(), game.getMap().getRegion(a.getHexagon().getRegionID()).getName(),
 							a.getRemainingMoves(), a.calcUpkeepCost()));
 					sb.append(String.format("Infantry: %d%nCavalry: %d%nArtillery: %d%n",
 							a.getUnits("infantry"), a.getUnits("cavalry"), a.getUnits("artillery")));
 				}
 				else {
-					sb.append(String.format("%s Army %d%n", n.getName(), a.getArmyID()));
+					sb.append(String.format("%s Army %d%n", n.getName(), a.getArmyNumber()));
 				}
 			}
 		}
