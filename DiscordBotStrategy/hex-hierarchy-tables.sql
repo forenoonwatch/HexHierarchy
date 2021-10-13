@@ -1,0 +1,148 @@
+CREATE TABLE GameRules (
+	RuleName VARCHAR(100) NOT NULL UNIQUE PRIMARY KEY,
+    RuleValue DOUBLE NOT NULL
+);
+
+CREATE TABLE Nation (
+	NationID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    OwnerID BIGINT SIGNED NOT NULL DEFAULT 0,
+    Name VARCHAR(200) NOT NULL,
+    RGB INT NOT NULL,
+    Money INT NOT NULL DEFAULT 0,
+    SpawnedArmies INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE Region (
+	RegionID INT NOT NULL PRIMARY KEY,
+    OwnerID INT NOT NULL DEFAULT 0,
+    
+    FOREIGN KEY (OwnerID) REFERENCES Nation(NationID)
+);
+
+CREATE TABLE City (
+	CityID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    RegionID INT NOT NULL,
+    Name VARCHAR(200) NOT NULL,
+    
+    Market INT NOT NULL DEFAULT 1,
+    Fort INT NOT NULL DEFAULT 1,
+    Barracks INT NOT NULL DEFAULT 1,
+    Stables INT NOT NULL DEFAULT 1,
+    Foundry INT NOT NULL DEFAULT 1,
+    
+    Infantry INT NOT NULL,
+    Cavalry INT NOT NULL,
+    Artillery INT NOT NULL,
+    
+    RecruitableInfantry INT NOT NULL DEFAULT 0,
+    RecruitableCavalry INT NOT NULL DEFAULT 0,
+    RecruitableArtillery INT NOT NULL DEFAULT 0,
+    
+    Q INT NOT NULL,
+    R INT NOT NULL,
+    
+    FOREIGN KEY (RegionID) REFERENCES region(RegionID)
+);
+
+CREATE TABLE Relationship (
+	RelationshipID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Type INT NOT NULL
+);
+
+CREATE TABLE RelationshipMember(
+	RelationshipMemberID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    RelationshipID INT NOT NULL,
+    NationID INT NOT NULL,
+    
+    FOREIGN KEY (RelationshipID) REFERENCES Relationship(RelationshipID),
+    FOREIGN KEY (NationID) REFERENCES Nation(NationID)
+);
+
+CREATE TABLE Alliance (
+	RelationshipID INT NOT NULL PRIMARY KEY,
+    Name VARCHAR(200) NOT NULL,
+    RGB INT NOT NULL,
+    
+    FOREIGN KEY (RelationshipID) REFERENCES Relationship(RelationshipID)
+);
+
+CREATE TABLE TradeAgreement (
+	RelationshipID INT NOT NULL PRIMARY KEY,
+    
+    FOREIGN KEY (RelationshipID) REFERENCES Relationship(RelationshipID)
+);
+
+CREATE TABLE War (
+	RelationshipID INT NOT NULL PRIMARY KEY,
+    Turns INT NOT NULL DEFAULT 0,
+    
+    FOREIGN KEY (RelationshipID) REFERENCES Relationship(RelationshipID)
+);
+
+CREATE TABLE Admin (
+	UserID BIGINT SIGNED NOT NULL PRIMARY KEY,
+    PermissionLevel INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE Army (
+	ArmyID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	ArmyNumber INT NOT NULL,
+    OwnerID INT NOT NULL,
+    Infantry INT NOT NULL,
+    Cavalry INT NOT NULL,
+    Artillery INT NOT NULL,
+    RemainingMoves INT NOT NULL,
+    IsFighting BOOL NOT NULL DEFAULT FALSE,
+    Q INT NOT NULL,
+    R INT NOT NULL,
+    
+    FOREIGN KEY (OwnerID) REFERENCES Nation(NationID)
+);
+
+CREATE TABLE ArmyMove(
+	MoveID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ArmyID INT NOT NULL,
+    MoveNumber INT NOT NULL,
+    Q INT NOT NULL,
+    R INT NOT NULL,
+    
+    FOREIGN KEY (ArmyID) REFERENCES Army(ArmyID)
+);
+
+CREATE TABLE RelationshipRequest (
+	RequestID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Type INT NOT NULL,
+    Sender INT NOT NULL,
+    Recipient INT NOT NULL,
+    Accepted BOOL NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE Game (
+	GameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    CurrentTurn INT NOT NULL DEFAULT 1,
+    DaysPerTurn INT NOT NULL,
+    CurrentDate DATE NOT NULL
+);
+
+CREATE TABLE InfoLog (
+	MessageID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Type INT NOT NULL,
+    Title INT NOT NULL,
+    NationID INT NOT NULL,
+    
+    FOREIGN KEY (NationID) REFERENCES nation(NationID)
+);
+
+USE `hexhierarchy`;
+DROP function IF EXISTS `HEX_DISTANCE`;
+
+DELIMITER $$
+USE `hexhierarchy`$$
+CREATE FUNCTION `HEX_DISTANCE` (Q1 INT, R1 INT, Q2 INT, R2 INT)
+RETURNS INTEGER
+DETERMINISTIC
+BEGIN
+	RETURN GREATEST(ABS(Q1 - R1), ABS(-Q1 - R1 + Q2 + R2), ABS(Q2 - R2));
+END$$
+
+DELIMITER ;
